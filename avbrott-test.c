@@ -35,11 +35,8 @@ void interrupt-beta()
 		}		
 		        
 
-        omega = (theta[n]-theta[n-1])/T, T är tiden mellan sensorhämtningarna.
-		
-		
-
-        v = (x[n] - x[n-1])/T
+        omegaVägg = (thetaVägg[n]-thetaVägg[n-1])/T, T är tiden mellan sensorhämtningarna.
+		v = (x[n] - x[n-1])/T
 
     */
 	
