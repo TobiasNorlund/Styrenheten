@@ -134,8 +134,8 @@ void turnRight90(int theta, int omega){
 	int l2 = 12 / a; // -- || --
 	int ur,ul;
 	
-	setDirLeft(0);
-	setDirRight(1);
+	setDirLeft(1);
+	setDirRight(0);
 	
 	int max = - (l1*(90+theta) + l2*omega);
 	if(max > 0 )
@@ -149,16 +149,14 @@ void turnRight90(int theta, int omega){
 		ur = max + ul;
 	}
 }
-
-
 void turnLeft45(int theta, int omega){
 	int a  = 1;
 	int l1 = 8 / a; //Ska räknas ut på egenvärden!
 	int l2 = 12 / a; // -- || --
 	int ur,ul;
 	
-	setDirLeft(0);
-	setDirRight(1);
+	setDirLeft(1);
+	setDirRight(0);
 	
 	int max = - (l1*(45-theta) + l2*omega);
 	if(max > 0 )
@@ -178,8 +176,8 @@ void turnRight45(int theta, int omega){
 	int l2 = 12 / a; // -- || --
 	int ur,ul;
 	
-	setDirLeft(0);
-	setDirRight(1);
+	setDirLeft(1);
+	setDirRight(0);
 	
 	int max = - (l1*(45+theta) + l2*omega);
 	if(max > 0 )
