@@ -10,6 +10,7 @@
 
 int main(void)
 {
+	init();
     while(1)
     {
         //TODO:: Please write your application code 
@@ -49,17 +50,16 @@ int init(void)
 	DDRD = 0b11000000;
 	
 	// Sätt gaspådrag på hjulen
-		setSpeedRight(0);
+	setSpeedRight(0);
 	setSpeedLeft(255);
 	setDirRight(1);
 	setDirLeft(0);
 	setDirLeft(1);
 	setDirRight(0);
+	setDirRight(0);
 	setDirLeft(0);
 	setDirRight(1);
 	setDirLeft(1);
-	
-	
 	while(1){
 	}
 }
@@ -84,4 +84,115 @@ void setDirLeft(int dir){
 	else{
 		PORTA = PORTA & 0b11110111;
 	}			
-}	
+}
+void regulateStraight(int x, int v, int theta, int omega)
+{
+	int a = 1;
+	int l1 = 8 / v*a;
+	int l2 = 12/a;
+	int l3 = 6/a;
+	int ur,ul;
+	printf("v %d", l1);
+	int max =-(l1*x + l2*theta + l3*omega);
+	if(max > 0 )
+	{
+		ur = 255;
+		ul = ur - max;
+	}
+	else
+	{
+		ul = 255;
+		ur = max + ul;
+	}
+	setSpeedLeft(ul);
+	setSpeedRight(ur);
+}
+void turnLeft90(int theta, int omega){
+	int a  = 1;
+	int l1 = 8 / a; //Ska räknas ut på egenvärden!
+	int l2 = 12 / a; // -- || --
+	int ur,ul;
+	
+	setDirLeft(0);
+	setDirRight(1);
+	
+	int max = - (l1*(90-theta) + l2*omega);
+	if(max > 0 )
+	{
+		ur = 255;
+		ul = ur - max;
+	}
+	else
+	{
+		ul = 255;
+		ur = max + ul;
+	}
+}
+void turnRight90(int theta, int omega){
+	int a  = 1;
+	int l1 = 8 / a; //Ska räknas ut på egenvärden!
+	int l2 = 12 / a; // -- || --
+	int ur,ul;
+	
+	setDirLeft(0);
+	setDirRight(1);
+	
+	int max = - (l1*(90+theta) + l2*omega);
+	if(max > 0 )
+	{
+		ur = 255;
+		ul = ur - max;
+	}
+	else
+	{
+		ul = 255;
+		ur = max + ul;
+	}
+}
+
+
+void turnLeft45(int theta, int omega){
+	int a  = 1;
+	int l1 = 8 / a; //Ska räknas ut på egenvärden!
+	int l2 = 12 / a; // -- || --
+	int ur,ul;
+	
+	setDirLeft(0);
+	setDirRight(1);
+	
+	int max = - (l1*(45-theta) + l2*omega);
+	if(max > 0 )
+	{
+		ur = 255;
+		ul = ur - max;
+	}
+	else
+	{
+		ul = 255;
+		ur = max + ul;
+	}
+}
+void turnRight45(int theta, int omega){
+	int a  = 1;
+	int l1 = 8 / a; //Ska räknas ut på egenvärden!
+	int l2 = 12 / a; // -- || --
+	int ur,ul;
+	
+	setDirLeft(0);
+	setDirRight(1);
+	
+	int max = - (l1*(45+theta) + l2*omega);
+	if(max > 0 )
+	{
+		ur = 255;
+		ul = ur - max;
+	}
+	else
+	{
+		ul = 255;
+		ur = max + ul;
+	}
+}
+
+
+
