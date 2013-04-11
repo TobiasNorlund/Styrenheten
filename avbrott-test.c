@@ -3,34 +3,18 @@
 
 void interrupt-beta()
 {
-	
-	    /**
-        Begär data från sensorenheten
-        Får in data från 6 optiska sensorer
-        och gyrot
-		
-
-
-        Får in:
-
-        vänsterFram
-        VänsterBak
-        högerFram
-        högerBak     
-
-        omegaVägg = (thetaVägg[n]-thetaVägg [n-1])/T, T är tiden mellan sensorhämtningarna.
-		v = (x[n] - x[n-1])/T
-
-    */
+	/**
+	 Begär data från sensorenheten
+	 Får in data från 6 optiska sensorer
+     och gyrot
+     */
 	
 	// ---------- Variabler ----------
-	// Aståndet mellan sensorerna i Y-led.
-	// Dvs mellan fronLeftSensor&backLeftSensor,
+	// Aståndet mellan sensorerna i Y-led. Dvs mellan fronLeftSensor&backLeftSensor,
 	// samt frontRightSensor, backRightSensor.	
 	int sensorDistance = 15;	
 	
-	// Tiden mellan två timade avbrott. Behövs för att kunna
-	// ta ut derivatorna v samt omega.
+	// Tiden mellan två timade avbrott. Behövs för att kunna a ut derivatorna v samt omega.
 	int t;
 	
 	// Observatörens variabler
@@ -81,7 +65,6 @@ void interrupt-beta()
 			setThetaOmegaRight(frontRightSensor, backRightSensor);
 			setXV(frontRightSensor,backRightSensor);
 		}
-		
 		return;
 	}
 	
