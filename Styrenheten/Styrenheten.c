@@ -111,18 +111,18 @@ void regulateStraight(int x, int v, int theta, int omega)
 }
 void turnLeft90(int theta, int omega){
 	int a  = 1;
-	int l1 = 4 / a; //Ska räknas ut på egenvärden!
-	int l2 = 4 / a; // -- || --
+	int l1 = 4 / a; 
+	int l2 = 4 / a; 
 	int ur,ul;
 	
-	setDirLeft(0);
-	setDirRight(1);
+	setDirLeft(1);
+	setDirRight(0);
 	
 	int max = - (l1*(90-theta) + l2*omega);
 	if(max > 0 )
 	{
 		ur = 255;
-		ul = ur - max;
+		ul = ur - max; 
 	}
 	else
 	{
@@ -133,7 +133,7 @@ void turnLeft90(int theta, int omega){
 void turnRight90(int theta, int omega){
 	int a  = 1;
 	int l1 = 4 / a; //Ska räknas ut på egenvärden!
-	int l2 = 4 / a; // -- || --
+	int l2 = 4 / a;
 	int ur,ul;
 	
 	setDirLeft(1);

@@ -8,6 +8,7 @@ void interrupt-beta()
         Begär data från sensorenheten
         Får in data från 6 optiska sensorer
         och gyrot
+		
 
 
         Får in:
@@ -28,9 +29,11 @@ void interrupt-beta()
 	// samt frontRightSensor, backRightSensor.	
 	int sensorDistance = 15;	
 	
-	// Tiden mellan två timade-avbrott. Behövs för att kunna
+	// Tiden mellan två timade avbrott. Behövs för att kunna
 	// ta ut derivatorna v samt omega.
-	int t;''
+	int t;
+	
+	// Observatörens variabler
 	int x;
 	int xOld;
 	int theta;
@@ -44,8 +47,8 @@ void interrupt-beta()
 	// theta för
 	void setXV(int frontSensor, int backSensor, int theta)
 	{
-		xOld = x;
-		x = (frontSensor+backSensor)*(2 - theta^2)/4
+		xOld = x;															
+		x = (frontSensor + backSensor) * (2 - theta^2)/4
 		v = (x - xOld)/t;
 		return;
 	}			
