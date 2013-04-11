@@ -10,6 +10,7 @@
 
 int main(void)
 {
+	
 	init();
     while(1)
     {
@@ -51,15 +52,16 @@ int init(void)
 	
 	// Sätt gaspådrag på hjulen
 	setSpeedRight(0);
-	setSpeedLeft(255);
+	setSpeedRight(125);
+	Delay(200);
+	setSpeedRight(200);
+	Delay(200);
+	setSpeedRight(255);
+	Delay(300);
 	setDirRight(1);
-	setDirLeft(0);
-	setDirLeft(1);
-	setDirRight(0);
-	setDirRight(0);
-	setDirLeft(0);
-	setDirRight(1);
-	setDirLeft(1);
+	setSpeedRight(255);
+
+
 	while(1){
 	}
 }
@@ -109,8 +111,8 @@ void regulateStraight(int x, int v, int theta, int omega)
 }
 void turnLeft90(int theta, int omega){
 	int a  = 1;
-	int l1 = 8 / a; //Ska räknas ut på egenvärden!
-	int l2 = 12 / a; // -- || --
+	int l1 = 4 / a; //Ska räknas ut på egenvärden!
+	int l2 = 4 / a; // -- || --
 	int ur,ul;
 	
 	setDirLeft(0);
@@ -130,8 +132,8 @@ void turnLeft90(int theta, int omega){
 }
 void turnRight90(int theta, int omega){
 	int a  = 1;
-	int l1 = 8 / a; //Ska räknas ut på egenvärden!
-	int l2 = 12 / a; // -- || --
+	int l1 = 4 / a; //Ska räknas ut på egenvärden!
+	int l2 = 4 / a; // -- || --
 	int ur,ul;
 	
 	setDirLeft(1);
@@ -151,8 +153,8 @@ void turnRight90(int theta, int omega){
 }
 void turnLeft45(int theta, int omega){
 	int a  = 1;
-	int l1 = 8 / a; //Ska räknas ut på egenvärden!
-	int l2 = 12 / a; // -- || --
+	int l1 = 4 / a; //Ska räknas ut på egenvärden!
+	int l2 = 4 / a; // -- || --
 	int ur,ul;
 	
 	setDirLeft(1);
@@ -172,8 +174,8 @@ void turnLeft45(int theta, int omega){
 }
 void turnRight45(int theta, int omega){
 	int a  = 1;
-	int l1 = 8 / a; //Ska räknas ut på egenvärden!
-	int l2 = 12 / a; // -- || --
+	int l1 = 4 / a; //Ska räknas ut på egenvärden!
+	int l2 = 4 / a; // -- || --
 	int ur,ul;
 	
 	setDirLeft(1);
@@ -194,3 +196,14 @@ void turnRight45(int theta, int omega){
 
 
 
+void Delay(int delay)
+{
+	int x, y;
+	for (x = delay; x != 0; x--)
+	{
+		for (y = 1000; y != 0; y--)
+		{
+			asm volatile ("nop"::); //do nothing for a bit
+		}
+	}
+}
