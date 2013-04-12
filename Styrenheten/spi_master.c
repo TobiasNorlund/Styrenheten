@@ -45,17 +45,15 @@ uint8_t SPI_MASTER_write(uint8_t *msg, uint8_t type, uint8_t len)
 /*
 Läser direkt. Returnerar 0 för fel, 1 för lyckad läsning.
 */
-uint8_t SPI_MASTER_read(uint8_t *msg, uint8_t *len)
+uint8_t SPI_MASTER_read(uint8_t *msg, uint8_t* type, uint8_t *len)
 {
 	//send exchange byte
 	SPDR=CMD_EXCHANGE_DATA;
 	/* Wait for transmission complete */
 	while(!(SPSR & (1<<SPIF))); //???
 	*len=0b00011111&SPDR;//klipp bort typ
-
-	msg[0]=SPDR;//spara första byten
-
-	for(uint8_t i = 1; i <=*len; i++)
+	*type=0b111000001&SPDR;
+	for(uint8_t i = 0; i <*len; i++)
 	{
 		//send exchange byte
 		SPDR=CMD_EXCHANGE_DATA;
