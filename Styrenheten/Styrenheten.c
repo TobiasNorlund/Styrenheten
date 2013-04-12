@@ -45,32 +45,42 @@ int init(void)
 	*/
 	TCCR2B = (0 << WGM22) | (1 << CS20) | (0 << CS21) | (0 << CS22);
 	
-	/*
+	/*1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
 	* Sätt upp port A och D
 	*/
 	DDRA = 0b00001100;
 	DDRD = 0b11000000;
 	
 	// Sätt gaspådrag på hjulen
-	setSpeedRight(0);
-	setSpeedRight(125);
-	Delay(200);
-	setSpeedRight(200);
-	Delay(200);
-	setSpeedRight(255);
-	Delay(300);
+	setDirLeft(1);
 	setDirRight(1);
-	setSpeedRight(255);
-
-
+	Delay(400);
+	
+	setSpeedRight(254-22);
+	setSpeedLeft(254);
+	Delay(1200);
+	
+	
+	
+	setSpeedLeft(0);
+	setSpeedRight(0);
+	
+	/*
+	Delay(100);	
+	//setSpeedRight(0);
+	setDirRight(1);
+	//setSpeedRight(254);
+	Delay(100);
+	setSpeedRight(0);
 	while(1){
 	}
+	*/
 }
 void setSpeedRight(int speed){
-	OCR2A = speed;
+	OCR2B = speed;
 }
 void setSpeedLeft(int speed){
-	OCR2B = speed;
+	OCR2A = speed;
 }
 void setDirRight(int dir){
 	if(dir == 1){
