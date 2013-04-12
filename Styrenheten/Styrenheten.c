@@ -6,6 +6,7 @@
  */ 
 
 #include "global.h"
+#include "clockedInterrupt.c"
 #include <avr/io.h>
 
 int main(void)
