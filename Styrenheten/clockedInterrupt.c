@@ -35,12 +35,21 @@ void timedInterrupt()
 	avstandsensor_6 = msgRecieve[5];
 	avstandsensor_7 = msgRecieve[6];
 	avstandsensor_8 = msgRecieve[7];
-	uint8_t gyro = msgRecieve[8]; // hur far man in denna data
+	uint8_t gyro = msgRecieve[8];
 	//ska rotationssensorer in här?
 	
 	//uppdatera tillstånd
-	
 	//TODO
+	
+	//fråga om data från PC
+	SPI_MASTER_write(msgSend, MESSAGE_PC_REQUEST, 0);
+	
+	//pausa??
+	
+	SPI_MASTER_read(msgRecieve, type, len);
+	
+	
+	//nollstall timer
 }
 
 

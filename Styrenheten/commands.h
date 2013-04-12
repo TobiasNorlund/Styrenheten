@@ -12,7 +12,6 @@
 #define SENSOR_REQUEST_ANSWER 0
 #define MANUAL_STEERING_ANSWER 1
 
-
 #ifndef COMMANDS_H_
 #define COMMANDS_H_
 
