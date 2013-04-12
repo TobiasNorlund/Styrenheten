@@ -18,8 +18,12 @@ int main(void)
         //TODO:: Please write your application code 
     }
 }
-int init(void)
+
+
+
+int8_t init(void)
 {
+	SPI_MASTER_init();
 	/*
 	*	Initierar registrerna för PWM
 	*
@@ -45,44 +49,35 @@ int init(void)
 	*/
 	TCCR2B = (0 << WGM22) | (1 << CS20) | (0 << CS21) | (0 << CS22);
 	
-	/*1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+	/*
 	* Sätt upp port A och D
 	*/
 	DDRA = 0b00001100;
 	DDRD = 0b11000000;
 	
+	
 	// Sätt gaspådrag på hjulen
-	setDirLeft(1);
-	setDirRight(1);
-	Delay(400);
-	
-	setSpeedRight(254-22);
-	setSpeedLeft(254);
-	Delay(1200);
-	
-	
-	
-	setSpeedLeft(0);
 	setSpeedRight(0);
-	
-	/*
-	Delay(100);	
-	//setSpeedRight(0);
+	setSpeedRight(125);
+	Delay(200);
+	setSpeedRight(200);
+	Delay(200);
+	setSpeedRight(255);
+	Delay(300);
 	setDirRight(1);
-	//setSpeedRight(254);
-	Delay(100);
-	setSpeedRight(0);
+	setSpeedRight(255);
+
+
 	while(1){
 	}
-	*/
 }
-void setSpeedRight(int speed){
-	OCR2B = speed;
-}
-void setSpeedLeft(int speed){
+void setSpeedRight(uint8_t speed){
 	OCR2A = speed;
 }
-void setDirRight(int dir){
+void setSpeedLeft(uint8_t speed){
+	OCR2B = speed;
+}
+void setDirRight(uint8_t dir){
 	if(dir == 1){
 		PORTA = PORTA | (1 << PORTA2); 
 	}		
@@ -90,7 +85,7 @@ void setDirRight(int dir){
 		PORTA = PORTA & 0b11111011;
 	}			
 }
-void setDirLeft(int dir){
+void setDirLeft(uint8_t dir){
 	if(dir == 1){
 		PORTA = PORTA | (1 << PORTA3); 
 	}		
@@ -98,15 +93,15 @@ void setDirLeft(int dir){
 		PORTA = PORTA & 0b11110111;
 	}			
 }
-void regulateStraight(int x, int v, int theta, int omega)
+void regulateStraight(uint8_t x, uint8_t v, uint8_t theta, uint8_t omega)
 {
-	int a = 1;
-	int l1 = 8 / v*a;
-	int l2 = 12/a;
-	int l3 = 6/a;
-	int ur,ul;
+	uint8_t a = 1;
+	uint8_t l1 = 8 / v*a;
+	uint8_t l2 = 12/a;
+	uint8_t l3 = 6/a;
+	uint8_t ur,ul;
 	printf("v %d", l1);
-	int max =-(l1*x + l2*theta + l3*omega);
+	uint8_t max =-(l1*x + l2*theta + l3*omega);
 	if(max > 0 )
 	{
 		ur = 255;
