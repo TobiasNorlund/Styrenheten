@@ -10,6 +10,19 @@
 #include <avr/io.h>
 #include <math.h>
 
+void Delay(int delay)
+{
+	int x, y;
+	for (x = delay; x != 0; x--)
+	{
+		for (y = 1000; y != 0; y--)
+		{
+			asm volatile ("nop"::); //do nothing for a bit
+		}
+	}
+}
+
+
 int8_t init(void)
 {
 	SPI_MASTER_init();
