@@ -7,12 +7,14 @@
 
 #include <avr/interrupt.h>
 #include "spi_master.h"
+#include "commands.h"
 
 void timedInterrupt()
 {
 	//skicka request till sensorenehten att skicka data
-	uint8_t msgSend[4];
-	SPI_MASTER_write(msgSend, 1);
+	uint8_t msgSend[32];
+	
+	SPI_MASTER_write(msgSend, SENSORDATA_REQUEST, 0);
 	
 	
 	//ta emot data från sensorenheten
@@ -21,7 +23,7 @@ void timedInterrupt()
 	SPI_MASTER_read(msgRecieve, len);
 	
 	//
-}		
+}
 
 
 ISR(SPI_STC_vect)
