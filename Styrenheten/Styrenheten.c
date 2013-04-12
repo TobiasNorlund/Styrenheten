@@ -6,20 +6,8 @@
  */ 
 
 #include "global.h"
-#include "clockedInterrupt.c"
+#include "clockedInterrupt.h"
 #include <avr/io.h>
-
-int main(void)
-{
-	
-	init();
-    while(1)
-    {
-        //TODO:: Please write your application code 
-    }
-}
-
-
 
 int8_t init(void)
 {
@@ -197,5 +185,15 @@ void turnRight45(int theta, int omega){
 	{
 		ul = 255;
 		ur = max + ul;
+	}
+}
+
+int main(void)
+{
+	
+	init();
+	while(1)
+	{
+		//TODO:: Please write your application code
 	}
 }

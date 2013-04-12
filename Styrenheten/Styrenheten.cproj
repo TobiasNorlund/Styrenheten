@@ -114,7 +114,19 @@
     <Compile Include="clockedInterrupt.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="clockedInterrupt.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="commands.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="global.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="spi_master.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="spi_master.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Styrenheten.c">
