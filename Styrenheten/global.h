@@ -22,4 +22,16 @@ unsigned char omega; //vinkelhastighet i ?? grader/sekund
 unsigned char route[16];
 unsigned char route[16];
 
+void Delay(int delay)
+{
+	int x, y;
+	for (x = delay; x != 0; x--)
+	{
+		for (y = 1000; y != 0; y--)
+		{
+			asm volatile ("nop"::); //do nothing for a bit
+		}
+	}
+}
+
 #endif /* GLOBAL_H_ */
