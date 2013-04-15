@@ -179,6 +179,25 @@ void turnLeft45(int theta, int omega){
 		ur = max + ul;
 	}
 }
+
+void autoSteering()
+{
+	return;
+}
+
+void manualSteering()
+{
+	while(1)
+	{
+		//updateMapManual();
+		if(routeLength != 0)
+		{
+			executeCommand(route[routeLength])
+			--routeLength;
+		}
+	}
+}
+
 void turnRight45(int theta, int omega){
 	int a  = 1;
 	int l1 = 4 / a; //Ska räknas ut på egenvärden!
@@ -203,10 +222,15 @@ void turnRight45(int theta, int omega){
 
 int main(void)
 {
-	
 	init();
-	while(1)
+	while(START_PIN == 0);
+	if(MANUAL_AUTO_SWITCH_PIN == MANUAL_SELECTED)
 	{
-		//TODO:: Please write your application code
+		manualSteering();
 	}
+	else()
+	{
+		autoSteering();
+	}
+	while()
 }
