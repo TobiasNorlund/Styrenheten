@@ -111,22 +111,29 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\..\TSEA27-include\message.c">
+      <SubType>compile</SubType>
+      <Link>message.c</Link>
+    </Compile>
+    <Compile Include="..\..\TSEA27-include\message.h">
+      <SubType>compile</SubType>
+      <Link>message.h</Link>
+    </Compile>
+    <Compile Include="..\..\TSEA27-include\SPI\spi_master.c">
+      <SubType>compile</SubType>
+      <Link>spi_master.c</Link>
+    </Compile>
+    <Compile Include="..\..\TSEA27-include\SPI\spi_master.h">
+      <SubType>compile</SubType>
+      <Link>spi_master.h</Link>
+    </Compile>
     <Compile Include="clockedInterrupt.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="clockedInterrupt.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="commands.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="global.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="spi_master.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="spi_master.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Styrenheten.c">
