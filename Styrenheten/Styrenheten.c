@@ -8,6 +8,7 @@
 #include "global.h"
 #include "clockedInterrupt.h"
 #include <avr/io.h>
+#include <math.h>
 
 void Delay(int delay)
 {
@@ -125,7 +126,7 @@ void turnLeft90(int theta, int omega){
 	setDirLeft(1);
 	setDirRight(0);
 	
-	int max = - (l1*(90-theta) + l2*omega);
+	int max = - (l1*(3.14/2-theta) + l2*omega);
 	if(max > 0 )
 	{
 		ur = 255;
@@ -146,7 +147,7 @@ void turnRight90(int theta, int omega){
 	setDirLeft(1);
 	setDirRight(0);
 	
-	int max = - (l1*(90+theta) + l2*omega);
+	int max = - (l1*(3.14/2+theta) + l2*omega);
 	if(max > 0 )
 	{
 		ur = 255;
@@ -167,7 +168,7 @@ void turnLeft45(int theta, int omega){
 	setDirLeft(1);
 	setDirRight(0);
 	
-	int max = - (l1*(45-theta) + l2*omega);
+	int max = - (l1*(3.14/4-theta) + l2*omega);
 	if(max > 0 )
 	{
 		ur = 255;
@@ -207,7 +208,7 @@ void turnRight45(int theta, int omega){
 	setDirLeft(1);
 	setDirRight(0);
 	
-	int max = - (l1*(45+theta) + l2*omega);
+	int max = - (l1*(3.14/4+theta) + l2*omega);
 	if(max > 0 )
 	{
 		ur = 255;
