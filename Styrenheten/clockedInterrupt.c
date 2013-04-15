@@ -138,10 +138,18 @@ ISR(TIMER1_OVF)
 				
 				switch(ID)
 				{
-					case 1:
+					case PARAMLEFTCUSTOM:
 					{
-						break; //TODO
+						paramCustomLeft = val;
+						break;
 					}
+					case PARAMRIGHTCUSTOM:
+					{
+						paramCustomRight = val;
+						break;
+					}
+					case default: //add more TODO
+						break;
 				}
 				break;
 			}
@@ -162,7 +170,7 @@ ISR(TIMER1_OVF)
 		msgSend[0] = x;
 		msgSend[1] = y;
 		msgSend[2] = map[y][x];
-		SPI_MASTER_write(msgSend, TYPE_MAP_DATA, 3); //flytta detta tills innan uppdatera tillstånd för att slippa paus	
+		SPI_MASTER_write(msgSend, TYPE_MAP_DATA, 3); //flytta detta tills innan uppdatera tillstånd för att slippa paus
 	}
 	SPI_set_kom(END);
 }
