@@ -8,7 +8,7 @@
 
 #define START_PIN PB4
 #define MANUAL_AUTO_SWITCH_PIN PB5
-#define MANUAL_SELECTED 1;
+#define MANUAL_SELECTED 1
 
 #ifndef GLOBAL_H_
 #define GLOBAL_H_
@@ -41,5 +41,9 @@ uint8_t volatile avstandsensor_5;
 uint8_t volatile avstandsensor_6;
 uint8_t volatile avstandsensor_7;
 uint8_t volatile avstandsensor_8;
+
+//parametrar
+uint8_t paramCustomLeft;
+uint8_t paramCustomRight;
 
 #endif /* GLOBAL_H_ */

@@ -56,7 +56,7 @@ ISR(TIMER1_OVF)
 	uint8_t vLeft;
 	for(uint8_t i = 0; i < *len; ++i)
 	{
-		uint8_t id = msgRecieve[i]
+		uint8_t id = msgRecieve[i];
 		switch(id)
 		{
 			case IDSENSOR1:
@@ -97,11 +97,11 @@ ISR(TIMER1_OVF)
 				i = i+2;
 				break;
 			case IDSPEEDRIGHT:
-				vRight = msgRecieve[i+1]
+				vRight = msgRecieve[i+1];
 				++i;
 				break;
 			case IDSPEEDLEFT:
-				vLeft = msgRecieve[i+1]
+				vLeft = msgRecieve[i+1];
 				++i;
 				break;
 		}	
@@ -139,16 +139,12 @@ ISR(TIMER1_OVF)
 				switch(ID)
 				{
 					case PARAMLEFTCUSTOM:
-					{
 						paramCustomLeft = val;
 						break;
-					}
 					case PARAMRIGHTCUSTOM:
-					{
 						paramCustomRight = val;
 						break;
-					}
-					case default: //add more TODO
+					default: //add more TODO
 						break;
 				}
 				break;

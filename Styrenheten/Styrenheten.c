@@ -7,6 +7,7 @@
 
 #include "global.h"
 #include "clockedInterrupt.h"
+#include "../../TSEA27-include/message.h"
 #include <avr/io.h>
 #include <math.h>
 
@@ -181,9 +182,51 @@ void turnLeft45(int theta, int omega){
 	}
 }
 
+void virtualTurn()
+{
+	return; //TODO
+}
+
+void customSteering()
+{
+	setSpeedRight(paramCustomRight);
+	setSpeedLeft(paramCustomLeft);
+}
+
 void autoSteering()
 {
 	return;
+}
+
+void executeCommand(uint8_t command)
+{
+	switch(command)
+	{
+		//implementera alla funktioner och se till att dessa är utan parametrar TODO
+		case FORWARD_COMMAND:
+			//regulateStraight();
+			break;
+		case RIGHT_90_COMMAND:
+			//turnRight90();
+			break;
+		case LEFT_90_COMMAND:
+			//turnLeft90();
+			break;
+		case RIGHT_45_COMMAND:
+			//turnRight45();
+			break;
+		case LEFT_45_COMMAND:
+			//turnLeft45();
+			break;
+		case VIRTUAL_REVERSE_COMMAND:
+			virtualTurn();
+			break;
+		case CUSTOM_STEERING_COMMAND:
+			customSteering();
+			break;
+		default:
+			break;
+	}
 }
 
 void manualSteering()
@@ -193,7 +236,7 @@ void manualSteering()
 		//updateMapManual();
 		if(routeLength != 0)
 		{
-			executeCommand(route[routeLength])
+			executeCommand(route[routeLength-1]);
 			--routeLength;
 		}
 	}
@@ -229,9 +272,12 @@ int main(void)
 	{
 		manualSteering();
 	}
-	else()
+	else
 	{
 		autoSteering();
 	}
-	while()
+	while(1)
+	{
+		
+	}
 }
