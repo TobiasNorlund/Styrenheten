@@ -139,6 +139,12 @@
     <Compile Include="Styrenheten.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="StyrReglering.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="StyrReglering.h">
+      <SubType>compile</SubType>
+    </Compile>
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>

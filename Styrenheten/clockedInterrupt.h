@@ -9,7 +9,7 @@
 #ifndef CLOCKEDINTERRUPT_H_
 #define CLOCKEDINTERRUPT_H_
 
-void timedInterrupt();
+void clockedInterrupt_init();
 
 
 
