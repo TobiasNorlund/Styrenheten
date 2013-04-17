@@ -11,18 +11,6 @@
 
 #include "StyrReglering.h"
 
-void Delay(int delay)
-{
-	int x, y;
-	for (x = delay; x != 0; x--)
-	{
-		for (y = 1000; y != 0; y--)
-		{
-			asm volatile ("nop"::); //do nothing for a bit
-		}
-	}
-}
-
 void reglering_init()
 {
 	globals.virtual_direction = DIRECTION_FORWARD;
@@ -65,27 +53,27 @@ void reglering_init()
 	// Sätt gaspådrag på hjulen
 	setDirLeft(1);
 	setDirRight(1);
-	setSpeedLeft(125);
-	setSpeedRight(125);
-	Delay(500);
-	setSpeedLeft(125);
+	setSpeedLeft(254);
+	setSpeedRight(254);
+	_delay_ms(500);
+	setSpeedLeft(254);
 	setSpeedRight(0);
-	Delay(500);
+	_delay_ms(500);
 	setSpeedLeft(0);
-	setSpeedRight(125);
-	Delay(500);
+	setSpeedRight(254);
+	_delay_ms(500);
 	globals.virtual_direction = DIRECTION_REVERSE;
 	setDirLeft(1);
 	setDirRight(1);
-	setSpeedLeft(125);
+	setSpeedLeft(254);
 	setSpeedRight(125);
-	Delay(500);
+	_delay_ms(500);
 	setSpeedLeft(125);
 	setSpeedRight(0);
-	Delay(500);
+	_delay_ms(500);
 	setSpeedLeft(0);
-	setSpeedRight(125);
-	Delay(500);
+	setSpeedRight(254);
+	_delay_ms(500);
 	setSpeedLeft(0);
 	setSpeedRight(0);
 }
@@ -95,16 +83,16 @@ int8_t getRelativeX() //x som om roboten har riktning up
 	int8_t ret;
 	switch(globals.logical_direction)
 	{
-		case(LOGICAL_DIR_UP)
+		case(LOGICAL_DIR_UP):
 			ret = globals.x;
 			break;
-		case(LOGICAL_DIR_RIGHT)
+		case(LOGICAL_DIR_RIGHT):
 			ret = -globals.y;
 			break;
-		case(LOGICAL_DIR_DOWN)
+		case(LOGICAL_DIR_DOWN):
 			ret = -globals.x;
 			break;
-		case(LOGICAL_DIR_LEFT)
+		case(LOGICAL_DIR_LEFT):
 			ret = globals.y;
 			break;
 	}
@@ -116,16 +104,16 @@ int8_t getRelativeY() //Y som om roboten har riktning upp
 	int8_t ret;
 	switch(globals.logical_direction)
 	{
-		case(LOGICAL_DIR_UP)
+		case(LOGICAL_DIR_UP):
 		ret = globals.y;
 		break;
-		case(LOGICAL_DIR_RIGHT)
+		case(LOGICAL_DIR_RIGHT):
 		ret = globals.x;
 		break;
-		case(LOGICAL_DIR_DOWN)
+		case(LOGICAL_DIR_DOWN):
 		ret = -globals.y;
 		break;
-		case(LOGICAL_DIR_LEFT)
+		case(LOGICAL_DIR_LEFT):
 		ret = -globals.x;
 		break;
 	}

@@ -37,7 +37,7 @@ ISR(TIMER1_OVF)
 	SPI_set_sensor(START);
 	SPI_MASTER_write(msgSend, TYPE_REQUEST_SENSOR_DATA, 0);
 	
-	//pausa??
+	_delay_us(2);
 	
 	//ta emot data från sensorenheten
 	uint8_t msgRecieve[32];
@@ -114,9 +114,9 @@ ISR(TIMER1_OVF)
 	//fråga om data från PC
 	while(*type != TYPE_NO_PC_MESSAGES)
 	{
-		SPI_MASTER_write(msgSend, TYPE_REQUEST_PC_MESSAGE, 0); //flytta detta tills innan uppdatera tillstånd för att slippa paus
+		SPI_MASTER_write(msgSend, TYPE_REQUEST_PC_MESSAGE, 0);
 		
-		//pausa??
+		_delay_us(2);
 		
 		SPI_MASTER_read(msgRecieve, type, len);
 		
@@ -156,8 +156,7 @@ ISR(TIMER1_OVF)
 			}
 		}
 	}
-					
-	
+
 	//skicka all kartdata till komm
 	while(globals.mapDataToSendSize != 0)
 	{
@@ -167,7 +166,7 @@ ISR(TIMER1_OVF)
 		msgSend[0] = x;
 		msgSend[1] = y;
 		msgSend[2] = globals.map[y][x];
-		SPI_MASTER_write(msgSend, TYPE_MAP_DATA, 3); //flytta detta tills innan uppdatera tillstånd för att slippa paus
+		SPI_MASTER_write(msgSend, TYPE_MAP_DATA, 3);
 	}
 	SPI_set_kom(END);
 }
