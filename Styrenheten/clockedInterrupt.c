@@ -12,8 +12,9 @@
 
 void clockedInterrupt_init()
 {
-	mapDataToSendSize = 0;
-	debugMesssageBufferLength = 0;
+	globals.mapDataToSendSize = 0;
+	globals.debugMesssageBufferLength = 0;
+	globals.routeLength = 0;
 	//setup timers 1 och 3 16bit timers
 	//start clock and set clock devider.
 	TCCR1B=(1<<CS10)|(0<<CS11)|(1<<CS12);//clk/1024 (From prescaler)
@@ -47,8 +48,8 @@ ISR(TIMER1_OVF)
 	//skicka vidare till PC
 	SPI_set_kom(START);
 	SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, *len);
-	SPI_MASTER_write(debugMesssageBuffer, TYPE_DEBUG_DATA, debugMesssageBufferLength);
-	debugMesssageBufferLength = 0;
+	SPI_MASTER_write(globals.debugMesssageBuffer, TYPE_DEBUG_DATA, globals.debugMesssageBufferLength);
+	globals.debugMesssageBufferLength = 0;
 	//skriv in data
 	uint8_t gyro1;
 	uint8_t gyro2;
@@ -60,35 +61,35 @@ ISR(TIMER1_OVF)
 		switch(id)
 		{
 			case IDSENSOR1:
-				avstandsensor_1 = msgRecieve[i+1];
+				globals.avstandsensor_1 = msgRecieve[i+1];
 				++i;
 				break;
 			case IDSENSOR2:
-				avstandsensor_2 = msgRecieve[i+1];
+				globals.avstandsensor_2 = msgRecieve[i+1];
 				++i;
 				break;
 			case IDSENSOR3:
-				avstandsensor_3 = msgRecieve[i+1];
+				globals.avstandsensor_3 = msgRecieve[i+1];
 				++i;
 				break;
 			case IDSENSOR4:
-				avstandsensor_4 = msgRecieve[i+1];
+				globals.avstandsensor_4 = msgRecieve[i+1];
 				++i;
 				break;
 			case IDSENSOR5:
-				avstandsensor_5 = msgRecieve[i+1];
+				globals.avstandsensor_5 = msgRecieve[i+1];
 				++i;
 				break;
 			case IDSENSOR6:
-				avstandsensor_6 = msgRecieve[i+1];
+				globals.avstandsensor_6 = msgRecieve[i+1];
 				++i;
 				break;
 			case IDSENSOR7:
-				avstandsensor_7 = msgRecieve[i+1];
+				globals.avstandsensor_7 = msgRecieve[i+1];
 				++i;
 				break;
 			case IDSENSOR8:
-				avstandsensor_8 = msgRecieve[i+1];
+				globals.avstandsensor_8 = msgRecieve[i+1];
 				++i;
 				break;
 			case IDGYROSENSOR:
@@ -124,11 +125,11 @@ ISR(TIMER1_OVF)
 			case TYPE_MANUAL_COMMAND:
 			{
 				//lägg till msg[0] först i route
-				for(uint8_t i = routeLength; i > 0; --i)
+				for(uint8_t i = globals.routeLength; i > 0; --i)
 				{
-					route[routeLength] = route[routeLength-1];
+					globals.route[globals.routeLength] = globals.route[globals.routeLength-1];
 				}
-				route[0] = msgRecieve[0];
+				globals.route[0] = msgRecieve[0];
 				break;
 			}
 			case TYPE_CHANGE_PARM:
@@ -139,10 +140,10 @@ ISR(TIMER1_OVF)
 				switch(ID)
 				{
 					case PARAMLEFTCUSTOM:
-						paramCustomLeft = val;
+						globals.paramCustomLeft = val;
 						break;
 					case PARAMRIGHTCUSTOM:
-						paramCustomRight = val;
+						globals.paramCustomRight = val;
 						break;
 					default: //add more TODO
 						break;
@@ -158,14 +159,14 @@ ISR(TIMER1_OVF)
 					
 	
 	//skicka all kartdata till komm
-	while(mapDataToSendSize != 0)
+	while(globals.mapDataToSendSize != 0)
 	{
-		uint8_t x = mapDataToSend[mapDataToSendSize-2];
-		uint8_t y = mapDataToSend[mapDataToSendSize-1];
-		mapDataToSendSize = mapDataToSendSize-2;
+		uint8_t x = globals.mapDataToSend[globals.mapDataToSendSize-2];
+		uint8_t y = globals.mapDataToSend[globals.mapDataToSendSize-1];
+		globals.mapDataToSendSize = globals.mapDataToSendSize-2;
 		msgSend[0] = x;
 		msgSend[1] = y;
-		msgSend[2] = map[y][x];
+		msgSend[2] = globals.map[y][x];
 		SPI_MASTER_write(msgSend, TYPE_MAP_DATA, 3); //flytta detta tills innan uppdatera tillstånd för att slippa paus
 	}
 	SPI_set_kom(END);

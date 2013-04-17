@@ -7,15 +7,20 @@
 
 #include "global.h"
 #include "clockedInterrupt.h"
+#include "charting.h"
 #include "../../TSEA27-include/message.h"
+
 #include <avr/io.h>
 #include <math.h>
 
 int8_t init(void)
 {
+	globals.mapX = 8;
+	globals.mapY = 8;
 	SPI_MASTER_init();
 	clockedInterrupt_init();
 	reglering_init();
+	pathfind_init();
 }
 
 void autoSteering()
@@ -58,11 +63,11 @@ void manualSteering()
 {
 	while(1)
 	{
-		//updateMapManual();
-		if(routeLength != 0)
+		updateMapManual();
+		if(globals.routeLength != 0)
 		{
-			executeCommand(route[routeLength-1]);
-			--routeLength;
+			executeCommand(globals.route[globals.routeLength-1]);
+			--globals.routeLength;
 		}
 	}
 }

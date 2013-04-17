@@ -21,9 +21,8 @@
     <OverrideVtorValue />
     <eraseonlaunchrule>0</eraseonlaunchrule>
     <AsfVersion>3.1.3</AsfVersion>
-    <avrtoolinterface>
-    </avrtoolinterface>
-    <avrtool>com.atmel.avrdbg.tool.simulator</avrtool>
+    <avrtoolinterface>ISP</avrtoolinterface>
+    <avrtool>com.atmel.avrdbg.tool.jtagicemk3</avrtool>
     <com_atmel_avrdbg_tool_simulator>
       <ToolType>com.atmel.avrdbg.tool.simulator</ToolType>
       <ToolName>AVR Simulator</ToolName>
@@ -42,22 +41,22 @@
     <com_atmel_avrdbg_tool_jtagicemk3>
       <ToolType>com.atmel.avrdbg.tool.jtagicemk3</ToolType>
       <ToolName>JTAGICE3</ToolName>
-      <ToolNumber>J30200013091</ToolNumber>
+      <ToolNumber>J30200009017</ToolNumber>
       <KeepTimersRunning>true</KeepTimersRunning>
       <OverrideVtor>false</OverrideVtor>
       <OverrideVtorValue>
       </OverrideVtorValue>
       <Channel>
         <host>127.0.0.1</host>
-        <port>2420</port>
+        <port>4608</port>
         <ssl>False</ssl>
       </Channel>
       <ToolOptions>
-        <InterfaceName>JTAG</InterfaceName>
+        <InterfaceName>ISP</InterfaceName>
         <InterfaceProperties>
           <JtagDbgClock>7500000</JtagDbgClock>
           <JtagProgClock>1000000</JtagProgClock>
-          <IspClock>150000</IspClock>
+          <IspClock>250000</IspClock>
           <JtagInChain>false</JtagInChain>
           <JtagEnableExtResetOnStartSession>false</JtagEnableExtResetOnStartSession>
           <JtagDevicesBefore>0</JtagDevicesBefore>
@@ -127,10 +126,19 @@
       <SubType>compile</SubType>
       <Link>spi_master.h</Link>
     </Compile>
+    <Compile Include="charting.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="charting.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="clockedInterrupt.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="clockedInterrupt.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="global.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="global.h">
