@@ -34,7 +34,7 @@ ISR(TIMER1_OVF)
 {
 	//skicka request till sensorenehten att skicka data
 	uint8_t msgSend[32];
-	SPI_set_sensor(START);
+	/*SPI_set_sensor(START);
 	SPI_MASTER_write(msgSend, TYPE_REQUEST_SENSOR_DATA, 0);
 	
 	_delay_us(2);
@@ -110,7 +110,11 @@ ISR(TIMER1_OVF)
 	
 	//uppdatera tillstånd
 	updateState(gyro1, gyro2, vRight, vLeft);
-	
+	*/
+	uint8_t msgRecieve[32];
+	uint8_t* type;
+	uint8_t* len;
+	SPI_MASTER_read(msgRecieve, type, len);
 	//fråga om data från PC
 	while(*type != TYPE_NO_PC_MESSAGES)
 	{
