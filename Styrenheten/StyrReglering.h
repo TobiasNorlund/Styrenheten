@@ -16,5 +16,8 @@ void turnLeft45(int theta, int omega); //ska vara utan parametrar
 void turnRight90(int theta, int omega);
 void turnLeft90(int theta, int omega);
 void regulateStraight(uint8_t x, uint8_t v, uint8_t theta, uint8_t omega);
+void setSpeedRight(uint8_t speed);
+void setSpeedLeft(uint8_t speed);
+
 
 #endif /* STYRREGLERING_H_ */

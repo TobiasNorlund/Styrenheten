@@ -51,26 +51,6 @@ void reglering_init()
 	DDRD = 0b11000000;
 	
 	// Sätt gaspådrag på hjulen
-	setDirLeft(1);
-	setDirRight(1);
-	setSpeedLeft(254);
-	setSpeedRight(254);
-	_delay_ms(500);
-	setSpeedLeft(254);
-	setSpeedRight(0);
-	_delay_ms(500);
-	setSpeedLeft(0);
-	setSpeedRight(254);
-	_delay_ms(500);
-	globals.virtual_direction = DIRECTION_REVERSE;
-	setDirLeft(1);
-	setDirRight(1);
-	setSpeedLeft(254);
-	setSpeedRight(125);
-	_delay_ms(500);
-	setSpeedLeft(125);
-	setSpeedRight(0);
-	_delay_ms(500);
 	setSpeedLeft(0);
 	setSpeedRight(254);
 	_delay_ms(500);

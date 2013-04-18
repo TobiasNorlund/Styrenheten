@@ -12,16 +12,36 @@
 
 #include <avr/io.h>
 #include <math.h>
+#include <avr/interrupt.h>
 
 int8_t init(void)
 {
 	globals.mapX = 8;
 	globals.mapY = 8;
+	//external interupt
+	EIMSK=(1<<INT0);// enable on int0
+	EICRA=(1<<ISC01)|(1<<ISC00);//on rising edge
+	
+	
 	SPI_MASTER_init();
 	clockedInterrupt_init();
 	reglering_init();
 	pathfind_init();
+	sei();
 }
+//nödstopp
+ISR(INT0_vect)
+{
+	setSpeedRight(0);
+	setSpeedLeft(0);
+	TIMSK0 = (0<<OCIE0A);// disable Interrupt TimerCounter0 Compare Match A (SIG_OUTPUT_COMPARE0A)
+	while(1)
+	{
+		setSpeedRight(0);
+		setSpeedLeft(0);
+	}
+}
+
 
 void autoSteering()
 {
@@ -35,6 +55,7 @@ void executeCommand(uint8_t command)
 		//implementera alla funktioner och se till att dessa är utan parametrar TODO
 		case FORWARD_COMMAND:
 			//regulateStraight();
+			customSteering();
 			break;
 		case RIGHT_90_COMMAND:
 			//turnRight90();
@@ -97,7 +118,7 @@ void turnRight45(int theta, int omega){
 int main(void)
 {
 	init();
-	while(START_PIN == 0);
+	//while(START_PIN == 0);
 	if(1) //MANUAL_AUTO_SWITCH_PIN == MANUAL_SELECTED)
 	{
 		manualSteering();
