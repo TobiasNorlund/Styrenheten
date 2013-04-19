@@ -13,6 +13,13 @@
 
 void pathfind_init()
 {
+	for(uint8_t i = 0; i < 16; ++i)
+	{
+		for(uint8_t j = 0; j < 16; ++j)
+		{
+			globals.map[j][i] = UNKNOWN;
+		}
+	}
 	globals.logical_direction = LOGICAL_DIR_UP;
 }
 

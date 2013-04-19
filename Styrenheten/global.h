@@ -21,6 +21,7 @@
 
 #define OPEN 0
 #define WALL 1
+#define UNKNOWN 2
 
 #ifndef GLOBAL_H_
 #define GLOBAL_H_
