@@ -57,45 +57,45 @@ ISR(TIMER0_COMPA_vect)
 	//SPI_MASTER_write(globals.debugMesssageBuffer, TYPE_DEBUG_DATA, globals.debugMesssageBufferLength);
 	globals.debugMesssageBufferLength = 0;
 	//skriv in data
-	/*uint8_t gyro1;
+	uint8_t gyro1;
 	uint8_t gyro2;
 	uint8_t vRight;
 	uint8_t vLeft;
-	for(uint8_t i = 0; i < *len; ++i)
+	for(uint8_t i = 0; i < len; ++i)
 	{
 		uint8_t id = msgRecieve[i];
 		switch(id)
 		{
-			case IDSENSOR1:
-				globals.avstandsensor_1 = msgRecieve[i+1];
+			case LONGFRONT:
+				globals.longFront = msgRecieve[i+1];
 				++i;
 				break;
-			case IDSENSOR2:
-				globals.avstandsensor_2 = msgRecieve[i+1];
+			case LONGRIGHT:
+				globals.longRight = msgRecieve[i+1];
 				++i;
 				break;
-			case IDSENSOR3:
-				globals.avstandsensor_3 = msgRecieve[i+1];
+			case LONGREAR:
+				globals.longRear = msgRecieve[i+1];
 				++i;
 				break;
-			case IDSENSOR4:
-				globals.avstandsensor_4 = msgRecieve[i+1];
+			case LONGLEFT:
+				globals.longLeft = msgRecieve[i+1];
 				++i;
 				break;
-			case IDSENSOR5:
-				globals.avstandsensor_5 = msgRecieve[i+1];
+			case SHORTFRONTRIGHT:
+				globals.shortFrontRight = msgRecieve[i+1];
 				++i;
 				break;
-			case IDSENSOR6:
-				globals.avstandsensor_6 = msgRecieve[i+1];
+			case SHORTFRONTLEFT:
+				globals.shortFrontLeft = msgRecieve[i+1];
 				++i;
 				break;
-			case IDSENSOR7:
-				globals.avstandsensor_7 = msgRecieve[i+1];
+			case SHORTREARRIGHT:
+				globals.shortRearRight = msgRecieve[i+1];
 				++i;
 				break;
-			case IDSENSOR8:
-				globals.avstandsensor_8 = msgRecieve[i+1];
+			case SHORTREARLEFT:
+				globals.shortRearLeft = msgRecieve[i+1];
 				++i;
 				break;
 			case IDGYROSENSOR:
@@ -115,7 +115,7 @@ ISR(TIMER0_COMPA_vect)
 	}
 	
 	//uppdatera tillstånd
-	updateState(gyro1, gyro2, vRight, vLeft);*/
+	updateState(gyro1, gyro2, vRight, vLeft);
 	
 	//fråga om data från PC
 	do

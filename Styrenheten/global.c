@@ -13,23 +13,23 @@ uint8_t getSensorLongForward()
 {
 	if(globals.virtual_direction == DIRECTION_FORWARD)
 	{
-		return globals.avstandsensor_1;
+		return globals.longFront;
 	}
 	else
 	{
-		return globals.avstandsensor_3;
+		return globals.longRear;
 	}
 }
 
-uint8_t getSensorLongBack()
+uint8_t getSensorLongRear()
 {
 	if(globals.virtual_direction == DIRECTION_FORWARD)
 	{
-		return globals.avstandsensor_3;
+		return globals.longRear;
 	}
 	else
 	{
-		return globals.avstandsensor_1;
+		return globals.longFront;
 	}
 }
 
@@ -37,11 +37,11 @@ uint8_t getSensorLongLeft()
 {
 	if(globals.virtual_direction == DIRECTION_FORWARD)
 	{
-		return globals.avstandsensor_4;
+		return globals.longLeft;
 	}
 	else
 	{
-		return globals.avstandsensor_2;
+		return globals.longRight;
 	}
 }
 
@@ -49,11 +49,11 @@ uint8_t getSensorLongRight()
 {
 	if(globals.virtual_direction == DIRECTION_FORWARD)
 	{
-		return globals.avstandsensor_2;
+		return globals.longRight;
 	}
 	else
 	{
-		return globals.avstandsensor_4;
+		return globals.longLeft;
 	}
 }
 
@@ -61,23 +61,23 @@ uint8_t getSensorShortLeftForward()
 {
 	if(globals.virtual_direction == DIRECTION_FORWARD)
 	{
-		return globals.avstandsensor_7;
+		return globals.shortRearRight;
 	}
 	else
 	{
-		return globals.avstandsensor_6;
+		return globals.shortFrontLeft;
 	}
 }
 
-uint8_t getSensorShortLeftBack()
+uint8_t getSensorShortLeftRear()
 {
 	if(globals.virtual_direction == DIRECTION_FORWARD)
 	{
-		return globals.avstandsensor_8;
+		return globals.shortRearLeft;
 	}
 	else
 	{
-		return globals.avstandsensor_5;
+		return globals.shortFrontRight;
 	}
 }
 
@@ -85,22 +85,22 @@ uint8_t getSensorShortRightForward()
 {
 	if(globals.virtual_direction == DIRECTION_FORWARD)
 	{
-		return globals.avstandsensor_5;
+		return globals.shortFrontRight;
 	}
 	else
 	{
-		return globals.avstandsensor_8;
+		return globals.shortRearLeft;
 	}
 }
 
-uint8_t getSensorShortRightBack()
+uint8_t getSensorShortRightRear()
 {
 	if(globals.virtual_direction == DIRECTION_FORWARD)
 	{
-		return globals.avstandsensor_6;
+		return globals.shortFrontLeft;
 	}
 	else
 	{
-		return globals.avstandsensor_7;
+		return globals.shortRearRight;
 	}
 }
