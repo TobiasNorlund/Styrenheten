@@ -67,7 +67,7 @@ typedef struct
 	uint8_t volatile paramCustomRight;
 } Globals;
 
-extern Globals globals;
+extern Globals volatile globals;
 
 uint8_t getSensorLongForward();
 uint8_t getSensorLongBack();

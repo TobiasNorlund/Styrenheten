@@ -7,7 +7,7 @@
 
 #include "global.h"
 
-Globals globals;
+Globals volatile globals;
 
 uint8_t getSensorLongForward()
 {

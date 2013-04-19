@@ -49,13 +49,6 @@ void reglering_init()
 	*/
 	DDRA = 0b00001100;
 	DDRD = 0b11000000;
-	
-	// Sätt gaspådrag på hjulen
-	setSpeedLeft(0);
-	setSpeedRight(254);
-	_delay_ms(500);
-	setSpeedLeft(0);
-	setSpeedRight(0);
 }
 
 int8_t getRelativeX() //x som om roboten har riktning up
@@ -250,13 +243,22 @@ void turnLeft45(int theta, int omega){
 
 void virtualTurn()
 {
-	globals.virtual_direction = DIRECTION_REVERSE;
+	if(globals.virtual_direction == DIRECTION_FORWARD)
+	{
+		globals.virtual_direction = DIRECTION_REVERSE;
+	}
+	else
+	{
+		globals.virtual_direction = DIRECTION_FORWARD;
+	}
 	//globals.logical_direction = TODO;
-	return; //TODO
+	return;
 }
 
 void customSteering()
 {
+	setDirLeft(1);
+	setDirRight(1);
 	setSpeedRight(globals.paramCustomRight);
 	setSpeedLeft(globals.paramCustomLeft);
 }

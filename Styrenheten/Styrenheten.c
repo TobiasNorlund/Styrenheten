@@ -22,11 +22,11 @@ int8_t init(void)
 	EIMSK=(1<<INT0);// enable on int0
 	EICRA=(1<<ISC01)|(1<<ISC00);//on rising edge
 	
-	
-	SPI_MASTER_init();
 	clockedInterrupt_init();
 	reglering_init();
 	pathfind_init();
+	_delay_ms(500); //ge tid innan styr börjar
+	SPI_MASTER_init();
 	sei();
 }
 //nödstopp
