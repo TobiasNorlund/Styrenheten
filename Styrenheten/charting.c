@@ -41,7 +41,7 @@ void chart(uint8_t logical_direction, uint8_t length, void (*charting_func)(uint
 			sensorLength = getSensorLongRight();
 			break;
 		case LOGICAL_DIR_DOWN:
-			sensorLength = getSensorLongBack();
+			sensorLength = getSensorLongRear();
 			break;
 		case LOGICAL_DIR_LEFT:
 			sensorLength = getSensorLongLeft();

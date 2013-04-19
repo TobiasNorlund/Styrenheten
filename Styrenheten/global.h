@@ -35,9 +35,11 @@ typedef struct
 	uint8_t volatile mapX; //Xcoord för nuvarande ruta i kartindex initieras i init
 	uint8_t volatile mapY; //Xcoord för nuvarande ruta i kartindex initieras i init
 	int8_t volatile x; //offset från origo för x i nuvarande ruta mäts i 1/3 cm origo är i mitten av rutan, initieras i styrinit
+	int8_t volatile xOld;
 	int8_t volatile y; //offset från origo för x i nuvarande ruta mäts i 1/3 cm, initieras i styrinit
 	uint8_t volatile v; //hastighet i 1/2 cm/s, initieras i styrinit
 	int8_t volatile theta; //vridning i 360/255 grader, initieras i styrinit
+	int8_t volatile thetaOld;
 	int8_t volatile omega; //vinkelhastighet i ?? grader/sekund, initieras i styrinit
 	uint8_t virtual_direction; // initieras i reglering_init
 	uint8_t logical_direction; //ska initieras i pathfind_init
@@ -53,14 +55,14 @@ typedef struct
 	uint8_t volatile mapDataToSend[16];
 	uint8_t volatile mapDataToSendSize; //initieras i clockedInterupt_init
 
-	uint8_t volatile avstandsensor_1;
-	uint8_t volatile avstandsensor_2;
-	uint8_t volatile avstandsensor_3;
-	uint8_t volatile avstandsensor_4;
-	uint8_t volatile avstandsensor_5;
-	uint8_t volatile avstandsensor_6;
-	uint8_t volatile avstandsensor_7;
-	uint8_t volatile avstandsensor_8;
+	uint8_t volatile longFront;
+	uint8_t volatile longRight;
+	uint8_t volatile longRear;
+	uint8_t volatile longLeft;
+	uint8_t volatile shortFrontRight;
+	uint8_t volatile shortFrontLeft;
+	uint8_t volatile shortRearRight;
+	uint8_t volatile shortRearLeft;
 
 	//parametrar
 	uint8_t volatile paramCustomLeft;
@@ -70,12 +72,12 @@ typedef struct
 extern Globals globals;
 
 uint8_t getSensorLongForward();
-uint8_t getSensorLongBack();
+uint8_t getSensorLongRear();
 uint8_t getSensorLongLeft();
 uint8_t getSensorLongRight();
 uint8_t getSensorShortLeftForward();
-uint8_t getSensorShortLeftBack();
+uint8_t getSensorShortLeftRear();
 uint8_t getSensorShortRightForward();
-uint8_t getSensorShortRightBack();
+uint8_t getSensorShortRightRear();
 
 #endif /* GLOBAL_H_ */
