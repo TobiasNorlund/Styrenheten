@@ -98,14 +98,25 @@ void calcAngle(int8_t dir)
 	uint16_t newAngle = taljare/namnare;
 
 }
-uint8_t calcKSennsorShort(uint8_t a)// 10-80 cm * 2 pga konstant i sensorenheten 80 / 4 = 20
+
+//max vikt 5, 5*5*90*9=20250 dvs inte risk för overflow
+uint8_t calcKSennsorShort(uint8_t a)
 {
-	return 20-(a>>3); //kom på något bra för att straffa om värdet är lågt.
+	// 10-80 cm * 2 pga konstant i sensorenheten 80 / 4 = 20
+	//10/4= 2.5 
+	// 20-2.5 = 17.5
+	// 17.5/2= 8.75
+	// 8.75/2= 4.375 ca 5  dvs max 5 ut.
+	return (20-(a>>3))>>2; //kom på något bra för att straffa om värdet är lågt.
 }
 
 uint8_t calcKSennsorLong(uint8_t a)// 20-150 cm 150/8=18.75 CA 20
 {
-	return 20-(a>>3); //kom på något bra för att straffa om värdet är lågt.
+	// 20/8= 2.5
+	// 20-2.5 = 17.5
+	// 17.5/2= 8.75
+	// 8.75/2= 4.375 ca 5 dvs max 5 ut.
+	return (20-(a>>3))>>2; //kom på något bra för att straffa om värdet är lågt.
 }
 
 int8_t calcOpositeSensors(uint8_t r,uint8_t l, int8_t dir)
