@@ -13,90 +13,98 @@ void calcAngle(int8_t dir)
 
 	//front
 	uint8_t frontAngleK=0;
-	uint8_t frontAngle=0;
+	int8_t frontAngleDiff=0;
 	if(OK_SENSOR_VALUE(sensorShortLeftForward)&&OK_SENSOR_VALUE(sensorShortRightForward))
 	{
 		frontAngleK=calcKSennsorShort(sensorShortLeftForward)*calcKSennsorShort(sensorShortRightForward);
-		frontAngle=calcOpositeSensors(sensorShortRightForward,sensorShortLeftForward,dir);
+		frontAngleDiff=currentAngle-calcOpositeSensors(sensorShortRightForward,sensorShortLeftForward,dir);
 	}
 
 	//middle
 	uint8_t middleAngleK=0;
-	uint8_t middleAngle=0;
+	int8_t middleAngleDiff=0;
 	if(OK_SENSOR_VALUE(sensorLongLeft)&&OK_SENSOR_VALUE(sensorLongRight))
 	{
 		middleAngleK=calcKSennsorLong(sensorLongLeft)*calcKSennsorLong(sensorLongRight);
-		middleAngle=calcOpositeSensors(sensorLongRight,sensorLongLeft,dir);
+		middleAngleDiff=currentAngle-calcOpositeSensors(sensorLongRight,sensorLongLeft,dir);
 	}
 	//back
 	uint8_t backAngleK=0;
-	uint8_t backAngle=0;
+	int8_t backAngleDiff=0;
 	if(OK_SENSOR_VALUE(sensorShortLeftRear)&&OK_SENSOR_VALUE(sensorShortRightRear))
 	{
 		backAngleK=calcKSennsorShort(sensorShortLeftRear)*calcKSennsorShort(sensorShortRightRear);
-		backAngle=calcOpositeSensors(sensorShortRightRear,sensorShortLeftRear,dir);
+		backAngleDiff=currentAngle-calcOpositeSensors(sensorShortRightRear,sensorShortLeftRear,dir);
 	}
 	//right 2 short
 	uint8_t right36AngleK=0;
-	uint8_t right36Angle=0;
+	int8_t right36AngleDiff=0;
 	if(OK_SENSOR_VALUE(sensorShortRightForward)&&OK_SENSOR_VALUE(sensorShortRightRear))
 	{
 		right36AngleK=calcKSennsorShort(sensorShortRightForward)*calcKSennsorShort(sensorShortRightRear);
-		right36Angle=calcSideSensors36(sensorShortRightForward,sensorShortRightRear,dir);
+		right36AngleDiff=currentAngle-calcSideSensors36(sensorShortRightForward,sensorShortRightRear,dir);
 	}
 
 	//right front short long 
 	uint8_t right19FAngleK=0;
-	uint8_t right19FAngle=0;
+	int8_t right19FAngleDiff=0;
 	if(OK_SENSOR_VALUE(sensorShortRightForward)&&OK_SENSOR_VALUE(sensorLongRight))
 	{
 		right19FAngleK=calcKSennsorShort(sensorShortRightForward)*calcKSennsorLong(sensorLongRight);
-		right19FAngle=calcSideSensors19(sensorShortRightForward,sensorLongRight,dir);
+		right19FAngleDiff=currentAngle-calcSideSensors19(sensorShortRightForward,sensorLongRight,dir);
 	}
 
 	//right front short long 
 	uint8_t right19RAngleK=0;
-	uint8_t right19RAngle=0;
+	int8_t right19RAngleDiff=0;
 	if(OK_SENSOR_VALUE(sensorShortRightRear)&&OK_SENSOR_VALUE(sensorLongRight))
 	{
 		right19RAngleK=calcKSennsorShort(sensorShortRightRear)*calcKSennsorLong(sensorLongRight);
-		right19RAngle=calcSideSensors19(sensorLongRight,sensorShortRightRear,dir);
+		right19RAngleDiff=currentAngle-calcSideSensors19(sensorLongRight,sensorShortRightRear,dir);
 	}
 
 	//left 2 short
 	uint8_t left36AngleK=0;
-	uint8_t left36Angle=0;
+	int8_t left36AngleDiff=0;
 	if(OK_SENSOR_VALUE(sensorShortleftForward)&&OK_SENSOR_VALUE(sensorShortleftRear))
 	{
 		left36AngleK=calcKSennsorShort(sensorShortleftForward)*calcKSennsorShort(sensorShortleftRear);
-		left36Angle=calcSideSensors36(sensorShortleftForward,sensorShortleftRear,dir);
+		left36AngleDiff=currentAngle-calcSideSensors36(sensorShortleftForward,sensorShortleftRear,dir);
 	}
 
 	//left front short long 
 	uint8_t left19FAngleK=0;
-	uint8_t left19FAngle=0;
+	int8_t left19FAngleDiff=0;
 	if(OK_SENSOR_VALUE(sensorShortleftForward)&&OK_SENSOR_VALUE(sensorLongleft))
 	{
 		left19FAngleK=calcKSennsorShort(sensorShortleftForward)*calcKSennsorLong(sensorLongleft);
-		left19FAngle=calcSideSensors19(sensorShortleftForward,sensorLongleft,dir);
+		left19FAngleDiff=currentAngle-calcSideSensors19(sensorShortleftForward,sensorLongleft,dir);
 	}
 
 	//left front short long 
 	uint8_t left19RAngleK=0;
-	uint8_t left19RAngle=0;
+	int8_t left19RAngleDiff=0;
 	if(OK_SENSOR_VALUE(sensorShortleftRear)&&OK_SENSOR_VALUE(sensorLongleft))
 	{
 		left19RAngleK=calcKSennsorShort(sensorShortleftRear)*calcKSennsorLong(sensorLongleft);
-		left19RAngle=calcSideSensors19(sensorLongleft,sensorShortleftRear,dir);
+		left19RAngleDiff=currentAngle-calcSideSensors19(sensorLongleft,sensorShortleftRear,dir);
 	}
 
-	//TODO räkna ut från tidigare vinkelhastighet*tid
+	// räkna ut från tidigare vinkelhastighet*tid
+	uint8_t vinkelHastighetAngleK=0;
+	int8_t vinkelHastighetAngleDiff=0;
+	if(OK_SENSOR_VALUE(sensorShortleftRear)&&OK_SENSOR_VALUE(sensorLongleft))
+	{
+		vinkelHastighetAngleK=calcKvinkelHastighet(omega);
+		vinkelHastighetAngleDiff=currentAngle-omega*T;//TODO
+	}
+	uint8_t irSensorK = calcKirSensorK(currentAngle);
 
-	uint16_t taljare = frontAngleK*frontAngle + middleAngleK*middleAngle + backAngleK*backAngle + right36AngleK*right36AngleK + right19FAngle*right19FAngleK +  right19RAngle*right19RAngleK + left36AngleK*left36AngleK + left19FAngle*left19FAngleK +  left19RAngle*left19RAngleK;
-	uint16_t namnare = frontAngleK + middleAngleK + backAngleK + right36AngleK + right19FAngle + right19rAngle + left36AngleK + left19FAngle + left19rAngle;
+	int16_t taljare = irSensorK*(frontAngleK*frontAngleDiff + middleAngleK*middleAngleDiff + backAngleK*backAngleDiff + right36AngleDiff*right36AngleK + right19FAngleDiff*right19FAngleK +  right19RAngleDiff*right19RAngleK + left36AngleDiff*left36AngleK + left19FAngleDiff*left19FAngleK +  left19RAngleDiff*left19RAngleK) + vinkelHastighetAngleDiff*vinkelHastighetAngleK;
+	int16_t namnare = irSensorK*(frontAngleK + middleAngleK + backAngleK + right36AngleK + right19FAngleK + right19rAngleK + left36AngleK + left19FAngleK + left19rAngleK) + vinkelHastighetAngleK;
 
-	uint16_t newAngle = taljare/namnare;
-
+	int16_t newAngleDiff = taljare/namnare;
+	newAngle=currentAngle+newAngleDiff;
 }
 
 //max vikt 5, 5*5*90*9=20250 dvs inte risk för overflow
@@ -118,6 +126,18 @@ uint8_t calcKSennsorLong(uint8_t a)// 20-150 cm 150/8=18.75 CA 20
 	// 8.75/2= 4.375 ca 5 dvs max 5 ut.
 	return (20-(a>>3))>>2; //kom på något bra för att straffa om värdet är lågt.
 }
+uint8_t calcKvinkelHastighet(int8_t omega)
+{
+	return (omega*omega)>>2;//TODO fixa så ju högre vinkelhastighet, destå högre K
+}
+
+uint8_t calcKirSensorK(uint8_t angle)
+{
+	// 90 / 8 = 11.25
+	// 90 / 16 = 5.625 
+	return (90-angle)>>4;//TODO ju högre vinkel destå lägre K, fixa så den växer snabbare.
+}
+
 
 int8_t calcOpositeSensors(uint8_t r,uint8_t l, int8_t dir)
 {
@@ -139,7 +159,3 @@ int8_t calcSideSensors19(uint8_t f,uint8_t b, int8_t dir)
 
 	return ;//times dir
 }
-
-
-
-
