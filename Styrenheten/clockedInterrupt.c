@@ -12,8 +12,8 @@
 
 void clockedInterrupt_init()
 {
-	globals.mapDataToSendSize = 0;
-	globals.debugMesssageBufferLength = 0;
+	cbInit(&globals.mapDataToSend, 32);
+	cbInit(&globals.debugMesssageBuffer, 32);
 	globals.routeLength = 0;
 	//setup timers 1 och 3 16bit timers
 	//start clock and set clock devider.
@@ -53,10 +53,17 @@ ISR(TIMER0_COMPA_vect)
 	SPI_set_sensor(END);*/
 	//skicka vidare till PC
 	SPI_set_kom(START);
-	//SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, *len);
-	//SPI_MASTER_write(globals.debugMesssageBuffer, TYPE_DEBUG_DATA, globals.debugMesssageBufferLength);
-	globals.debugMesssageBufferLength = 0;
-	//skriv in data
+	/*SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, *len);
+	
+	uint8_t bytesToSend = 0;
+	while(cbBytesUsed(&globals.debugMesssageBuffer) != 0)
+	{
+		msgSend[bytesToSend] = cbRead(&globals.debugMesssageBuffer);
+		++bytesToSend;
+	}
+	
+	//SPI_MASTER_write(msgSend, TYPE_DEBUG_DATA, bytesToSend);
+	//skriv in data */
 	uint8_t gyro1;
 	uint8_t gyro2;
 	uint8_t vRight;
@@ -165,11 +172,10 @@ ISR(TIMER0_COMPA_vect)
 	}while(type != TYPE_NO_PC_MESSAGES);
 
 	//skicka all kartdata till komm
-	while(globals.mapDataToSendSize != 0)
+	while(cbBytesUsed(&globals.mapDataToSend) > 1)
 	{
-		uint8_t x = globals.mapDataToSend[globals.mapDataToSendSize-2];
-		uint8_t y = globals.mapDataToSend[globals.mapDataToSendSize-1];
-		globals.mapDataToSendSize = globals.mapDataToSendSize-2;
+		uint8_t x = cbRead(&globals.mapDataToSend);
+		uint8_t y = cbRead(&globals.mapDataToSend);
 		msgSend[0] = x;
 		msgSend[1] = y;
 		msgSend[2] = globals.map[y][x];

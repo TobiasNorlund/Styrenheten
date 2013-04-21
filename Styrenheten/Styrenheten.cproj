@@ -21,9 +21,8 @@
     <OverrideVtorValue />
     <eraseonlaunchrule>0</eraseonlaunchrule>
     <AsfVersion>3.1.3</AsfVersion>
-    <avrtoolinterface>
-    </avrtoolinterface>
-    <avrtool>com.atmel.avrdbg.tool.simulator</avrtool>
+    <avrtoolinterface>JTAG</avrtoolinterface>
+    <avrtool>com.atmel.avrdbg.tool.jtagicemk3</avrtool>
     <com_atmel_avrdbg_tool_simulator>
       <ToolType>com.atmel.avrdbg.tool.simulator</ToolType>
       <ToolName>AVR Simulator</ToolName>
@@ -35,7 +34,7 @@
       </OverrideVtorValue>
       <Channel>
         <host>127.0.0.1</host>
-        <port>1861</port>
+        <port>49462</port>
         <ssl>False</ssl>
       </Channel>
     </com_atmel_avrdbg_tool_simulator>
@@ -49,15 +48,15 @@
       </OverrideVtorValue>
       <Channel>
         <host>127.0.0.1</host>
-        <port>49397</port>
+        <port>49479</port>
         <ssl>False</ssl>
       </Channel>
       <ToolOptions>
         <InterfaceName>JTAG</InterfaceName>
         <InterfaceProperties>
-          <JtagDbgClock>2020000</JtagDbgClock>
+          <JtagDbgClock>244330</JtagDbgClock>
           <JtagProgClock>1000000</JtagProgClock>
-          <IspClock>150000</IspClock>
+          <IspClock>250000</IspClock>
           <JtagInChain>false</JtagInChain>
           <JtagEnableExtResetOnStartSession>false</JtagEnableExtResetOnStartSession>
           <JtagDevicesBefore>0</JtagDevicesBefore>
@@ -110,6 +109,14 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\..\TSEA27-include\circularbuffer.c">
+      <SubType>compile</SubType>
+      <Link>circularbuffer.c</Link>
+    </Compile>
+    <Compile Include="..\..\TSEA27-include\circularbuffer.h">
+      <SubType>compile</SubType>
+      <Link>circularbuffer.h</Link>
+    </Compile>
     <Compile Include="..\..\TSEA27-include\geometrics.h">
       <SubType>compile</SubType>
       <Link>geometrics.h</Link>

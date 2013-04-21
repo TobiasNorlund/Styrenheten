@@ -29,9 +29,8 @@ void manual_logical_chart(uint8_t x, uint8_t y, uint8_t info)
 	{
 		globals.map[y][x] = info;
 		//send data to PC
-		globals.mapDataToSend[globals.mapDataToSendSize] = x;
-		globals.mapDataToSend[globals.mapDataToSendSize+1] = y;
-		globals.mapDataToSendSize = globals.mapDataToSendSize+2;	
+		cbWrite(&globals.mapDataToSend, x);
+		cbWrite(&globals.mapDataToSend, y);
 	}
 }
 

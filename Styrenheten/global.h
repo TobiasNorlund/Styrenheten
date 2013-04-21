@@ -26,6 +26,7 @@
 #ifndef GLOBAL_H_
 #define GLOBAL_H_
 
+#include "../../TSEA27-include/circularbuffer.h"
 #include <util/delay.h>
 #define F_CPU 8000000UL // 8mhz
 
@@ -48,13 +49,11 @@ typedef struct
 	uint8_t volatile route[16];
 	uint8_t volatile routeLength; //initieras i clockedInterupt_init
 
-	uint8_t volatile debugMesssageBuffer[16];
-	uint8_t volatile debugMesssageBufferLength; //initieras i clockedInterupt_init
+	uint8_t map[16][16]; //initieras i pathfind_init
 
-	uint8_t map[16][16];
+	CircularBuffer volatile debugMesssageBuffer;
 
-	uint8_t volatile mapDataToSend[16];
-	uint8_t volatile mapDataToSendSize; //initieras i clockedInterupt_init
+	CircularBuffer volatile mapDataToSend; //initieras i clockedInterupt_init
 
 	uint8_t volatile longFront;
 	uint8_t volatile longRight;
