@@ -31,7 +31,7 @@ void clockedInterrupt_init()
 	//TCNT1=0;//init value for counter 1
 }
 
-void updateState(uint8_t gyro1, uint8_t gyro2, uint8_t vRight, uint8_t vLeft)
+void updateState(uint16_t gyro, uint8_t vRight, uint8_t vLeft)
 {
 	//TODO
 }
@@ -40,20 +40,19 @@ ISR(TIMER0_COMPA_vect)
 {
 	//skicka request till sensorenehten att skicka data
 	uint8_t msgSend[32];
-	/*SPI_set_sensor(START);
+	SPI_set_sensor(START);
 	SPI_MASTER_write(msgSend, TYPE_REQUEST_SENSOR_DATA, 0);
 	
-	_delay_us(2);
-	*/
+	_delay_us(100);
 	//ta emot data från sensorenheten
 	uint8_t msgRecieve[32];
 	uint8_t type;
 	uint8_t len;
-	/*SPI_MASTER_read(msgRecieve, type, len);
-	SPI_set_sensor(END);*/
+	SPI_MASTER_read(msgRecieve, type, len);
+	SPI_set_sensor(END);
 	//skicka vidare till PC
 	SPI_set_kom(START);
-	/*SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, *len);
+	SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, len);
 	
 	uint8_t bytesToSend = 0;
 	while(cbBytesUsed(&globals.debugMesssageBuffer) != 0)
@@ -62,74 +61,76 @@ ISR(TIMER0_COMPA_vect)
 		++bytesToSend;
 	}
 	
-	//SPI_MASTER_write(msgSend, TYPE_DEBUG_DATA, bytesToSend);
-	//skriv in data */
-	uint8_t gyro1;
-	uint8_t gyro2;
-	uint8_t vRight;
-	uint8_t vLeft;
-	for(uint8_t i = 0; i < len; ++i)
+	SPI_MASTER_write(msgSend, TYPE_DEBUG_DATA, bytesToSend);
+	if(type==TYPE_SENSOR_DATA)
 	{
-		uint8_t id = msgRecieve[i];
-		switch(id)
+		//skriv in data
+		int16_t gyro;
+		uint8_t vRight;
+		uint8_t vLeft;
+		for(uint8_t i = 0; i < len; ++i)
 		{
-			case LONGFRONT:
-				globals.longFront = msgRecieve[i+1];
-				++i;
-				break;
-			case LONGRIGHT:
-				globals.longRight = msgRecieve[i+1];
-				++i;
-				break;
-			case LONGREAR:
-				globals.longRear = msgRecieve[i+1];
-				++i;
-				break;
-			case LONGLEFT:
-				globals.longLeft = msgRecieve[i+1];
-				++i;
-				break;
-			case SHORTFRONTRIGHT:
-				globals.shortFrontRight = msgRecieve[i+1];
-				++i;
-				break;
-			case SHORTFRONTLEFT:
-				globals.shortFrontLeft = msgRecieve[i+1];
-				++i;
-				break;
-			case SHORTREARRIGHT:
-				globals.shortRearRight = msgRecieve[i+1];
-				++i;
-				break;
-			case SHORTREARLEFT:
-				globals.shortRearLeft = msgRecieve[i+1];
-				++i;
-				break;
-			case IDGYROSENSOR:
-				gyro1 = msgRecieve[i+1];
-				gyro2 = msgRecieve[i+2];
-				i = i+2;
-				break;
-			case IDSPEEDRIGHT:
-				vRight = msgRecieve[i+1];
-				++i;
-				break;
-			case IDSPEEDLEFT:
-				vLeft = msgRecieve[i+1];
-				++i;
-				break;
-		}	
-	}
+			uint8_t id = msgRecieve[i];
+			switch(id)
+			{
+				case LONGFRONT:
+					globals.longFront = msgRecieve[i+1];
+					++i;
+					break;
+				case LONGRIGHT:
+					globals.longRight = msgRecieve[i+1];
+					++i;
+					break;
+				case LONGREAR:
+					globals.longRear = msgRecieve[i+1];
+					++i;
+					break;
+				case LONGLEFT:
+					globals.longLeft = msgRecieve[i+1];
+					++i;
+					break;
+				case SHORTFRONTRIGHT:
+					globals.shortFrontRight = msgRecieve[i+1];
+					++i;
+					break;
+				case SHORTFRONTLEFT:
+					globals.shortFrontLeft = msgRecieve[i+1];
+					++i;
+					break;
+				case SHORTREARRIGHT:
+					globals.shortRearRight = msgRecieve[i+1];
+					++i;
+					break;
+				case SHORTREARLEFT:
+					globals.shortRearLeft = msgRecieve[i+1];
+					++i;
+					break;
+				case IDGYROSENSOR:
+					gyro = msgRecieve[i+1]<<8;
+					gyro |= msgRecieve[i+2];
+					i = i+2;
+					break;
+				case IDSPEEDRIGHT:
+					vRight = msgRecieve[i+1];
+					++i;
+					break;
+				case IDSPEEDLEFT:
+					vLeft = msgRecieve[i+1];
+					++i;
+					break;
+			}	
+		}
 	
-	//uppdatera tillstånd
-	updateState(gyro1, gyro2, vRight, vLeft);
+		//uppdatera tillstånd
+		updateState(gyro, vRight, vLeft);
+	}
 	
 	//fråga om data från PC
 	do
 	{
 		SPI_MASTER_write(msgSend, TYPE_REQUEST_PC_MESSAGE, 0);
 		
-		_delay_us(100);
+		_delay_us(10);
 		
 		SPI_MASTER_read(msgRecieve, &type, &len);
 		
