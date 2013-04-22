@@ -48,21 +48,27 @@ ISR(TIMER0_COMPA_vect)
 	uint8_t msgRecieve[32];
 	uint8_t type;
 	uint8_t len;
-	SPI_MASTER_read(msgRecieve, type, len);
+	SPI_MASTER_read(msgRecieve, &type, &len);
 	SPI_set_sensor(END);
 	//skicka vidare till PC
 	SPI_set_kom(START);
 	SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, len);
 	
+	//send debug data
 	uint8_t bytesToSend = 0;
 	while(cbBytesUsed(&globals.debugMesssageBuffer) != 0)
 	{
 		msgSend[bytesToSend] = cbRead(&globals.debugMesssageBuffer);
 		++bytesToSend;
 	}
+	if(bytesToSend != 0)
+	{
+		SPI_MASTER_write(msgSend, TYPE_DEBUG_DATA, bytesToSend);	
+	}
+	//end send debug data
 	
-	SPI_MASTER_write(msgSend, TYPE_DEBUG_DATA, bytesToSend);
-	if(type==TYPE_SENSOR_DATA)
+	//tolka/spara sensordata
+	if(type==TYPE_SENSOR_DATA&&len!=0)
 	{
 		//skriv in data
 		int16_t gyro;
