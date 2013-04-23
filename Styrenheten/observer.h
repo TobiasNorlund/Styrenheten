@@ -8,6 +8,9 @@
 
 #ifndef OBSERVER_H_
 #define OBSERVER_H_
+#include <avr/io.h>
+#include <avr/pgmspace.h>
+
 
 void setXV(uint8_t shortForward, uint8_t shortRear);
 void setThetaOmegaLeft(uint8_t shortLeftForward, uint8_t shortLeftRear);
