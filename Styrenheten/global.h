@@ -27,8 +27,7 @@
 #define GLOBAL_H_
 
 #include "../../TSEA27-include/circularbuffer.h"
-#include <util/delay.h>
-#define F_CPU 8000000UL // 8mhz
+
 
 #include <avr/io.h>
 //dessa variabler kan diskuteras

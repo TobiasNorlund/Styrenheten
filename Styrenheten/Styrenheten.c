@@ -8,11 +8,16 @@
 #include "global.h"
 #include "clockedInterrupt.h"
 #include "charting.h"
+#include "StyrReglering.h"
 #include "../../TSEA27-include/message.h"
+#include "../../TSEA27-include/SPI/spi_master.h"
 
 #include <avr/io.h>
-#include <math.h>
+//#include <math.h> //need to install  AVR-LIbc http://www.avrfreaks.net/index.php?name=PNphpBB2&file=printview&t=124695&start=0
 #include <avr/interrupt.h>
+#define F_CPU 20000000UL // 20mhz
+#include <util/delay.h>
+
 
 int8_t init(void)
 {
