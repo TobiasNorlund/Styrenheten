@@ -23,7 +23,7 @@ void clockedInterrupt_init()
 	TIMSK0 = (1<<OCIE0A);// Enable Interrupt TimerCounter0 Compare Match A (SIG_OUTPUT_COMPARE0A)
 	TCCR0A = (1<<WGM01); // Mode = CTC, clear on compare, dvs reseta räknaren
 	TCCR0B = (1<<CS02)|(0<<CS01)|(1<<CS00);// Clock/1024, 0.000128 seconds per tick
-	OCR0A = 0.1f/0.000128f; // 0.2f/0.000128f ger 50 gånger i sekunden 1/50= 0.02
+	OCR0A = 65000;//1/0.000128f; // 0.2f/0.000128f ger 50 gånger i sekunden 1/50= 0.02
 
 	//enable overflow interupt
 	//TIMSK1=(1<<TOIE1);//overflow interupt
@@ -43,13 +43,14 @@ ISR(TIMER0_COMPA_vect)
 	SPI_set_sensor(START);
 	SPI_MASTER_write(msgSend, TYPE_REQUEST_SENSOR_DATA, 0);
 	
-	_delay_us(100);
+	_delay_us(900);
 	//ta emot data från sensorenheten
 	uint8_t msgRecieve[32];
 	uint8_t type;
 	uint8_t len;
 	SPI_MASTER_read(msgRecieve, &type, &len);
 	SPI_set_sensor(END);
+	_delay_us(1000);
 	//skicka vidare till PC
 	SPI_set_kom(START);
 	SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, len);
@@ -131,6 +132,8 @@ ISR(TIMER0_COMPA_vect)
 		updateState(gyro, vRight, vLeft);
 	}
 	
+	//TODO STÅR här i oändlihet. Kan bero på att pc:n ej var inkopplad.
+	/*
 	//fråga om data från PC
 	do
 	{
@@ -187,6 +190,6 @@ ISR(TIMER0_COMPA_vect)
 		msgSend[1] = y;
 		msgSend[2] = globals.map[y][x];
 		SPI_MASTER_write(msgSend, TYPE_MAP_DATA, 3);
-	}
+	}*/
 	SPI_set_kom(END);
 }

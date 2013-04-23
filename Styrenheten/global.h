@@ -28,7 +28,7 @@
 
 #include "../../TSEA27-include/circularbuffer.h"
 #include <util/delay.h>
-#define F_CPU 8000000UL // 8mhz
+#define F_CPU 8000000UL // 1mhz
 
 #include <avr/io.h>
 //dessa variabler kan diskuteras
