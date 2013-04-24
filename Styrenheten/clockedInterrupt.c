@@ -9,6 +9,7 @@
 #include "../../TSEA27-include/message.h"
 #include "global.h"
 #include "../../TSEA27-include/SPI/spi_master.h"
+#include <util/delay.h>
 
 void clockedInterrupt_init()
 {
@@ -20,10 +21,10 @@ void clockedInterrupt_init()
 	//TCCR1B=(1<<CS10)|(0<<CS11)|(1<<CS12);//clk/1024 (From prescaler)
 	
 	//timed interupt init
-	TIMSK0 = (1<<OCIE0A);// Enable Interrupt TimerCounter0 Compare Match A (SIG_OUTPUT_COMPARE0A)
-	TCCR0A = (1<<WGM01); // Mode = CTC, clear on compare, dvs reseta räknaren
-	TCCR0B = (1<<CS02)|(0<<CS01)|(1<<CS00);// Clock/1024, 0.000128 seconds per tick
-	OCR0A = 65000;//1/0.000128f; // 0.2f/0.000128f ger 50 gånger i sekunden 1/50= 0.02
+	TIMSK1 = (1<<OCIE1A);// Enable Interrupt TimerCounter1 Compare Match A (SIG_OUTPUT_COMPARE0A)
+	TCCR1A = (1<<WGM11); // Mode = CTC, clear on compare, dvs reseta räknaren
+	TCCR1B = (1<<CS12)|(0<<CS11)|(1<<CS10);// Clock/1024, 0.000128 seconds per tick
+	OCR1A = 0.1f/0.000128f; // 0.2f/0.000128f ger 50 gånger i sekunden 1/50= 0.02
 
 	//enable overflow interupt
 	//TIMSK1=(1<<TOIE1);//overflow interupt
@@ -36,7 +37,7 @@ void updateState(uint16_t gyro, uint8_t vRight, uint8_t vLeft)
 	//TODO
 }
 
-ISR(TIMER0_COMPA_vect)
+ISR(TIMER1_COMPA_vect)
 {
 	//skicka request till sensorenehten att skicka data
 	uint8_t msgSend[32];
