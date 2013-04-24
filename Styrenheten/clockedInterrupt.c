@@ -44,13 +44,14 @@ ISR(TIMER1_COMPA_vect)
 	SPI_set_sensor(START);
 	SPI_MASTER_write(msgSend, TYPE_REQUEST_SENSOR_DATA, 0);
 	
-	_delay_us(100);
+	_delay_us(900);
 	//ta emot data från sensorenheten
 	uint8_t msgRecieve[32];
 	uint8_t type;
 	uint8_t len;
 	SPI_MASTER_read(msgRecieve, &type, &len);
 	SPI_set_sensor(END);
+	_delay_us(1000);
 	//skicka vidare till PC
 	SPI_set_kom(START);
 	SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, len);
@@ -132,6 +133,8 @@ ISR(TIMER1_COMPA_vect)
 		updateState(gyro, vRight, vLeft);
 	}
 	
+	//TODO STÅR här i oändlihet. Kan bero på att pc:n ej var inkopplad.
+	/*
 	//fråga om data från PC
 	do
 	{
@@ -188,6 +191,6 @@ ISR(TIMER1_COMPA_vect)
 		msgSend[1] = y;
 		msgSend[2] = globals.map[y][x];
 		SPI_MASTER_write(msgSend, TYPE_MAP_DATA, 3);
-	}
+	}*/
 	SPI_set_kom(END);
 }

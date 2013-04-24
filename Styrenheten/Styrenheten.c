@@ -98,27 +98,7 @@ void manualSteering()
 	}
 }
 
-void turnRight45(int theta, int omega){
-	int a  = 1;
-	int l1 = 4 / a; //Ska räknas ut på egenvärden!
-	int l2 = 4 / a; // -- || --
-	int ur,ul;
-	
-	setDirLeft(1);
-	setDirRight(0);
-	
-	int max = - (l1*(3.14/4+theta) + l2*omega);
-	if(max > 0 )
-	{
-		ur = 255;
-		ul = ur - max;
-	}
-	else
-	{
-		ul = 255;
-		ur = max + ul;
-	}
-}
+
 
 int main(void)
 {

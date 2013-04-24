@@ -12,14 +12,15 @@
 void reglering_init();
 void customSteering();
 void virtualTurn();
-void turnLeft45(int theta, int omega); //ska vara utan parametrar
-void turnRight90(int theta, int omega);
-void turnLeft90(int theta, int omega);
-void regulateStraight(uint8_t x, uint8_t v, uint8_t theta, uint8_t omega);
+void turnLeft45(); //ska vara utan parametrar
+void turnRight90();
+void turnLeft90();
+void regulateStraight();
 void setSpeedRight(uint8_t speed);
 void setSpeedLeft(uint8_t speed);
+int8_t degToRad(int8_t degree);
 void setDirLeft(uint8_t dir);
-void setDirRight(uint8_t dir)
+void setDirRight(uint8_t dir);
 
 
 #endif /* STYRREGLERING_H_ */
