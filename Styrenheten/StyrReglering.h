@@ -5,6 +5,7 @@
  *  Author: davmo049
  */ 
 
+#define DIVISIONFACTOR  4 // DF = 4 -> 2^4 = 16
 
 #ifndef STYRREGLERING_H_
 #define STYRREGLERING_H_

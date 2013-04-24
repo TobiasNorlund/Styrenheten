@@ -23,6 +23,10 @@
 #define WALL 1
 #define UNKNOWN 2
 
+//Divisionfaktorer för att få högre precision: 2^n
+#define SHORTFACTOR 1
+
+
 #ifndef GLOBAL_H_
 #define GLOBAL_H_
 
@@ -68,6 +72,13 @@ typedef struct
 	//parametrar
 	uint8_t volatile paramCustomLeft;
 	uint8_t volatile paramCustomRight;
+	//rakt reglering
+	uint8_t volatile L1_straightX;
+	uint8_t volatile L2_straightTheta;
+	uint8_t volatile L3_straightOmega;
+	//sväng
+	uint8_t volatile L1_turnTheta;
+	uint8_t volatile L2_turnOmega;
 } Globals;
 
 extern Globals volatile globals;

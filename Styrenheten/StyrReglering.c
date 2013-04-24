@@ -10,7 +10,7 @@
 #include "global.h"
 
 #include "StyrReglering.h"
-#define DIVISIONFACTOR  4 // DF = 4 -> 2^4 = 16
+
 
 void reglering_init()
 {
@@ -160,17 +160,18 @@ void setDirRight(uint8_t dir){
 /************************************************************************/
 /*	max måste skalas på något sätt så att det blir mellan -254 och 254
 	Vet dock inte vad det kommer bli för värden på omega så vi måste 
-	testa det först.                                                     */
+	testa det först.                                                    */
 /************************************************************************/
 void regulateStraight()
 {
+	/*
 	uint8_t a = 0;
 	uint8_t l1 = 8 / (globals.v*2^a);
 	uint8_t l2 = 12>>a;
 	uint8_t l3 = 6>>a;
+	*/
 	uint8_t ur,ul;
-	//printf("v %d", l1);
-	int8_t max =-(l1*globals.x + (l2*degToRad(globals.theta))>>DIVISIONFACTOR + l3*globals.omega);
+	int8_t max =-((globals.L1_straightX*globals.x/globals.v)>>SHORTFACTOR + (globals.L2_straightTheta*degToRad(globals.theta))>>DIVISIONFACTOR + globals.L3_straightOmega*globals.omega);
 	if(max > 0 )
 	{
 		ur = 254;
@@ -185,15 +186,17 @@ void regulateStraight()
 	setSpeedRight(ur);
 }
 void turnLeft90(){
+	/*
 	uint8_t a  = 0;
 	uint8_t l1 = 4 >> a;
 	uint8_t l2 = 4 >> a;
+	*/
 	uint8_t ur,ul;
 	
-	setDirLeft(1);
-	setDirRight(0);
+	setDirLeft(0);
+	setDirRight(1);
 	
-	int8_t max = - ((l1*degToRad(90-globals.theta))>>DIVISIONFACTOR + l2*globals.omega);
+	int8_t max = - ((globals.L1_turnTheta*degToRad(90-globals.theta))>>DIVISIONFACTOR + globals.L2_turnOmega*globals.omega);
 	if(max > 0 )
 	{
 		ur = 254;
@@ -208,15 +211,17 @@ void turnLeft90(){
 	setSpeedRight(ur);
 }
 void turnRight90(){
+	/*
 	uint8_t a  = 0;
 	uint8_t l1 = 4 >> a; //Ska räknas ut på egenvärden!
 	uint8_t l2 = 4 >> a;
+	*/
 	uint8_t ur,ul;
 	
 	setDirLeft(1);
 	setDirRight(0);
 	
-	int8_t max = - ((l1*degToRad(90+globals.theta))>>DIVISIONFACTOR + l2*globals.omega);
+	int8_t max = - ((globals.L1_turnTheta*degToRad(90+globals.theta))>>DIVISIONFACTOR + globals.L2_turnOmega*globals.omega);
 	if(max > 0 )
 	{
 		ur = 254;
@@ -231,15 +236,17 @@ void turnRight90(){
 	setSpeedRight(ur);
 }
 void turnLeft45(){
+	/*
 	uint8_t a  = 0;
 	uint8_t l1 = 4 >> a; //Ska räknas ut på egenvärden!
 	uint8_t l2 = 4 >> a; // -- || --
+	*/
 	uint8_t ur,ul;
 	
-	setDirLeft(1);
-	setDirRight(0);
+	setDirLeft(0);
+	setDirRight(1);
 	
-	int8_t max = - ((l1*degToRad(45-globals.theta))>>DIVISIONFACTOR + l2*globals.omega);
+	int8_t max = - ((globals.L1_turnTheta*degToRad(45-globals.theta))>>DIVISIONFACTOR + globals.L2_turnOmega*globals.omega);
 	if(max > 0 )
 	{
 		ur = 254;
@@ -254,15 +261,17 @@ void turnLeft45(){
 	setSpeedRight(ur);
 }
 void turnRight45(){
+	/*
 	uint8_t a  = 0;
 	uint8_t l1 = 4 >> a; //Ska räknas ut på egenvärden!
 	uint8_t l2 = 4 >> a; // -- || --
+	*/
 	uint8_t ur,ul;
 	
 	setDirLeft(1);
 	setDirRight(0);
 	
-	int8_t max = - ((l1*degToRad(45+globals.theta))>>DIVISIONFACTOR + l2*globals.omega);
+	int8_t max = - ((globals.L1_turnTheta*degToRad(45+globals.theta))>>DIVISIONFACTOR + globals.L2_turnOmega*globals.omega);
 	if(max > 0 )
 	{
 		ur = 254;
@@ -299,7 +308,9 @@ void customSteering()
 	setSpeedRight(globals.paramCustomRight);
 	setSpeedLeft(globals.paramCustomLeft);
 }
+
+//Returnerar 2^DIVISIONFACTOR*radianer 
 int8_t degToRad(int8_t degree)
 {
-	return (2^DIVISIONFACTOR*9*degree>>9); // pi/180 = 0.0174532, 9/(2^9) = 0.17578
+	return (2^DIVISIONFACTOR*9*degree>>9); // pi/180 = 0.0174532, 9/(2^9) = 0.017578
 }
