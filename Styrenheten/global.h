@@ -31,7 +31,6 @@
 #define GLOBAL_H_
 
 #include "../../TSEA27-include/circularbuffer.h"
-#include <util/delay.h>
 
 #include <avr/io.h>
 //dessa variabler kan diskuteras

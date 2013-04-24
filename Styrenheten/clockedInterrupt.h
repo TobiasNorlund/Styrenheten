@@ -11,6 +11,7 @@
 
 void clockedInterrupt_init();
 void updateState(void);
+void timedInterupt(void);
 
 
 #endif /* CLOCKEDINTERRUPT_H_ */

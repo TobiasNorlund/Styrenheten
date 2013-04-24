@@ -4,12 +4,14 @@
  * Created: 4/12/2013 10:37:35 AM
  *  Author: davmo049
  */ 
-
+#include "clockedInterrupt.h"
 #include <avr/interrupt.h>
 #include "../../TSEA27-include/message.h"
 #include "global.h"
 #include "../../TSEA27-include/SPI/spi_master.h"
 #include <util/delay.h>
+
+volatile uint8_t overFlowInteruptTimer1=0;
 
 void clockedInterrupt_init()
 {
@@ -18,33 +20,50 @@ void clockedInterrupt_init()
 	globals.routeLength = 0;
 	//setup timers 1 och 3 16bit timers
 	//start clock and set clock devider.
-	//TCCR1B=(1<<CS10)|(0<<CS11)|(1<<CS12);//clk/1024 (From prescaler)
 	
 	//timed interupt init
-	TIMSK1 = (1<<OCIE1A);// Enable Interrupt TimerCounter1 Compare Match A (SIG_OUTPUT_COMPARE0A)
+	OCR1A = (uint16_t)65000;// Ger en interrupt var 50ms, vid 20MHz //6400000;//0xFF; //(1/10)*20000000/1024; // 10 gånger i sek ifall 20mhz
+	TIMSK1 = (1<<OCIE1B);// Enable Interrupt TimerCounter1 Compare Match A (SIG_OUTPUT_COMPARE0A)
 	TCCR1A = (1<<WGM11); // Mode = CTC, clear on compare, dvs reseta räknaren
-	TCCR1B = (1<<CS12)|(0<<CS11)|(1<<CS10);// Clock/1024, 0.000128 seconds per tick
-	OCR1A = (1/10)*20000000/1024; // 10 gånger i sek ifall 20mhz
-
 	//enable overflow interupt
 	//TIMSK1=(1<<TOIE1);//overflow interupt
-	
 	//TCNT1=0;//init value for counter 1
+	TCCR1B = (1<<CS12)|(0<<CS11)|(1<<CS10);// Clock/1024, 0.000128 seconds per tick
+	
 }
 
 void updateState(void)
 {
 	//TODO
 }
-
-ISR(TIMER1_COMPA_vect)
+uint8_t temp = 0;
+ISR(TIMER1_COMPB_vect)
 {
+
+	overFlowInteruptTimer1++;
+	if(overFlowInteruptTimer1==2)
+	{
+		timedInterupt();
+		overFlowInteruptTimer1=0;
+	}
+}
+
+void timedInterupt(void)
+{
+	//Toggla 
+	if(temp==0){
+		PORTB &= 0b11111110;
+		temp = 1;
+	}else{
+		PORTB |= 0b00000001;
+		temp = 0;
+	}
+	
 	//skicka request till sensorenehten att skicka data
 	uint8_t msgSend[32];
 	SPI_set_sensor(START);
 	SPI_MASTER_write(msgSend, TYPE_REQUEST_SENSOR_DATA, 0);
 	
-	_delay_us(900);
 	//ta emot data från sensorenheten
 	uint8_t msgRecieve[32];
 	uint8_t type;

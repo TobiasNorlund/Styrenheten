@@ -3,7 +3,11 @@
  *
  * Created: 4/5/2013 11:22:36 AM
  *  Author: carka684 
- */ 
+ */
+
+// in "Makefile" 
+//#define F_CPU 20000000UL // 20mhz
+#include <util/delay.h>
 
 #include "global.h"
 #include "clockedInterrupt.h"
@@ -15,8 +19,7 @@
 #include <avr/io.h>
 //#include <math.h> //need to install  AVR-LIbc http://www.avrfreaks.net/index.php?name=PNphpBB2&file=printview&t=124695&start=0
 #include <avr/interrupt.h>
-#define F_CPU 20000000UL // 20mhz
-#include <util/delay.h>
+
 
 
 int8_t init(void)
@@ -33,6 +36,8 @@ int8_t init(void)
 	_delay_ms(500); //ge tid innan styr börjar
 	SPI_MASTER_init();
 	sei();
+	
+	DDRB |= 0b00000001;
 }
 //nödstopp
 ISR(INT0_vect)
@@ -112,8 +117,9 @@ int main(void)
 	{
 		autoSteering();
 	}
+
 	while(1)
 	{
-		
+
 	}
 }
