@@ -32,8 +32,6 @@
 
 #include "../../TSEA27-include/circularbuffer.h"
 #include <util/delay.h>
-#define F_CPU 8000000UL // 1mhz
-
 
 #include <avr/io.h>
 //dessa variabler kan diskuteras
@@ -68,6 +66,11 @@ typedef struct
 	uint8_t volatile shortFrontLeft;
 	uint8_t volatile shortRearRight;
 	uint8_t volatile shortRearLeft;
+	
+	volatile int16_t gyro;
+	
+	volatile uint8_t vRight;
+	volatile uint8_t vLeft;
 
 	//parametrar
 	uint8_t volatile paramCustomLeft;

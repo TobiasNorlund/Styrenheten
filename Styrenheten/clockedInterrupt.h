@@ -10,7 +10,7 @@
 #define CLOCKEDINTERRUPT_H_
 
 void clockedInterrupt_init();
-void updateState(uint16_t gyro, uint8_t vRight, uint8_t vLeft);
+void updateState(void);
 
 
 #endif /* CLOCKEDINTERRUPT_H_ */

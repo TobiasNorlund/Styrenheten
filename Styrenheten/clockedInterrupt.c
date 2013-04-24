@@ -24,7 +24,7 @@ void clockedInterrupt_init()
 	TIMSK1 = (1<<OCIE1A);// Enable Interrupt TimerCounter1 Compare Match A (SIG_OUTPUT_COMPARE0A)
 	TCCR1A = (1<<WGM11); // Mode = CTC, clear on compare, dvs reseta räknaren
 	TCCR1B = (1<<CS12)|(0<<CS11)|(1<<CS10);// Clock/1024, 0.000128 seconds per tick
-	OCR1A = 0.1f/0.000128f; // 0.2f/0.000128f ger 50 gånger i sekunden 1/50= 0.02
+	OCR1A = (1/10)*20000000/1024; // 10 gånger i sek ifall 20mhz
 
 	//enable overflow interupt
 	//TIMSK1=(1<<TOIE1);//overflow interupt
@@ -32,7 +32,7 @@ void clockedInterrupt_init()
 	//TCNT1=0;//init value for counter 1
 }
 
-void updateState(uint16_t gyro, uint8_t vRight, uint8_t vLeft)
+void updateState(void)
 {
 	//TODO
 }
@@ -49,7 +49,7 @@ ISR(TIMER1_COMPA_vect)
 	uint8_t msgRecieve[32];
 	uint8_t type;
 	uint8_t len;
-	SPI_MASTER_read(msgRecieve, &type, &len);
+	while(!SPI_MASTER_read(msgRecieve, &type, &len));//vänta tills buffetrent fylls
 	SPI_set_sensor(END);
 	_delay_us(1000);
 	//skicka vidare till PC
@@ -72,10 +72,6 @@ ISR(TIMER1_COMPA_vect)
 	//tolka/spara sensordata
 	if(type==TYPE_SENSOR_DATA&&len!=0)
 	{
-		//skriv in data
-		int16_t gyro;
-		uint8_t vRight;
-		uint8_t vLeft;
 		for(uint8_t i = 0; i < len; ++i)
 		{
 			uint8_t id = msgRecieve[i];
@@ -114,23 +110,22 @@ ISR(TIMER1_COMPA_vect)
 					++i;
 					break;
 				case IDGYROSENSOR:
-					gyro = msgRecieve[i+1]<<8;
-					gyro |= msgRecieve[i+2];
+					globals.gyro = (msgRecieve[i+1]<<8)|msgRecieve[i+2];
 					i = i+2;
 					break;
 				case IDSPEEDRIGHT:
-					vRight = msgRecieve[i+1];
+					globals.vRight = msgRecieve[i+1];
 					++i;
 					break;
 				case IDSPEEDLEFT:
-					vLeft = msgRecieve[i+1];
+					globals.vLeft = msgRecieve[i+1];
 					++i;
 					break;
 			}	
 		}
 	
 		//uppdatera tillstånd
-		updateState(gyro, vRight, vLeft);
+		updateState();
 	}
 	
 	//TODO STÅR här i oändlihet. Kan bero på att pc:n ej var inkopplad.
