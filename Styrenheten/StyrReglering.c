@@ -6,7 +6,7 @@
  */ 
 
 #include <avr/io.h>
-#include <math.h>
+//#include <math.h>
 #include "global.h"
 
 #include "StyrReglering.h"
@@ -169,7 +169,7 @@ void regulateStraight()
 	uint8_t l2 = 12>>a;
 	uint8_t l3 = 6>>a;
 	uint8_t ur,ul;
-	printf("v %d", l1);
+	//printf("v %d", l1);
 	int8_t max =-(l1*globals.x + (l2*degToRad(globals.theta))>>DIVISIONFACTOR + l3*globals.omega);
 	if(max > 0 )
 	{

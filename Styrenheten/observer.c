@@ -71,11 +71,7 @@ void setObserver(int frontLeftSensor, int backLeftSensor, int frontRightSensor, 
 	uint8_t shortRightFront = getSensorShortRightForward();
 	uint8_t shortRightRear = getSensorShortRightRear();
 	
-	if((shortLeftRear == 255) && (shortRightRear == 255) && (shortLeftFront != 255) && shortRightFront != 255))
-	{
-		//TODO
-	}	
-	else if((shortLeftFront + shortLeftRear)>>1 < (shortRightFront + shortRightRear)>>1)
+	if((shortLeftFront + shortLeftRear) < (shortRightFront + shortRightRear))
 	{
 		setThetaOmegaLeft(shortLeftFront, shortLeftRear);
 		setXV(shortLeftFront,shortRightRear);
