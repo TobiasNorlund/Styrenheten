@@ -49,6 +49,7 @@ ISR(TIMER1_COMPB_vect)
 }
 
 //#define SENSOR_OFF
+//#define KOM_OFF
 void timedInterupt(void)
 {
 	//Toggla 
@@ -71,10 +72,7 @@ void timedInterupt(void)
 	//ta emot data från sensorenheten
 	while(!SPI_MASTER_read(msgRecieve, &type, &len));//vänta tills bufferten fylls
 	SPI_set_sensor(END);
-#endif
-	//skicka vidare till PC
-	SPI_set_kom(START);
-#ifndef SENSOR_OFF
+
 	SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, len);
 	
 	//send debug data
@@ -149,8 +147,11 @@ void timedInterupt(void)
 		updateState();
 	}
 #endif
+#ifndef KOM_OFF
+	//skicka vidare till PC
+	SPI_set_kom(START);
+
 	//TODO STÅR här i oändlihet. Kan bero på att pc:n ej var inkopplad.
-	uint8_t tttype=255;
 	volatile uint8_t answer = 0;
 	do
 	{
@@ -211,6 +212,7 @@ void timedInterupt(void)
 
 		}		
 	}while(type != TYPE_NO_PC_MESSAGES && type != TYPE_REQUEST_PC_MESSAGE);//type != TYPE_REQUEST_PC_MESSAGE betyder att vi ej laggt in ny data i kom. dvs ej handskakat.
+
 /*
 	//skicka all kartdata till komm
 	while(cbBytesUsed(&globals.mapDataToSend) > 1)
@@ -224,4 +226,5 @@ void timedInterupt(void)
 	}
 	*/
 	SPI_set_kom(END);
+#endif
 }
