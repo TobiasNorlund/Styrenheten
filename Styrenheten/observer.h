@@ -22,7 +22,7 @@ void setXV(uint8_t shortForward, uint8_t shortRear);
 //void setThetaOmegaLeft(uint8_t shortLeftForward, uint8_t shortLeftRear);
 //void setThetaOmegaRight(uint8_t shortRightForward, uint8_t shortRightRear);
 void setOmega();
-void setObserver(int frontLeftSensor, int backLeftSensor, int frontRightSensor, int backRightSensor);
+void setStraightObserver(int frontLeftSensor, int backLeftSensor, int frontRightSensor, int backRightSensor);
 
 
 #endif /* OBSERVER_H_ */

@@ -44,7 +44,7 @@ typedef struct
 	uint8_t volatile v; //hastighet i 1/2 cm/s, initieras i styrinit
 	int8_t volatile theta; //vridning i 360/255 grader, initieras i styrinit
 	int8_t volatile thetaOld;
-	int8_t volatile omega; //vinkelhastighet i ?? grader/sekund, initieras i styrinit
+	int16_t volatile omega; //grader/sekund, initieras i styrinit
 	uint8_t virtual_direction; // initieras i reglering_init
 	uint8_t logical_direction; //ska initieras i pathfind_init
 
@@ -57,19 +57,19 @@ typedef struct
 
 	CircularBuffer volatile mapDataToSend; //initieras i clockedInterupt_init
 
-	uint8_t volatile longFront;
-	uint8_t volatile longRight;
-	uint8_t volatile longRear;
-	uint8_t volatile longLeft;
-	uint8_t volatile shortFrontRight;
-	uint8_t volatile shortFrontLeft;
-	uint8_t volatile shortRearRight;
-	uint8_t volatile shortRearLeft;
+	uint8_t volatile longFront; // cm
+	uint8_t volatile longRight; // cm
+	uint8_t volatile longRear; // cm
+	uint8_t volatile longLeft; // cm
+	uint8_t volatile shortFrontRight; // cm/2
+	uint8_t volatile shortFrontLeft; // cm/2
+	uint8_t volatile shortRearRight; // cm/2
+	uint8_t volatile shortRearLeft; // cm/2
 	
-	volatile int16_t gyro;
+	volatile int16_t gyro; // grader/s
 	
-	volatile uint8_t vRight;
-	volatile uint8_t vLeft;
+	volatile uint8_t vRight; // cm/s
+	volatile uint8_t vLeft; // cm/s
 
 	//parametrar
 	uint8_t volatile paramCustomLeft;

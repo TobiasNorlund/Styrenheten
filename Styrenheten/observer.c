@@ -57,7 +57,16 @@ void setThetaOmegaRight(uint8_t shortRightFront, uint8_t shortRightRear)
 
 void setOmega()
 {
-	globals.omega = (globals.theta - globals.thetaOld)/TIME;
+	int16_t gyroValue = globals.gyro;
+	if((gyroValue < 10) && (gyroValue > -10))
+	{
+		globals.omega = (globals.theta - globals.thetaOld)/TIME;
+	}
+	else
+	{
+		globals.omega = gyroValue;
+	}
+	return;
 }
 
 
@@ -66,7 +75,7 @@ void setOmega()
  * vad man får för värden. Dvs reglera på olika sätt
  * beroende på vilka sensordata vi får.
  */
-void setObserver(int frontLeftSensor, int backLeftSensor, int frontRightSensor, int backRightSensor)
+void setStraightObserver(int frontLeftSensor, int backLeftSensor, int frontRightSensor, int backRightSensor)
 {
 	uint8_t LongFront=getSensorLongForward();	// Används ej
 	uint8_t LongRear=getSensorLongRear();		// Används ej
@@ -90,7 +99,8 @@ void setObserver(int frontLeftSensor, int backLeftSensor, int frontRightSensor, 
 	}
 	*/
 	
-	calcAngle(LongFront, LongRear, LongLeft, LongRight, ShortLeftFront, ShortLeftRear, ShortRightFront, ShortRightRear);
+	setTheta(LongFront, LongRear, LongLeft, LongRight, ShortLeftFront, ShortLeftRear, ShortRightFront, ShortRightRear);
+	setOmega();
 	if(OK_SENSOR_VALUE(ShortLeftFront)&&OK_SENSOR_VALUE(ShortLeftRear))
 	{
 		setXV(ShortLeftFront, ShortLeftRear);
