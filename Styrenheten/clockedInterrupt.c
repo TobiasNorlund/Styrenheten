@@ -70,13 +70,13 @@ void timedInterupt(void)
 	uint8_t len;
 	while(!SPI_MASTER_read(msgRecieve, &type, &len));//vänta tills buffetrent fylls
 	SPI_set_sensor(END);
-	_delay_us(1000);
+
 	//skicka vidare till PC
 	SPI_set_kom(START);
 	SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, len);
 	
 	//send debug data
-	uint8_t bytesToSend = 0;
+	/*uint8_t bytesToSend = 0;
 	while(cbBytesUsed(&globals.debugMesssageBuffer) != 0)
 	{
 		msgSend[bytesToSend] = cbRead(&globals.debugMesssageBuffer);
@@ -84,7 +84,7 @@ void timedInterupt(void)
 	}
 	if(bytesToSend != 0)
 	{
-		SPI_MASTER_write(msgSend, TYPE_DEBUG_DATA, bytesToSend);	
+		SPI_MASTER_write(msgSend, TYPE_DEBUG_DATA, bytesToSend);
 	}
 	//end send debug data
 	
@@ -145,57 +145,60 @@ void timedInterupt(void)
 	
 		//uppdatera tillstånd
 		updateState();
-	}
+	}*/
 	
 	//TODO STÅR här i oändlihet. Kan bero på att pc:n ej var inkopplad.
-	/*
+	
 	//fråga om data från PC
+	volatile uint8_t answer = 1;
 	do
 	{
 		SPI_MASTER_write(msgSend, TYPE_REQUEST_PC_MESSAGE, 0);
 		
 		_delay_us(10);
 		
-		SPI_MASTER_read(msgRecieve, &type, &len);
+		answer = SPI_MASTER_read(msgRecieve, &type, &len);
 		
-		switch(type)
-		{
-			case TYPE_MANUAL_COMMAND:
-			{
-				//lägg till msg[0] först i route
-				for(uint8_t i = globals.routeLength; i > 0; --i)
+		if(answer != 0){
+			switch(type)
+			{		
+				case TYPE_MANUAL_COMMAND:
 				{
-					globals.route[globals.routeLength] = globals.route[globals.routeLength-1];
+					//lägg till msg[0] först i route
+					for(uint8_t i = globals.routeLength; i > 0; --i)
+					{
+						globals.route[globals.routeLength] = globals.route[globals.routeLength-1];
+					}
+					globals.route[0] = msgRecieve[0];
+					globals.routeLength = globals.routeLength+1;
+					break;
 				}
-				globals.route[0] = msgRecieve[0];
-				globals.routeLength = globals.routeLength+1;
-				break;
-			}
-			case TYPE_CHANGE_PARM:
-			{
-				uint8_t ID = msgRecieve[0];
-				uint8_t val = msgRecieve[1];
+				case TYPE_CHANGE_PARM:
+				{
+					uint8_t ID = msgRecieve[0];
+					uint8_t val = msgRecieve[1];
 				
-				switch(ID)
-				{
-					case PARAMLEFTCUSTOM:
-						globals.paramCustomLeft = val;
-						break;
-					case PARAMRIGHTCUSTOM:
-						globals.paramCustomRight = val;
-						break;
-					default: //add more TODO
-						break;
+					switch(ID)
+					{
+						case PARAMLEFTCUSTOM:
+							globals.paramCustomLeft = val;
+							break;
+						case PARAMRIGHTCUSTOM:
+							globals.paramCustomRight = val;
+							break;
+						default: //add more TODO
+							break;
+					}
+					break;
 				}
-				break;
+				default:
+				{
+					break;
+				}
 			}
-			default:
-			{
-				break;
-			}
-		}
-	}while(type != TYPE_NO_PC_MESSAGES);
-
+		}		
+	}while(type != TYPE_NO_PC_MESSAGES && answer != 0);
+/*
 	//skicka all kartdata till komm
 	while(cbBytesUsed(&globals.mapDataToSend) > 1)
 	{
