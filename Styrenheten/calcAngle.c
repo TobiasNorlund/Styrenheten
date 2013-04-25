@@ -35,7 +35,7 @@ const uint8_t lookup19[130] PROGMEM = {
 }	
 
 
-void calcAngle(uint8_t LongFront, uint8_t LongRear, uint8_t LongLeft, uint8_t LongRight, uint8_t ShortLeftFront, uint8_t ShortLeftRear, uint8_t ShortRightFront, uint8_t ShortRightRear)
+void setTheta(uint8_t LongFront, uint8_t LongRear, uint8_t LongLeft, uint8_t LongRight, uint8_t ShortLeftFront, uint8_t ShortLeftRear, uint8_t ShortRightFront, uint8_t ShortRightRear)
 {
 	//Endast främre
 	uint8_t frontAngleK=0;
@@ -177,7 +177,9 @@ uint8_t calcKirSensorK(uint8_t angle)
 	return (90-angle)>>3;//TODO Ordentligare
 }
 
-
+/*
+ * return: [grader]
+ */
 int8_t calcOppositeSensors(uint8_t rightFrontSensor,uint8_t leftFrontSensor)
 {
 	uint8_t sumOfSensors = rightFrontSensor + leftFrontSensor;
@@ -193,6 +195,7 @@ int8_t calcOppositeSensors(uint8_t rightFrontSensor,uint8_t leftFrontSensor)
 
 /**
  * int8_t side, 0 om vänster, 1 om höger
+ * return: [grader]
  */
 int8_t calcSideSensors36(uint8_t frontDistance,uint8_t rearDistance, int8_t side)
 {
@@ -229,6 +232,9 @@ int8_t calcSideSensors36(uint8_t frontDistance,uint8_t rearDistance, int8_t side
 	}
 }
 
+/*
+ * return [grader]
+ */
 int8_t calcSideSensors19(uint8_t frontDistance,uint8_t longDistance, int8_t side)
 {
 	uint_8t realFrontDistance = frontDistance>>SHORTFACTOR; //Ändrar dimensionen till hela cm

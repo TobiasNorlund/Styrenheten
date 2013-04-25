@@ -13,7 +13,7 @@
 #include "globals.h"
 #include "observer.h"
 
-void calcAngle(uint8_t LongFront, uint8_t LongRear, uint8_t LongLeft, uint8_t LongRight, uint8_t ShortLeftFront, uint8_t ShortLeftRear, uint8_t ShortRightFront, uint8_t ShortRightRear);
+void setTheta(uint8_t LongFront, uint8_t LongRear, uint8_t LongLeft, uint8_t LongRight, uint8_t ShortLeftFront, uint8_t ShortLeftRear, uint8_t ShortRightFront, uint8_t ShortRightRear);
 
 uint8_t calcOppositeShortK(uint8_t leftShortSensor, uint8_t rightShortSensor);
 uint8_t calcOppositeLongK(uint8_t leftLongSensor, uint8_t rightLongSensor);
