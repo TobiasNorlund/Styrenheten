@@ -36,35 +36,35 @@
 //dessa variabler kan diskuteras
 typedef struct  
 {
-	uint8_t volatile mapX; //Xcoord för nuvarande ruta i kartindex initieras i init
-	uint8_t volatile mapY; //Xcoord för nuvarande ruta i kartindex initieras i init
+	volatile uint8_t mapX; //Xcoord för nuvarande ruta i kartindex initieras i init
+	volatile uint8_t mapY; //Xcoord för nuvarande ruta i kartindex initieras i init
 	int8_t volatile x; //offset från origo för x i nuvarande ruta mäts i 1/3 cm origo är i mitten av rutan, initieras i styrinit
 	int8_t volatile xOld;
 	int8_t volatile y; //offset från origo för x i nuvarande ruta mäts i 1/3 cm, initieras i styrinit
-	uint8_t volatile v; //hastighet i 1/2 cm/s, initieras i styrinit
+	volatile uint8_t v; //hastighet i 1/2 cm/s, initieras i styrinit
 	int8_t volatile theta; //vridning i 360/255 grader, initieras i styrinit
 	int8_t volatile thetaOld;
 	int16_t volatile omega; //grader/sekund, initieras i styrinit
 	uint8_t virtual_direction; // initieras i reglering_init
 	uint8_t logical_direction; //ska initieras i pathfind_init
 
-	uint8_t volatile route[16];
-	uint8_t volatile routeLength; //initieras i clockedInterupt_init
+	volatile uint8_t route[16];
+	volatile uint8_t routeLength; //initieras i clockedInterupt_init
 
 	uint8_t map[16][16]; //initieras i pathfind_init
 
-	CircularBuffer volatile debugMesssageBuffer;
+	volatile CircularBuffer debugMesssageBuffer;
 
-	CircularBuffer volatile mapDataToSend; //initieras i clockedInterupt_init
+	volatile CircularBuffer mapDataToSend; //initieras i clockedInterupt_init
 
-	uint8_t volatile longFront; // cm
-	uint8_t volatile longRight; // cm
-	uint8_t volatile longRear; // cm
-	uint8_t volatile longLeft; // cm
-	uint8_t volatile shortFrontRight; // cm/2
-	uint8_t volatile shortFrontLeft; // cm/2
-	uint8_t volatile shortRearRight; // cm/2
-	uint8_t volatile shortRearLeft; // cm/2
+	volatile uint8_t longFront; // cm
+	volatile uint8_t longRight; // cm
+	volatile uint8_t longRear; // cm
+	volatile uint8_t longLeft; // cm
+	volatile uint8_t shortFrontRight; // cm/2
+	volatile uint8_t shortFrontLeft; // cm/2
+	volatile uint8_t shortRearRight; // cm/2
+	volatile uint8_t shortRearLeft; // cm/2
 	
 	volatile int16_t gyro; // grader/s
 	
@@ -72,18 +72,18 @@ typedef struct
 	volatile uint8_t vLeft; // cm/s
 
 	//parametrar
-	uint8_t volatile paramCustomLeft;
-	uint8_t volatile paramCustomRight;
+	volatile uint8_t paramCustomLeft;
+	volatile uint8_t paramCustomRight;
 	//rakt reglering
-	uint8_t volatile L1_straightX;
-	uint8_t volatile L2_straightTheta;
-	uint8_t volatile L3_straightOmega;
+	volatile uint8_t L1_straightX;
+	volatile uint8_t L2_straightTheta;
+	volatile uint8_t L3_straightOmega;
 	//sväng
-	uint8_t volatile L1_turnTheta;
-	uint8_t volatile L2_turnOmega;
+	volatile uint8_t L1_turnTheta;
+	volatile uint8_t L2_turnOmega;
 } Globals;
 
-extern Globals volatile globals;
+extern volatile Globals globals;
 
 uint8_t getSensorLongForward();
 uint8_t getSensorLongRear();

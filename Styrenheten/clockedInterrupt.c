@@ -48,7 +48,7 @@ ISR(TIMER1_COMPB_vect)
 	}
 }
 
-#define SENSOR_OFF
+//#define SENSOR_OFF
 void timedInterupt(void)
 {
 	//Toggla 
