@@ -6,7 +6,6 @@
  */ 
 
 #include <avr/io.h>
-//#include <math.h>
 #include "global.h"
 
 #include "StyrReglering.h"

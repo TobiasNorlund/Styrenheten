@@ -89,7 +89,7 @@ void timedInterupt(void)
 	//end send debug data
 	
 	//tolka/spara sensordata
-	if(type==TYPE_SENSOR_DATA&&len!=0)
+	if(type==TYPE_SENSOR_DATA && len!=0)
 	{
 		for(uint8_t i = 0; i < len; ++i)
 		{

@@ -17,7 +17,6 @@
 #include "../../TSEA27-include/SPI/spi_master.h"
 
 #include <avr/io.h>
-//#include <math.h> //need to install  AVR-LIbc http://www.avrfreaks.net/index.php?name=PNphpBB2&file=printview&t=124695&start=0
 #include <avr/interrupt.h>
 
 
