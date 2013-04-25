@@ -170,7 +170,7 @@ void regulateStraight()
 	uint8_t l3 = 6>>a;
 	*/
 	uint8_t ur,ul;
-	int8_t max =-((globals.L1_straightX*globals.x/globals.v)>>SHORTFACTOR + (globals.L2_straightTheta*degToRad(globals.theta))>>DIVISIONFACTOR + globals.L3_straightOmega*globals.omega);
+	int16_t max =-((globals.L1_straightX*globals.x/globals.v)>>SHORTFACTOR + (globals.L2_straightTheta*degToRad(globals.theta))>>DIVISIONFACTOR + globals.L3_straightOmega*globals.omega);
 	if(max > 0 )
 	{
 		ur = 254;
@@ -195,7 +195,7 @@ void turnLeft90(){
 	setDirLeft(0);
 	setDirRight(1);
 	
-	int8_t max = - ((globals.L1_turnTheta*degToRad(90-globals.theta))>>DIVISIONFACTOR + globals.L2_turnOmega*globals.omega);
+	int16_t max = - ((globals.L1_turnTheta*degToRad(90-globals.theta))>>DIVISIONFACTOR + globals.L2_turnOmega*globals.omega);
 	if(max > 0 )
 	{
 		ur = 254;
@@ -220,7 +220,7 @@ void turnRight90(){
 	setDirLeft(1);
 	setDirRight(0);
 	
-	int8_t max = - ((globals.L1_turnTheta*degToRad(90+globals.theta))>>DIVISIONFACTOR + globals.L2_turnOmega*globals.omega);
+	int16_t max = - ((globals.L1_turnTheta*degToRad(90+globals.theta))>>DIVISIONFACTOR + globals.L2_turnOmega*globals.omega);
 	if(max > 0 )
 	{
 		ur = 254;
@@ -245,7 +245,7 @@ void turnLeft45(){
 	setDirLeft(0);
 	setDirRight(1);
 	
-	int8_t max = - ((globals.L1_turnTheta*degToRad(45-globals.theta))>>DIVISIONFACTOR + globals.L2_turnOmega*globals.omega);
+	int16_t max = - ((globals.L1_turnTheta*degToRad(45-globals.theta))>>DIVISIONFACTOR + globals.L2_turnOmega*globals.omega);
 	if(max > 0 )
 	{
 		ur = 254;
@@ -270,7 +270,7 @@ void turnRight45(){
 	setDirLeft(1);
 	setDirRight(0);
 	
-	int8_t max = - ((globals.L1_turnTheta*degToRad(45+globals.theta))>>DIVISIONFACTOR + globals.L2_turnOmega*globals.omega);
+	int16_t max = - ((globals.L1_turnTheta*degToRad(45+globals.theta))>>DIVISIONFACTOR + globals.L2_turnOmega*globals.omega);
 	if(max > 0 )
 	{
 		ur = 254;

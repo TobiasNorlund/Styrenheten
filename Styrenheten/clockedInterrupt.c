@@ -68,7 +68,7 @@ void timedInterupt(void)
 	uint8_t msgRecieve[32];
 	uint8_t type;
 	uint8_t len;
-	while(!SPI_MASTER_read(msgRecieve, &type, &len));//vänta tills buffetrent fylls
+	while(!SPI_MASTER_read(msgRecieve, &type, &len));//vänta tills bufferten fylls
 	SPI_set_sensor(END);
 	_delay_us(1000);
 	//skicka vidare till PC
@@ -148,8 +148,9 @@ void timedInterupt(void)
 	}
 	
 	//TODO STÅR här i oändlihet. Kan bero på att pc:n ej var inkopplad.
-	/*
+	
 	//fråga om data från PC
+	/*
 	do
 	{
 		SPI_MASTER_write(msgSend, TYPE_REQUEST_PC_MESSAGE, 0);
@@ -184,6 +185,21 @@ void timedInterupt(void)
 					case PARAMRIGHTCUSTOM:
 						globals.paramCustomRight = val;
 						break;
+					case L1_STRAIGHTX
+						globals.L1_straightX = val;
+						break;
+					case L2_STRAIGHTTHETA
+						globals.L2_straightTheta = val;
+						break;
+					case L3_STRAIGHTOMEGA
+						globals.L3_straightOmega = val;
+						break;
+					case L1_TURNTHETA
+						globals.L1_turnTheta = val;
+						break;
+					case L2_TURNOMEGA
+						globals.L2_turnOmega = val;
+						break;
 					default: //add more TODO
 						break;
 				}
@@ -205,6 +221,7 @@ void timedInterupt(void)
 		msgSend[1] = y;
 		msgSend[2] = globals.map[y][x];
 		SPI_MASTER_write(msgSend, TYPE_MAP_DATA, 3);
-	}*/
+	}
+	*/
 	SPI_set_kom(END);
 }
