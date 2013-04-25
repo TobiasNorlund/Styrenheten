@@ -24,7 +24,7 @@
 #define UNKNOWN 2
 
 //Divisionfaktorer för att få högre precision: 2^n
-#define SHORTFACTOR 1
+#define SHORTFACTOR 1 //Korta sensorn är i cm*2
 
 
 #ifndef GLOBAL_H_

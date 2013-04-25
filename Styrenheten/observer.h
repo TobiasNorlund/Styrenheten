@@ -8,16 +8,21 @@
 
 #ifndef OBSERVER_H_
 #define OBSERVER_H_
+
 #include <avr/io.h>
 #include <avr/pgmspace.h>
+#include "calcAngle.h"
+#include "global.h"
+#include "../../TSEA27-include/geometrics.h"
 
+#define OK_SENSOR_VALUE(x) (((x) != 0)||((x) != 255))
+#define TIME 4 //i ms, ange i 2^n = t (TIME = 4 -> 16ms)
 
 void setXV(uint8_t shortForward, uint8_t shortRear);
-void setThetaOmegaLeft(uint8_t shortLeftForward, uint8_t shortLeftRear);
-void setThetaOmegaRight(uint8_t shortRightForward, uint8_t shortRightRear);
+//void setThetaOmegaLeft(uint8_t shortLeftForward, uint8_t shortLeftRear);
+//void setThetaOmegaRight(uint8_t shortRightForward, uint8_t shortRightRear);
+void setOmega();
 void setObserver(int frontLeftSensor, int backLeftSensor, int frontRightSensor, int backRightSensor);
-
-
 
 
 #endif /* OBSERVER_H_ */
