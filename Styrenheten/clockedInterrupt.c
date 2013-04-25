@@ -48,6 +48,7 @@ ISR(TIMER1_COMPB_vect)
 	}
 }
 
+#define SENSOR_OFF
 void timedInterupt(void)
 {
 	//Toggla 
@@ -58,25 +59,26 @@ void timedInterupt(void)
 		PORTB |= 0b00000001;
 		temp = 0;
 	}
-	
+	volatile uint8_t msgRecieve[32];
+	volatile uint8_t type;
+	volatile uint8_t len;
+	volatile uint8_t msgSend[32];
 	//skicka request till sensorenehten att skicka data
-	uint8_t msgSend[32];
+#ifndef SENSOR_OFF
 	SPI_set_sensor(START);
 	SPI_MASTER_write(msgSend, TYPE_REQUEST_SENSOR_DATA, 0);
 	
 	//ta emot data från sensorenheten
-	uint8_t msgRecieve[32];
-	uint8_t type;
-	uint8_t len;
 	while(!SPI_MASTER_read(msgRecieve, &type, &len));//vänta tills bufferten fylls
 	SPI_set_sensor(END);
-
+#endif
 	//skicka vidare till PC
 	SPI_set_kom(START);
+#ifndef SENSOR_OFF
 	SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, len);
 	
 	//send debug data
-	/*uint8_t bytesToSend = 0;
+	uint8_t bytesToSend = 0;
 	while(cbBytesUsed(&globals.debugMesssageBuffer) != 0)
 	{
 		msgSend[bytesToSend] = cbRead(&globals.debugMesssageBuffer);
@@ -145,68 +147,70 @@ void timedInterupt(void)
 	
 		//uppdatera tillstånd
 		updateState();
-	}*/
-	
+	}
+#endif
 	//TODO STÅR här i oändlihet. Kan bero på att pc:n ej var inkopplad.
-	
-	volatile uint8_t answer = 1;
+	uint8_t tttype=255;
+	volatile uint8_t answer = 0;
 	do
 	{
 		SPI_MASTER_write(msgSend, TYPE_REQUEST_PC_MESSAGE, 0);
+
 		
-		_delay_us(10);
-		
-		answer = SPI_MASTER_read(msgRecieve, &type, &len);
-		
-		if(answer != 0){
-			switch(type)
-			{		
-				case TYPE_MANUAL_COMMAND:
-				{
-					//lägg till msg[0] först i route
-					for(uint8_t i = globals.routeLength; i > 0; --i)
-					{
-						globals.route[globals.routeLength] = globals.route[globals.routeLength-1];
-					}
-					globals.route[0] = msgRecieve[0];
-					globals.routeLength = globals.routeLength+1;
-					break;
-				}
-				case TYPE_CHANGE_PARM:
-				{
-					uint8_t ID = msgRecieve[0];
-					uint8_t val = msgRecieve[1];
+		answer = 0;
+		while(!answer)
+		{
+			answer = SPI_MASTER_read(msgRecieve, &type, &len);
+		}
 				
-					switch(ID)
-					{
-						case PARAMLEFTCUSTOM:
-							globals.paramCustomLeft = val;
-							break;
-						case PARAMRIGHTCUSTOM:
-							globals.paramCustomRight = val;
-							break;
-						case L1_STRAIGHTX:
-							globals.L1_straightX = val;
-							break;
-						case L2_STRAIGHTTHETA:
-							globals.L2_straightTheta = val;
-							break;
-						case L3_STRAIGHTOMEGA:
-							globals.L3_straightOmega = val;
-							break;
-						case L1_TURNTHETA:
-							globals.L1_turnTheta = val;
-							break;
-						case L2_TURNOMEGA:
-							globals.L2_turnOmega = val;
-							break;
-						default: //add more TODO
-							break;
-					}
-				}
+
+		if(type == TYPE_MANUAL_COMMAND)
+		{
+			//lägg till msg[0] först i route
+			for(uint8_t i = globals.routeLength; i > 0; --i)
+			{
+				globals.route[globals.routeLength] = globals.route[globals.routeLength-1];
 			}
+			globals.route[0] = msgRecieve[0];
+			globals.routeLength = globals.routeLength+1;
+			break;
+		}
+		else if(type == TYPE_CHANGE_PARM)
+		{
+			uint8_t ID = msgRecieve[0];
+			uint8_t val = msgRecieve[1];
+				
+			if (ID==PARAMLEFTCUSTOM)
+			{
+				globals.paramCustomLeft = val;
+			}
+			else if (ID==PARAMRIGHTCUSTOM)
+			{
+				globals.paramCustomRight = val;
+			}
+			else if (ID==L1_STRAIGHTX)
+			{
+				globals.L1_straightX = val;
+			}
+			else if (ID==L2_STRAIGHTTHETA)
+			{
+				globals.L2_straightTheta = val;
+			}
+			else if (ID==L3_STRAIGHTOMEGA)
+			{
+				globals.L3_straightOmega = val;
+			}
+			else if (ID==L1_TURNTHETA)
+			{
+				globals.L1_turnTheta = val;
+			}
+			else if (ID==L2_TURNOMEGA)
+			{
+				globals.L2_turnOmega = val;
+			}
+
 		}		
-	}while(type != TYPE_NO_PC_MESSAGES && answer != 0);
+	}while(type != TYPE_NO_PC_MESSAGES && type != TYPE_REQUEST_PC_MESSAGE);//type != TYPE_REQUEST_PC_MESSAGE betyder att vi ej laggt in ny data i kom. dvs ej handskakat.
 /*
 	//skicka all kartdata till komm
 	while(cbBytesUsed(&globals.mapDataToSend) > 1)
