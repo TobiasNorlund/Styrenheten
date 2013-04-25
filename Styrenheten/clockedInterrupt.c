@@ -185,36 +185,24 @@ void timedInterupt(void)
 						case PARAMRIGHTCUSTOM:
 							globals.paramCustomRight = val;
 							break;
+						case L1_STRAIGHTX:
+							globals.L1_straightX = val;
+							break;
+						case L2_STRAIGHTTHETA:
+							globals.L2_straightTheta = val;
+							break;
+						case L3_STRAIGHTOMEGA:
+							globals.L3_straightOmega = val;
+							break;
+						case L1_TURNTHETA:
+							globals.L1_turnTheta = val;
+							break;
+						case L2_TURNOMEGA:
+							globals.L2_turnOmega = val;
+							break;
 						default: //add more TODO
 							break;
 					}
-					break;
-				}
-				default:
-				{
-					case PARAMLEFTCUSTOM:
-						globals.paramCustomLeft = val;
-						break;
-					case PARAMRIGHTCUSTOM:
-						globals.paramCustomRight = val;
-						break;
-					case L1_STRAIGHTX
-						globals.L1_straightX = val;
-						break;
-					case L2_STRAIGHTTHETA
-						globals.L2_straightTheta = val;
-						break;
-					case L3_STRAIGHTOMEGA
-						globals.L3_straightOmega = val;
-						break;
-					case L1_TURNTHETA
-						globals.L1_turnTheta = val;
-						break;
-					case L2_TURNOMEGA
-						globals.L2_turnOmega = val;
-						break;
-					default: //add more TODO
-						break;
 				}
 			}
 		}		
