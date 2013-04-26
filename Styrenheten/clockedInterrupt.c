@@ -49,7 +49,7 @@ ISR(TIMER1_COMPB_vect)
 }
 
 //#define SENSOR_OFF
-#define KOM_OFF
+//#define KOM_OFF
 void timedInterupt(void)
 {
 	//Toggla 
@@ -73,8 +73,7 @@ void timedInterupt(void)
 	while(!SPI_MASTER_read(msgRecieve, &type, &len));//vänta tills bufferten fylls
 	SPI_set_sensor(END);
 
-	SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, len);
-	
+
 	//send debug data
 	uint8_t bytesToSend = 0;
 	while(cbBytesUsed(&globals.debugMesssageBuffer) != 0)
@@ -150,7 +149,7 @@ void timedInterupt(void)
 #ifndef KOM_OFF
 	//skicka vidare till PC
 	SPI_set_kom(START);
-
+	SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, len);
 	//TODO STÅR här i oändlihet. Kan bero på att pc:n ej var inkopplad.
 	volatile uint8_t answer = 0;
 	do
