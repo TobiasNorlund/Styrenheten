@@ -3,8 +3,9 @@
 #include <avr/pgmspace.h>
 
 
-void setRelativeX(int8_t value) //x som om roboten har riktning up
+void setRelativeX(uint8_t shortFront, uint8_t shortRear) //x som om roboten har riktning up
 {
+	uint8_t value = ((shortFront + shortRear)*(2 - globals.theta^2))>>2;
 	switch(globals.logical_direction)
 	{
 		case(LOGICAL_DIR_UP):
@@ -49,13 +50,6 @@ const uint8_t lookupShort[140] PROGMEM = {
 	};
 */
 
-void setXV(uint8_t shortFront, uint8_t shortRear)
-{
-	//globals.xOld = globals.x;
-	setRelativeX(((shortFront + shortRear)*(2 - globals.theta^2))>>2); // >>2 Delar med 4
-	//globals.v = (globals.x - globals.xOld)>>TIME; 
-	return;
-}
 
 /*	
 void setThetaOmegaLeft(uint8_t shortLeftFront, uint8_t shortLeftRear)
@@ -141,13 +135,14 @@ void setStraightObserver(int frontLeftSensor, int backLeftSensor, int frontRight
 	
 	setTheta(LongFront, LongRear, LongLeft, LongRight, ShortLeftFront, ShortLeftRear, ShortRightFront, ShortRightRear);
 	setOmega();
+	
 	if(OK_SENSOR_VALUE(ShortLeftFront)&&OK_SENSOR_VALUE(ShortLeftRear))
 	{
-		setXV(ShortLeftFront, ShortLeftRear);
+		setRelativeX(ShortLeftFront, ShortLeftRear);
 	}
 	else if(OK_SENSOR_VALUE(ShortRightFront)&&OK_SENSOR_VALUE(ShortRightRear))
 	{
-		setXV(ShortRightFront, ShortRightRear);
+		setRelativeX(ShortRightFront, ShortRightRear);
 	}	
 	return;
 }
