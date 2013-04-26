@@ -60,17 +60,23 @@ void timedInterupt(void)
 		PORTB |= 0b00000001;
 		temp = 0;
 	}
-	volatile uint8_t msgRecieve[32];
-	volatile uint8_t type;
-	volatile uint8_t len;
-	volatile uint8_t msgSend[32];
+	uint8_t msgRecieve[32];
+	uint8_t type;
+	uint8_t len;
+	uint8_t msgSend[32];
 	//skicka request till sensorenehten att skicka data
 #ifndef SENSOR_OFF
 	SPI_set_sensor(START);
 	SPI_MASTER_write(msgSend, TYPE_REQUEST_SENSOR_DATA, 0);
 	
 	//ta emot data från sensorenheten
-	while(!SPI_MASTER_read(msgRecieve, &type, &len));//vänta tills bufferten fylls
+	uint8_t answerSensor=0;
+	uint8_t answerCounterSensor=0;
+	while((!answerSensor)&&(answerCounterSensor<254))//räknare så vi inte fastnar här om vi hamnar aout of sync med kom.
+	{
+		answerSensor = SPI_MASTER_read(msgRecieve, &type, &len);
+		answerCounterSensor++;
+	}
 	SPI_set_sensor(END);
 
 
@@ -152,15 +158,18 @@ void timedInterupt(void)
 	SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, len);
 	//TODO STÅR här i oändlihet. Kan bero på att pc:n ej var inkopplad.
 	volatile uint8_t answer = 0;
+	uint8_t answerCounter=0;
 	do
 	{
 		SPI_MASTER_write(msgSend, TYPE_REQUEST_PC_MESSAGE, 0);
 
 		
 		answer = 0;
-		while(!answer)
+		answerCounter=0;
+		while((!answer)&&(answerCounter<254))//räknare så vi inte fastnar här om vi hamnar aout of sync med kom.
 		{
 			answer = SPI_MASTER_read(msgRecieve, &type, &len);
+			answerCounter++;
 		}
 				
 
@@ -210,7 +219,7 @@ void timedInterupt(void)
 			}
 
 		}		
-	}while(type != TYPE_NO_PC_MESSAGES && type != TYPE_REQUEST_PC_MESSAGE);//type != TYPE_REQUEST_PC_MESSAGE betyder att vi ej laggt in ny data i kom. dvs ej handskakat.
+	}while((type != TYPE_NO_PC_MESSAGES) && (type != TYPE_REQUEST_PC_MESSAGE) && (answerCounter<254));//type != TYPE_REQUEST_PC_MESSAGE betyder att vi ej laggt in ny data i kom. dvs ej handskakat.
 
 /*
 	//skicka all kartdata till komm
