@@ -5,10 +5,16 @@
  *  Author: davmo049
  */ 
 
+#define STOPTURN90 85
+#define STOPTURN90 43
+
 #include <avr/io.h>
 #include "global.h"
 
 #include "StyrReglering.h"
+
+uint8_t startSquareX;
+uint8_t startSquareY;
 
 
 void reglering_init()
@@ -163,127 +169,165 @@ void setDirRight(uint8_t dir){
 /************************************************************************/
 void regulateStraight()
 {
-	/*
-	uint8_t a = 0;
-	uint8_t l1 = 8 / (globals.v*2^a);
-	uint8_t l2 = 12>>a;
-	uint8_t l3 = 6>>a;
-	*/
-	uint8_t ur,ul;
-	int16_t max =-((globals.L1_straightX*globals.x/globals.v)>>SHORTFACTOR + (globals.L2_straightTheta*degToRad(globals.theta))>>DIVISIONFACTOR + globals.L3_straightOmega*globals.omega);
-	if(max > 0 )
+	setDirRight(1);
+	setDirRight(1);
+	while(1)
 	{
-		ur = 254;
-		ul = ur - max;
-	}
-	else
-	{
-		ul = 254;
-		ur = max + ul;
-	}
-	setSpeedLeft(ul);
-	setSpeedRight(ur);
+		if(startSquareX != globals.mapX || startSquareY != globals.mapY)
+		{
+			if(0 < getRelativeY())
+			{
+				return;
+			}
+		}
+		/*
+		uint8_t a = 0;
+		uint8_t l1 = 8 / (globals.v*2^a);
+		uint8_t l2 = 12>>a;
+		uint8_t l3 = 6>>a;
+		*/
+		uint8_t ur,ul;
+		int16_t max =-((globals.L1_straightX*getRelativeX()/globals.v)>>SHORTFACTOR + (globals.L2_straightTheta*degToRad(globals.theta))>>DIVISIONFACTOR + globals.L3_straightOmega*globals.omega);
+		if(max > 0 )
+		{
+			ur = 254;
+			ul = ur - max;
+		}
+		else
+		{
+			ul = 254;
+			ur = max + ul;
+		}
+		setSpeedLeft(ul);
+		setSpeedRight(ur);
+	}	
 }
 void turnLeft90(){
-	/*
-	uint8_t a  = 0;
-	uint8_t l1 = 4 >> a;
-	uint8_t l2 = 4 >> a;
-	*/
-	uint8_t ur,ul;
-	
 	setDirLeft(0);
 	setDirRight(1);
+	while(1)
+	{
+		if(globals.theta > STOPTURN90)
+		{
+			return;
+		}
+		
 	
-	int16_t max = - ((globals.L1_turnTheta*degToRad(90-globals.theta))>>DIVISIONFACTOR + globals.L2_turnOmega*globals.omega);
-	if(max > 0 )
-	{
-		ur = 254;
-		ul = ur - max;
-	}
-	else
-	{
-		ul = 254;
-		ur = max + ul;
-	}
-	setSpeedLeft(ul);
-	setSpeedRight(ur);
+		/*
+		uint8_t a  = 0;
+		uint8_t l1 = 4 >> a;
+		uint8_t l2 = 4 >> a;
+		*/
+		uint8_t ur,ul;
+	
+		int16_t max = - ((globals.L1_turnTheta*degToRad(90-globals.theta))>>DIVISIONFACTOR + globals.L2_turnOmega*globals.omega);
+		if(max > 0 )
+		{
+			ur = 254 - max;
+			ul = ur;
+		}
+		else
+		{
+			ul = 254 + max;
+			ur = ul;
+		}
+		setSpeedLeft(ul);
+		setSpeedRight(ur);
+	}	
 }
 void turnRight90(){
-	/*
-	uint8_t a  = 0;
-	uint8_t l1 = 4 >> a; //Ska räknas ut på egenvärden!
-	uint8_t l2 = 4 >> a;
-	*/
-	uint8_t ur,ul;
-	
 	setDirLeft(1);
 	setDirRight(0);
+	while(1)
+	{
+		if(globals.theta < -STOPTURN90)
+		{
+			return;
+		}
+		/*
+		uint8_t a  = 0;
+		uint8_t l1 = 4 >> a; //Ska räknas ut på egenvärden!
+		uint8_t l2 = 4 >> a;
+		*/
+		uint8_t ur,ul;
 	
-	int16_t max = - ((globals.L1_turnTheta*degToRad(90+globals.theta))>>DIVISIONFACTOR + globals.L2_turnOmega*globals.omega);
-	if(max > 0 )
-	{
-		ur = 254;
-		ul = ur - max;
-	}
-	else
-	{
-		ul = 254;
-		ur = max + ul;
-	}
-	setSpeedLeft(ul);
-	setSpeedRight(ur);
+		int16_t max = - ((globals.L1_turnTheta*degToRad(90+globals.theta))>>DIVISIONFACTOR + globals.L2_turnOmega*globals.omega);
+		if(max > 0 )
+		{
+			ur = 254;
+			ul = ur - max;
+		}
+		else
+		{
+			ul = 254;
+			ur = max + ul;
+		}
+		setSpeedLeft(ul);
+		setSpeedRight(ur);
+	}		
 }
 void turnLeft45(){
-	/*
-	uint8_t a  = 0;
-	uint8_t l1 = 4 >> a; //Ska räknas ut på egenvärden!
-	uint8_t l2 = 4 >> a; // -- || --
-	*/
-	uint8_t ur,ul;
-	
 	setDirLeft(0);
 	setDirRight(1);
+	while(1)
+	{
+		if(globals.theta > STOPTURN45)
+		{
+			return;
+		}
+		/*
+		uint8_t a  = 0;
+		uint8_t l1 = 4 >> a; //Ska räknas ut på egenvärden!
+		uint8_t l2 = 4 >> a; // -- || --
+		*/
+		uint8_t ur,ul;
 	
-	int16_t max = - ((globals.L1_turnTheta*degToRad(45-globals.theta))>>DIVISIONFACTOR + globals.L2_turnOmega*globals.omega);
-	if(max > 0 )
-	{
-		ur = 254;
-		ul = ur - max;
+		int16_t max = - ((globals.L1_turnTheta*degToRad(45-globals.theta))>>DIVISIONFACTOR + globals.L2_turnOmega*globals.omega);
+		if(max > 0 )
+		{
+			ur = 254;
+			ul = ur - max;
+		}
+		else
+		{
+			ul = 254;
+			ur = max + ul;
+		}
+		setSpeedLeft(ul);
+		setSpeedRight(ur);
 	}
-	else
-	{
-		ul = 254;
-		ur = max + ul;
-	}
-	setSpeedLeft(ul);
-	setSpeedRight(ur);
 }
-void turnRight45(){
-	/*
-	uint8_t a  = 0;
-	uint8_t l1 = 4 >> a; //Ska räknas ut på egenvärden!
-	uint8_t l2 = 4 >> a; // -- || --
-	*/
-	uint8_t ur,ul;
 	
+void turnRight45(){
 	setDirLeft(1);
 	setDirRight(0);
+	while(1)
+	{
+		if(globals.theta < -STOPTURN45)
+		{
+			return;
+		}
+		/*
+		uint8_t a  = 0;
+		uint8_t l1 = 4 >> a; //Ska räknas ut på egenvärden!
+		uint8_t l2 = 4 >> a; // -- || --
+		*/
+		uint8_t ur,ul;
 	
-	int16_t max = - ((globals.L1_turnTheta*degToRad(45+globals.theta))>>DIVISIONFACTOR + globals.L2_turnOmega*globals.omega);
-	if(max > 0 )
-	{
-		ur = 254;
-		ul = ur - max;
+		int16_t max = - ((globals.L1_turnTheta*degToRad(45+globals.theta))>>DIVISIONFACTOR + globals.L2_turnOmega*globals.omega);
+		if(max > 0 )
+		{
+			ur = 254;
+			ul = ur - max;
+		}
+		else
+		{
+			ul = 254;
+			ur = max + ul;
+		}
+		setSpeedLeft(ul);
+		setSpeedRight(ur);
 	}
-	else
-	{
-		ul = 254;
-		ur = max + ul;
-	}
-	setSpeedLeft(ul);
-	setSpeedRight(ur);
-
 }
 
 void virtualTurn()

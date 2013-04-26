@@ -38,13 +38,13 @@ typedef struct
 {
 	volatile uint8_t mapX; //Xcoord för nuvarande ruta i kartindex initieras i init
 	volatile uint8_t mapY; //Xcoord för nuvarande ruta i kartindex initieras i init
-	int8_t volatile x; //offset från origo för x i nuvarande ruta mäts i 1/3 cm origo är i mitten av rutan, initieras i styrinit
-	int8_t volatile xOld;
-	int8_t volatile y; //offset från origo för x i nuvarande ruta mäts i 1/3 cm, initieras i styrinit
+	volatile int8_t x; //offset från origo för x i nuvarande ruta mäts i 1/3 cm origo är i mitten av rutan, initieras i styrinit
+	volatile int8_t xOld;
+	volatile int8_t volatile y; //offset från origo för x i nuvarande ruta mäts i 1/3 cm, initieras i styrinit
 	volatile uint8_t v; //hastighet i 1/2 cm/s, initieras i styrinit
-	int8_t volatile theta; //vridning i 360/255 grader, initieras i styrinit
-	int8_t volatile thetaOld;
-	int16_t volatile omega; //grader/sekund, initieras i styrinit
+	volatile int8_t  theta; //vridning i 360/255 grader, initieras i styrinit
+	volatile int8_t  thetaOld;
+	volatile int16_t  omega; //grader/sekund, initieras i styrinit
 	uint8_t virtual_direction; // initieras i reglering_init
 	uint8_t logical_direction; //ska initieras i pathfind_init
 

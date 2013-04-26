@@ -63,14 +63,13 @@ void executeCommand(uint8_t command)
 	{
 		//implementera alla funktioner och se till att dessa är utan parametrar TODO
 		case FORWARD_COMMAND:
-			//regulateStraight();
-			customSteering();
+			regulateStraight();
 			break;
 		case RIGHT_90_COMMAND:
-			//turnRight90();
+			turnRight90();
 			break;
 		case LEFT_90_COMMAND:
-			//turnLeft90();
+			turnLeft90();
 			break;
 		case RIGHT_45_COMMAND:
 			//turnRight45();

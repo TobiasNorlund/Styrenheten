@@ -161,6 +161,12 @@
     <Compile Include="global.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="observer.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="observer.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Styrenheten.c">
       <SubType>compile</SubType>
     </Compile>
