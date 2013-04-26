@@ -6,7 +6,7 @@
  */ 
 
 #define STOPTURN90 85
-#define STOPTURN90 43
+#define STOPTURN45 43
 
 #include <avr/io.h>
 #include "global.h"
@@ -78,7 +78,7 @@ int8_t getRelativeX() //x som om roboten har riktning up
 	return ret;
 }
 
-int8_t getRelativeY() //Y som om roboten har riktning upp
+int8_t getRelativeY(void) //Y som om roboten har riktning upp
 {
 	int8_t ret;
 	switch(globals.logical_direction)
@@ -303,10 +303,10 @@ void turnRight45(){
 	setDirRight(0);
 	while(1)
 	{
-		if(globals.theta < -STOPTURN45)
+		/*if(globals.theta < -STOPTURN45)
 		{
 			return;
-		}
+		}*/
 		/*
 		uint8_t a  = 0;
 		uint8_t l1 = 4 >> a; //Ska räknas ut på egenvärden!

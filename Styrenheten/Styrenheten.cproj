@@ -143,6 +143,12 @@
       <SubType>compile</SubType>
       <Link>spi_master.h</Link>
     </Compile>
+    <Compile Include="calcAngle.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="calcAngle.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="charting.c">
       <SubType>compile</SubType>
     </Compile>

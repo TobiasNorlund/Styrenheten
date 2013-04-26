@@ -22,6 +22,6 @@ void setSpeedLeft(uint8_t speed);
 int8_t degToRad(int8_t degree);
 void setDirLeft(uint8_t dir);
 void setDirRight(uint8_t dir);
-
+int8_t getRelativeY(void);
 
 #endif /* STYRREGLERING_H_ */

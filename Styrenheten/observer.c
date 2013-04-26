@@ -22,7 +22,7 @@ void setRelativeX(int8_t value) //x som om roboten har riktning up
 	}
 	return;
 }
-
+/* TODO fix to compile
 int8_t getRelativeY(int8_t value) //Y som om roboten har riktning upp
 {
 	switch(globals.logical_direction)
@@ -41,7 +41,7 @@ int8_t getRelativeY(int8_t value) //Y som om roboten har riktning upp
 			break;
 	}
 	return;
-}
+}*/
 
 /*
 const uint8_t lookupShort[140] PROGMEM = {
