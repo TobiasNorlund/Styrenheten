@@ -23,8 +23,32 @@ int8_t init(void)
 	pathfind_init();
 }
 
+void signal_done()
+{
+	//TODO
+	return;
+}
+
 void autoSteering()
 {
+	while(1)
+	{
+		updateMapAuto();
+		if(globals.shouldPathfind)
+		{
+			pathfind();
+		}
+		if(globals.routeLength != 0)
+		{
+			executeCommand(globals.route[globals.routeLength-1]);
+			--globals.routeLength;
+		}
+		else
+		{
+			signal_done();
+			return;
+		}
+	}
 	return;
 }
 

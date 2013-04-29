@@ -21,9 +21,18 @@
 
 #define OPEN 0
 #define WALL 1
+#define UNKNOWN 2 //UNKNOWN if open or wall
 
 #ifndef GLOBAL_H_
 #define GLOBAL_H_
+
+#define TURNCOST 1
+#define VIRTUALREVERSECOST 1
+
+#define METAROUTEMAXLEN 128
+#define CURRENT_SQUARES_SIZE 128
+
+#define ROUTELENGTH 64
 
 #include <util/delay.h>
 #define F_CPU 8000000UL // 8mhz
@@ -42,8 +51,20 @@ typedef struct
 	uint8_t virtual_direction; // initieras i reglering_init
 	uint8_t logical_direction; //ska initieras i pathfind_init
 
-	uint8_t volatile route[16];
+	//pathfind stuff
+	uint8_t volatile route[ROUTELENGTH];
 	uint8_t volatile routeLength; //initieras i clockedInterupt_init
+	
+	uint8_t routeSquares[ROUTELENGTH*2]; //rutor som finns med i route
+	uint8_t routeSquaresLength;
+	
+	uint8_t metaRoute[METAROUTEMAXLEN]; //jämna index X och udda Y
+	uint8_t metaRouteLenght;
+	
+	uint8_t shouldPathfind;
+	
+	uint8_t adjecentNewSquares[METAROUTEMAXLEN]; //jämna index X och udda Y
+	uint8_t adjecentNewSquaresLenght;
 
 	uint8_t volatile debugMesssageBuffer[16];
 	uint8_t volatile debugMesssageBufferLength; //initieras i clockedInterupt_init

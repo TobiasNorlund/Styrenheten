@@ -11,6 +11,7 @@
 #include <avr/io.h>
 
 void updateMapManual();
+void updateMapAuto();
 void pathfind_init();
 
 #endif /* CHARTING_H_ */
