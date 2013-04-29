@@ -168,22 +168,16 @@ void setDirRight(uint8_t dir){
 	testa det först.                                                    */
 /************************************************************************/
 //turn off optimization 
-#pragma GCC push_options
-#pragma GCC optimize ("O0")
+//#pragma GCC push_options
+//#pragma GCC optimize ("O0")
 void regulateStraight()
 {
 	int16_t max;
 	setDirRight(1);
 	setDirLeft(1);
-	while(1)
+	while(!((startSquareX != globals.mapX || startSquareY != globals.mapY)&&(0 < getRelativeY())))
 	{
-		if(startSquareX != globals.mapX || startSquareY != globals.mapY)
-		{
-			if(0 < getRelativeY())
-			{
-				return;
-			}
-		}
+
 		/*
 		uint8_t a = 0;
 		uint8_t l1 = 8 / (globals.v*2^a);
@@ -191,8 +185,8 @@ void regulateStraight()
 		uint8_t l3 = 6>>a;
 		*/
 		//TODO: Ska inte använda globals.vLeft!!!!
-		uint8_t ur,ul;
-		max =globals.theta;//-(((10*globals.L1_straightX*getRelativeX()/globals.vLeft)>>SHORTFACTOR) + ((globals.L2_straightTheta*degToRad(globals.theta))>>DIVISIONFACTOR) + (globals.L3_straightOmega*globals.omega));
+		int16_t ur,ul;
+		max = -(((10*globals.L1_straightX*getRelativeX()/globals.vLeft)>>SHORTFACTOR) + ((globals.L2_straightTheta*degToRad(globals.theta))>>DIVISIONFACTOR) + (globals.L3_straightOmega*globals.omega));
 		if(max > 0 )
 		{
 			ur = 254;
@@ -207,7 +201,7 @@ void regulateStraight()
 		setSpeedRight(ur);
 	}	
 }
-#pragma GCC pop_options
+//#pragma GCC pop_options
 //end turn off optimization 
 
 void turnLeft90(){
