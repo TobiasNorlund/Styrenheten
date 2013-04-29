@@ -167,10 +167,14 @@ void setDirRight(uint8_t dir){
 	Vet dock inte vad det kommer bli för värden på omega så vi måste 
 	testa det först.                                                    */
 /************************************************************************/
+//turn off optimization 
+#pragma GCC push_options
+#pragma GCC optimize ("O0")
 void regulateStraight()
 {
+	int16_t max;
 	setDirRight(1);
-	setDirRight(1);
+	setDirLeft(1);
 	while(1)
 	{
 		if(startSquareX != globals.mapX || startSquareY != globals.mapY)
@@ -186,8 +190,9 @@ void regulateStraight()
 		uint8_t l2 = 12>>a;
 		uint8_t l3 = 6>>a;
 		*/
+		//TODO: Ska inte använda globals.vLeft!!!!
 		uint8_t ur,ul;
-		int16_t max =-((globals.L1_straightX*getRelativeX()/globals.v)>>SHORTFACTOR + (globals.L2_straightTheta*degToRad(globals.theta))>>DIVISIONFACTOR + globals.L3_straightOmega*globals.omega);
+		max =globals.theta;//-(((10*globals.L1_straightX*getRelativeX()/globals.vLeft)>>SHORTFACTOR) + ((globals.L2_straightTheta*degToRad(globals.theta))>>DIVISIONFACTOR) + (globals.L3_straightOmega*globals.omega));
 		if(max > 0 )
 		{
 			ur = 254;
@@ -202,6 +207,9 @@ void regulateStraight()
 		setSpeedRight(ur);
 	}	
 }
+#pragma GCC pop_options
+//end turn off optimization 
+
 void turnLeft90(){
 	setDirLeft(0);
 	setDirRight(1);
@@ -220,7 +228,7 @@ void turnLeft90(){
 		*/
 		uint8_t ur,ul;
 	
-		int16_t max = - ((globals.L1_turnTheta*degToRad(90-globals.theta))>>DIVISIONFACTOR + globals.L2_turnOmega*globals.omega);
+		int16_t max ;//= - ((globals.L1_turnTheta*degToRad(90-globals.theta))>>DIVISIONFACTOR + globals.L2_turnOmega*globals.omega);
 		if(max > 0 )
 		{
 			ur = 254 - max;
@@ -251,7 +259,7 @@ void turnRight90(){
 		*/
 		uint8_t ur,ul;
 	
-		int16_t max = - ((globals.L1_turnTheta*degToRad(90+globals.theta))>>DIVISIONFACTOR + globals.L2_turnOmega*globals.omega);
+		int16_t max;// = - ((globals.L1_turnTheta*degToRad(90+globals.theta))>>DIVISIONFACTOR + globals.L2_turnOmega*globals.omega);
 		if(max > 0 )
 		{
 			ur = 254;
@@ -282,7 +290,7 @@ void turnLeft45(){
 		*/
 		uint8_t ur,ul;
 	
-		int16_t max = - ((globals.L1_turnTheta*degToRad(45-globals.theta))>>DIVISIONFACTOR + globals.L2_turnOmega*globals.omega);
+		int16_t max;// = - ((globals.L1_turnTheta*degToRad(45-globals.theta))>>DIVISIONFACTOR + globals.L2_turnOmega*globals.omega);
 		if(max > 0 )
 		{
 			ur = 254;
@@ -314,7 +322,7 @@ void turnRight45(){
 		*/
 		uint8_t ur,ul;
 	
-		int16_t max = - ((globals.L1_turnTheta*degToRad(45+globals.theta))>>DIVISIONFACTOR + globals.L2_turnOmega*globals.omega);
+		int16_t max;// = - ((globals.L1_turnTheta*degToRad(45+globals.theta))>>DIVISIONFACTOR + globals.L2_turnOmega*globals.omega);
 		if(max > 0 )
 		{
 			ur = 254;

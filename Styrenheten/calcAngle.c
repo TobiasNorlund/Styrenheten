@@ -11,7 +11,7 @@
 
 
 /**
- * Används vid reglering med frontsensorer
+ * Används vid reglering med frontsensorer 
  * Tar in ett värde dimension 0.5cm och ger ut ett värde i dimension 0.25 grader.
  */
 const uint8_t lookupOpposite[181] PROGMEM = {

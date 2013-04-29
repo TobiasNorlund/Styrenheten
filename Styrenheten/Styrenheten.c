@@ -25,6 +25,11 @@ int8_t init(void)
 {
 	globals.mapX = 8;
 	globals.mapY = 8;
+	globals.L1_straightX=8;
+	globals.L2_straightTheta=12;
+	globals.L3_straightOmega=4;
+	globals.L1_turnTheta=12;
+	globals.L2_turnOmega=4;
 	//external interupt
 	EIMSK=(1<<INT0);// enable on int0
 	EICRA=(1<<ISC01)|(1<<ISC00);//on rising edge
@@ -37,6 +42,7 @@ int8_t init(void)
 	sei();
 	
 	DDRB |= 0b00000001;
+	return 1;
 }
 //nödstopp
 ISR(INT0_vect)
@@ -52,10 +58,7 @@ ISR(INT0_vect)
 }
 
 
-void autoSteering()
-{
-	return;
-}
+
 
 void executeCommand(uint8_t command)
 {
@@ -99,6 +102,10 @@ void manualSteering()
 			--globals.routeLength;
 		}
 	}
+}
+void autoSteering()
+{
+	return;
 }
 
 

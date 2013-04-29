@@ -36,53 +36,53 @@
 //dessa variabler kan diskuteras
 typedef struct  
 {
-	volatile uint8_t mapX; //Xcoord för nuvarande ruta i kartindex initieras i init
-	volatile uint8_t mapY; //Xcoord för nuvarande ruta i kartindex initieras i init
-	volatile int8_t x; //offset från origo för x i nuvarande ruta mäts i 1/2 cm origo är i mitten av rutan, initieras i styrinit
-	volatile int8_t volatile y; //offset från origo för x i nuvarande ruta mäts i 1/2 cm, initieras i styrinit
-	volatile uint8_t v; //hastighet i 1/2 cm/s, initieras i styrinit
-	volatile int8_t  theta; // Vridning i grader
-	volatile int8_t  thetaOld; // Vridning i grader
-	volatile int16_t  omega; //grader/sekund, initieras i styrinit
+	uint8_t mapX; //Xcoord för nuvarande ruta i kartindex initieras i init
+	uint8_t mapY; //Xcoord för nuvarande ruta i kartindex initieras i init
+	int8_t x; //offset från origo för x i nuvarande ruta mäts i 1/2 cm origo är i mitten av rutan, initieras i styrinit
+	int8_t y; //offset från origo för x i nuvarande ruta mäts i 1/2 cm, initieras i styrinit
+	uint8_t v; //hastighet i 1/2 cm/s, initieras i styrinit
+	int8_t  theta; // Vridning i grader
+	int8_t  thetaOld; // Vridning i grader
+	int16_t  omega; //grader/sekund, initieras i styrinit
 	uint8_t virtual_direction; // initieras i reglering_init
 	uint8_t logical_direction; //ska initieras i pathfind_init
 
-	volatile uint8_t route[16];
-	volatile uint8_t routeLength; //initieras i clockedInterupt_init
+	uint8_t route[16];
+	uint8_t routeLength; //initieras i clockedInterupt_init
 
 	uint8_t map[16][16]; //initieras i pathfind_init
 
-	volatile CircularBuffer debugMesssageBuffer;
+	CircularBuffer debugMesssageBuffer;
 
-	volatile CircularBuffer mapDataToSend; //initieras i clockedInterupt_init
+	CircularBuffer mapDataToSend; //initieras i clockedInterupt_init
 
-	volatile uint8_t longFront; // cm
-	volatile uint8_t longRight; // cm
-	volatile uint8_t longRear; // cm
-	volatile uint8_t longLeft; // cm
-	volatile uint8_t shortFrontRight; // cm/2
-	volatile uint8_t shortFrontLeft; // cm/2
-	volatile uint8_t shortRearRight; // cm/2
-	volatile uint8_t shortRearLeft; // cm/2
+	uint8_t longFront; // cm
+	uint8_t longRight; // cm
+	uint8_t longRear; // cm
+	uint8_t longLeft; // cm
+	uint8_t shortFrontRight; // cm/2
+	uint8_t shortFrontLeft; // cm/2
+	uint8_t shortRearRight; // cm/2
+	uint8_t shortRearLeft; // cm/2
 	
-	volatile int16_t gyro; // grader/s
+	int16_t gyro; // grader/s
 	
-	volatile uint8_t vRight; // cm/s
-	volatile uint8_t vLeft; // cm/s
+	uint8_t vRight; // cm/s
+	uint8_t vLeft; // cm/s
 
 	//parametrar
-	volatile uint8_t paramCustomLeft;
-	volatile uint8_t paramCustomRight;
+	uint8_t paramCustomLeft;
+	uint8_t paramCustomRight;
 	//rakt reglering
-	volatile uint8_t L1_straightX;
-	volatile uint8_t L2_straightTheta;
-	volatile uint8_t L3_straightOmega;
+	uint8_t L1_straightX;
+	uint8_t L2_straightTheta;
+	uint8_t L3_straightOmega;
 	//sväng
-	volatile uint8_t L1_turnTheta;
-	volatile uint8_t L2_turnOmega;
+	uint8_t L1_turnTheta;
+	uint8_t L2_turnOmega;
 } Globals;
 
-extern volatile Globals globals;
+volatile Globals globals;
 
 uint8_t getSensorLongForward();
 uint8_t getSensorLongRear();

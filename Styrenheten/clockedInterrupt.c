@@ -6,6 +6,7 @@
  */ 
 #include "clockedInterrupt.h"
 #include <avr/interrupt.h>
+#include "observer.h"
 #include "../../TSEA27-include/message.h"
 #include "global.h"
 #include "../../TSEA27-include/SPI/spi_master.h"
@@ -34,7 +35,7 @@ void clockedInterrupt_init()
 
 void updateState(void)
 {
-	//TODO
+	setStraightObserver();
 }
 uint8_t temp = 0;
 ISR(TIMER1_COMPB_vect)
