@@ -61,15 +61,15 @@ typedef struct
 	uint8_t routeLength; //initieras i clockedInterupt_init
 	
 	uint8_t routeSquares[ROUTELENGTH*2]; //rutor som finns med i route
-	uint8_t routeSquaresLength;
+	uint8_t routeSquaresLength; //initieras i pathfind init
 	
 	uint8_t metaRoute[METAROUTEMAXLEN]; //jämna index X och udda Y
-	uint8_t metaRouteLenght;
+	uint8_t metaRouteLenght; //initieras i pathfind init
 	
-	uint8_t shouldPathfind;
+	uint8_t shouldPathfind; //initieras i pathfind init
 	
 	uint8_t adjecentNewSquares[METAROUTEMAXLEN]; //jämna index X och udda Y
-	uint8_t adjecentNewSquaresLenght;
+	uint8_t adjecentNewSquaresLenght; //initieras i pathfind init
 
 	uint8_t map[16][16]; //initieras i pathfind_init
 

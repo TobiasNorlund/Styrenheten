@@ -23,6 +23,10 @@ void pathfind_init()
 		}
 	}
 	globals.logical_direction = LOGICAL_DIR_UP;
+	globals.routeSquaresLength = 0;
+	globals.metaRouteLenght = 0;
+	globals.shouldPathfind = 1;
+	globals.adjecentNewSquaresLenght  = 0;
 }
 
 void manual_logical_chart(uint8_t x, uint8_t y, uint8_t info)
