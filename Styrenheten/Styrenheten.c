@@ -15,13 +15,14 @@
 #include "StyrReglering.h"
 #include "../../TSEA27-include/message.h"
 #include "../../TSEA27-include/SPI/spi_master.h"
+#include "pathfind.h"
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
 
 
-int8_t init(void)
+void init(void)
 {
 	globals.mapX = 8;
 	globals.mapY = 8;
@@ -58,6 +59,11 @@ ISR(INT0_vect)
 }
 
 
+void signal_done()
+{
+	//TODO
+	return;
+}
 
 
 void executeCommand(uint8_t command)
@@ -89,6 +95,29 @@ void executeCommand(uint8_t command)
 		default:
 			break;
 	}
+}
+
+void autoSteering()
+{
+	while(1)
+	{
+		updateMapAuto();
+		if(globals.shouldPathfind)
+		{
+			pathfind();
+		}
+		if(globals.routeLength != 0)
+		{
+			executeCommand(globals.route[globals.routeLength-1]);
+			--globals.routeLength;
+		}
+		else
+		{
+			signal_done();
+			return;
+		}
+	}
+	return;
 }
 
 void manualSteering()

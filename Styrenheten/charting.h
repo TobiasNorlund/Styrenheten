@@ -11,6 +11,9 @@
 #include <avr/io.h>
 
 void updateMapManual();
+void updateMapAuto();
 void pathfind_init();
+void addToAdjecentNewSquares(uint8_t x, uint8_t y);
+uint8_t foundInAdjOrMeta(uint8_t x, uint8_t y);
 
 #endif /* CHARTING_H_ */

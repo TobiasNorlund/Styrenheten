@@ -59,7 +59,7 @@ void reglering_init()
 
 int8_t getRelativeX() //x som om roboten har riktning up
 {
-	int8_t ret;
+	int8_t ret = 0;
 	switch(globals.logical_direction)
 	{
 		case(LOGICAL_DIR_UP):
@@ -80,21 +80,21 @@ int8_t getRelativeX() //x som om roboten har riktning up
 
 int8_t getRelativeY(void) //Y som om roboten har riktning upp
 {
-	int8_t ret;
+	int8_t ret = 0;
 	switch(globals.logical_direction)
 	{
 		case(LOGICAL_DIR_UP):
-		ret = globals.y;
-		break;
+			ret = globals.y;
+			break;
 		case(LOGICAL_DIR_RIGHT):
-		ret = globals.x;
-		break;
+			ret = globals.x;
+			break;
 		case(LOGICAL_DIR_DOWN):
-		ret = -globals.y;
-		break;
+			ret = -globals.y;
+			break;
 		case(LOGICAL_DIR_LEFT):
-		ret = -globals.x;
-		break;
+			ret = -globals.x;
+			break;
 	}
 	return ret;
 }

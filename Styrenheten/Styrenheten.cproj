@@ -173,6 +173,12 @@
     <Compile Include="observer.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="pathfind.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="pathfind.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Styrenheten.c">
       <SubType>compile</SubType>
     </Compile>
