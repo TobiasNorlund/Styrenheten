@@ -11,8 +11,17 @@
 #include "charting.h"
 #include "global.h"
 
+#define TIME 10 //i ms
+
 void pathfind_init()
 {
+	for(uint8_t i = 0; i < 16; ++i)
+	{
+		for(uint8_t j = 0; j < 16; ++j)
+		{
+			globals.map[j][i] = UNKNOWN;
+		}
+	}
 	globals.logical_direction = LOGICAL_DIR_UP;
 }
 
@@ -22,9 +31,8 @@ void manual_logical_chart(uint8_t x, uint8_t y, uint8_t info)
 	{
 		globals.map[y][x] = info;
 		//send data to PC
-		globals.mapDataToSend[globals.mapDataToSendSize] = x;
-		globals.mapDataToSend[globals.mapDataToSendSize+1] = y;
-		globals.mapDataToSendSize = globals.mapDataToSendSize+2;	
+		cbWrite(&globals.mapDataToSend, x);
+		cbWrite(&globals.mapDataToSend, y);
 	}
 }
 
@@ -105,7 +113,7 @@ void chart(uint8_t logical_direction, void (*charting_func)(uint8_t x, uint8_t y
 			sensorLength = getSensorLongRight();
 			break;
 		case LOGICAL_DIR_DOWN:
-			sensorLength = getSensorLongBack();
+			sensorLength = getSensorLongRear();
 			break;
 		case LOGICAL_DIR_LEFT:
 			sensorLength = getSensorLongLeft();

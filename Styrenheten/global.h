@@ -23,9 +23,14 @@
 #define WALL 1
 #define UNKNOWN 2 //UNKNOWN if open or wall
 
+//Divisionfaktorer för att få högre precision: 2^n
+#define SHORTFACTOR 1 //Korta sensorn är i cm*2
+
+
 #ifndef GLOBAL_H_
 #define GLOBAL_H_
 
+#include "../../TSEA27-include/circularbuffer.h"
 #define TURNCOST 1
 #define VIRTUALREVERSECOST 1
 
@@ -41,13 +46,14 @@
 //dessa variabler kan diskuteras
 typedef struct  
 {
-	uint8_t volatile mapX; //Xcoord för nuvarande ruta i kartindex initieras i init
-	uint8_t volatile mapY; //Xcoord för nuvarande ruta i kartindex initieras i init
-	int8_t volatile x; //offset från origo för x i nuvarande ruta mäts i 1/3 cm origo är i mitten av rutan, initieras i styrinit
-	int8_t volatile y; //offset från origo för x i nuvarande ruta mäts i 1/3 cm, initieras i styrinit
-	uint8_t volatile v; //hastighet i 1/2 cm/s, initieras i styrinit
-	int8_t volatile theta; //vridning i 360/255 grader, initieras i styrinit
-	int8_t volatile omega; //vinkelhastighet i ?? grader/sekund, initieras i styrinit
+	volatile uint8_t mapX; //Xcoord för nuvarande ruta i kartindex initieras i init
+	volatile uint8_t mapY; //Xcoord för nuvarande ruta i kartindex initieras i init
+	volatile int8_t x; //offset från origo för x i nuvarande ruta mäts i 1/2 cm origo är i mitten av rutan, initieras i styrinit
+	volatile int8_t volatile y; //offset från origo för x i nuvarande ruta mäts i 1/2 cm, initieras i styrinit
+	volatile uint8_t v; //hastighet i 1/2 cm/s, initieras i styrinit
+	volatile int8_t  theta; // Vridning i grader
+	volatile int8_t  thetaOld; // Vridning i grader
+	volatile int16_t  omega; //grader/sekund, initieras i styrinit
 	uint8_t virtual_direction; // initieras i reglering_init
 	uint8_t logical_direction; //ska initieras i pathfind_init
 
@@ -66,37 +72,47 @@ typedef struct
 	uint8_t adjecentNewSquares[METAROUTEMAXLEN]; //jämna index X och udda Y
 	uint8_t adjecentNewSquaresLenght;
 
-	uint8_t volatile debugMesssageBuffer[16];
-	uint8_t volatile debugMesssageBufferLength; //initieras i clockedInterupt_init
+	uint8_t map[16][16]; //initieras i pathfind_init
 
-	uint8_t map[16][16];
+	volatile CircularBuffer debugMesssageBuffer;
 
-	uint8_t volatile mapDataToSend[16];
-	uint8_t volatile mapDataToSendSize; //initieras i clockedInterupt_init
+	volatile CircularBuffer mapDataToSend; //initieras i clockedInterupt_init
 
-	uint8_t volatile avstandsensor_1;
-	uint8_t volatile avstandsensor_2;
-	uint8_t volatile avstandsensor_3;
-	uint8_t volatile avstandsensor_4;
-	uint8_t volatile avstandsensor_5;
-	uint8_t volatile avstandsensor_6;
-	uint8_t volatile avstandsensor_7;
-	uint8_t volatile avstandsensor_8;
+	volatile uint8_t longFront; // cm
+	volatile uint8_t longRight; // cm
+	volatile uint8_t longRear; // cm
+	volatile uint8_t longLeft; // cm
+	volatile uint8_t shortFrontRight; // cm/2
+	volatile uint8_t shortFrontLeft; // cm/2
+	volatile uint8_t shortRearRight; // cm/2
+	volatile uint8_t shortRearLeft; // cm/2
+	
+	volatile int16_t gyro; // grader/s
+	
+	volatile uint8_t vRight; // cm/s
+	volatile uint8_t vLeft; // cm/s
 
 	//parametrar
-	uint8_t volatile paramCustomLeft;
-	uint8_t volatile paramCustomRight;
+	volatile uint8_t paramCustomLeft;
+	volatile uint8_t paramCustomRight;
+	//rakt reglering
+	volatile uint8_t L1_straightX;
+	volatile uint8_t L2_straightTheta;
+	volatile uint8_t L3_straightOmega;
+	//sväng
+	volatile uint8_t L1_turnTheta;
+	volatile uint8_t L2_turnOmega;
 } Globals;
 
-extern Globals globals;
+extern volatile Globals globals;
 
 uint8_t getSensorLongForward();
-uint8_t getSensorLongBack();
+uint8_t getSensorLongRear();
 uint8_t getSensorLongLeft();
 uint8_t getSensorLongRight();
 uint8_t getSensorShortLeftForward();
-uint8_t getSensorShortLeftBack();
+uint8_t getSensorShortLeftRear();
 uint8_t getSensorShortRightForward();
-uint8_t getSensorShortRightBack();
+uint8_t getSensorShortRightRear();
 
 #endif /* GLOBAL_H_ */

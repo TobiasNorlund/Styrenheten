@@ -21,7 +21,7 @@
     <OverrideVtorValue />
     <eraseonlaunchrule>0</eraseonlaunchrule>
     <AsfVersion>3.1.3</AsfVersion>
-    <avrtoolinterface>ISP</avrtoolinterface>
+    <avrtoolinterface>JTAG</avrtoolinterface>
     <avrtool>com.atmel.avrdbg.tool.jtagicemk3</avrtool>
     <com_atmel_avrdbg_tool_simulator>
       <ToolType>com.atmel.avrdbg.tool.simulator</ToolType>
@@ -34,29 +34,29 @@
       </OverrideVtorValue>
       <Channel>
         <host>127.0.0.1</host>
-        <port>2420</port>
+        <port>49462</port>
         <ssl>False</ssl>
       </Channel>
     </com_atmel_avrdbg_tool_simulator>
     <com_atmel_avrdbg_tool_jtagicemk3>
       <ToolType>com.atmel.avrdbg.tool.jtagicemk3</ToolType>
       <ToolName>JTAGICE3</ToolName>
-      <ToolNumber>J30200009017</ToolNumber>
+      <ToolNumber>J30200013325</ToolNumber>
       <KeepTimersRunning>true</KeepTimersRunning>
       <OverrideVtor>false</OverrideVtor>
       <OverrideVtorValue>
       </OverrideVtorValue>
       <Channel>
         <host>127.0.0.1</host>
-        <port>4608</port>
+        <port>3874</port>
         <ssl>False</ssl>
       </Channel>
       <ToolOptions>
-        <InterfaceName>ISP</InterfaceName>
+        <InterfaceName>JTAG</InterfaceName>
         <InterfaceProperties>
-          <JtagDbgClock>7500000</JtagDbgClock>
+          <JtagDbgClock>1150000</JtagDbgClock>
           <JtagProgClock>1000000</JtagProgClock>
-          <IspClock>250000</IspClock>
+          <IspClock>150000</IspClock>
           <JtagInChain>false</JtagInChain>
           <JtagEnableExtResetOnStartSession>false</JtagEnableExtResetOnStartSession>
           <JtagDevicesBefore>0</JtagDevicesBefore>
@@ -95,6 +95,11 @@
         <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
         <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
         <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+        <avrgcc.compiler.symbols.DefSymbols>
+          <ListValues>
+            <Value>F_CPU=20000000UL</Value>
+          </ListValues>
+        </avrgcc.compiler.symbols.DefSymbols>
         <avrgcc.compiler.optimization.level>Optimize (-O1)</avrgcc.compiler.optimization.level>
         <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
         <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
@@ -110,6 +115,18 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\..\TSEA27-include\circularbuffer.c">
+      <SubType>compile</SubType>
+      <Link>circularbuffer.c</Link>
+    </Compile>
+    <Compile Include="..\..\TSEA27-include\circularbuffer.h">
+      <SubType>compile</SubType>
+      <Link>circularbuffer.h</Link>
+    </Compile>
+    <Compile Include="..\..\TSEA27-include\geometrics.h">
+      <SubType>compile</SubType>
+      <Link>geometrics.h</Link>
+    </Compile>
     <Compile Include="..\..\TSEA27-include\message.c">
       <SubType>compile</SubType>
       <Link>message.c</Link>
@@ -125,6 +142,12 @@
     <Compile Include="..\..\TSEA27-include\SPI\spi_master.h">
       <SubType>compile</SubType>
       <Link>spi_master.h</Link>
+    </Compile>
+    <Compile Include="calcAngle.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="calcAngle.h">
+      <SubType>compile</SubType>
     </Compile>
     <Compile Include="charting.c">
       <SubType>compile</SubType>
@@ -144,10 +167,10 @@
     <Compile Include="global.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="pathfind.c">
+    <Compile Include="observer.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="pathfind.h">
+    <Compile Include="observer.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Styrenheten.c">
