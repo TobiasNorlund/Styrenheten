@@ -40,7 +40,6 @@
 #define ROUTELENGTH 64
 
 #include <util/delay.h>
-#define F_CPU 8000000UL // 8mhz
 
 #include <avr/io.h>
 //dessa variabler kan diskuteras

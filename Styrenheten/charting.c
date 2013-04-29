@@ -36,6 +36,36 @@ void manual_logical_chart(uint8_t x, uint8_t y, uint8_t info)
 	}
 }
 
+void auto_logical_chart(uint8_t x, uint8_t y, uint8_t info)
+{
+	if(globals.map[y][x] != info)
+	{
+		globals.map[y][x] = info;
+		//send data to PC
+		cbWrite(&globals.mapDataToSend, x);
+		cbWrite(&globals.mapDataToSend, y);
+		if(info == 0)
+		{
+			addToAdjecentNewSquares(x+1, y);
+			addToAdjecentNewSquares(x-1, y);
+			addToAdjecentNewSquares(x, y+1);
+			addToAdjecentNewSquares(x, y-1);
+		}
+		if(x == globals.metaRoute[globals.metaRouteLenght-2] && y == globals.metaRoute[globals.metaRouteLenght-1])
+		{
+			globals.shouldPathfind = 1;
+		}
+		for(uint8_t i = 0; i < globals.routeSquaresLength; i = i+2)
+		{
+			if(globals.routeSquares[i] == x && globals.routeSquares[i+1] == y)
+			{
+				globals.shouldPathfind = 1;
+				break;
+			}
+		}
+	}
+}
+
 uint8_t foundInAdjOrMeta(uint8_t x, uint8_t y)
 {
 	uint8_t i = 0;
@@ -69,37 +99,6 @@ void addToAdjecentNewSquares(uint8_t x, uint8_t y)
 	}
 }
 
-void auto_logical_chart(uint8_t x, uint8_t y, uint8_t info)
-{
-	if(globals.map[y][x] != info)
-	{
-		globals.map[y][x] = info;
-		//send data to PC
-		globals.mapDataToSend[globals.mapDataToSendSize] = x;
-		globals.mapDataToSend[globals.mapDataToSendSize+1] = y;
-		globals.mapDataToSendSize = globals.mapDataToSendSize+2;
-		if(info == 0)
-		{
-			addToAdjecentNewSquares(x+1, y);
-			addToAdjecentNewSquares(x-1, y);
-			addToAdjecentNewSquares(x, y+1);
-			addToAdjecentNewSquares(x, y-1);
-		}
-		if(x == globals.metaRoute[globals.metaRouteLenght-2] && y == globals.metaRoute[globals.metaRouteLenght-1])
-		{
-			globals.shouldPathfind = 1;
-		}
-		for(uint8_t i = 0; i < globals.routeSquaresLength; i = i+2)
-		{
-			if(globals.routeSquares[i] == x && globals.routeSquares[i+1] == y)
-			{
-				globals.shouldPathfind = 1;
-				break;
-			}
-		}
-	}
-}
-
 void chart(uint8_t logical_direction, void (*charting_func)(uint8_t x, uint8_t y, uint8_t info))
 {
 	uint8_t sensorLength;
@@ -115,10 +114,8 @@ void chart(uint8_t logical_direction, void (*charting_func)(uint8_t x, uint8_t y
 		case LOGICAL_DIR_DOWN:
 			sensorLength = getSensorLongRear();
 			break;
-		case LOGICAL_DIR_LEFT:
-			sensorLength = getSensorLongLeft();
-			break;
 		default:
+			sensorLength = getSensorLongLeft();
 			break;
 	}
 	switch(logical_direction)

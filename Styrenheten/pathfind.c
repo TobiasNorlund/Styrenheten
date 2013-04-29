@@ -8,6 +8,9 @@
 #include "pathfind.h"
 #include "../../TSEA27-include/message.h"
 #include "global.h"
+#include "charting.h"
+#include <string.h>
+
 
 void pathfind()
 {
@@ -51,30 +54,6 @@ void truncateMetaRoute()
 		}
 	}
 }
-
-uint8_t foundInAdjOrMeta(uint8_t posX, uint8_t posY)
-{
-	uint8_t i = 0;
-	while(i < globals.adjecentNewSquaresLenght/2)
-	{
-		if(globals.adjecentNewSquares[i] == posX && globals.adjecentNewSquares[i+1] == posY)
-		{
-			return 1;
-		}
-		i = i+2;
-	}
-	i = 0;
-	while(i < globals.metaRouteLenght/2)
-	{
-		if(globals.metaRoute[i] == posX && globals.metaRoute[i+1] == posY)
-		{
-			return 1;
-		}
-		i = i+2;
-	}
-	return 0;
-}
-
 
 void adjecentNewSquaresRemoveChartedSquares()
 {
@@ -367,8 +346,8 @@ void createRouteToNextMeta()
 			}
 			currentSquaresLength = currentSquaresLength - 1;
 		}
-		memcpy(&currentSquares, &currentSquaresBuffer, currentSquaresLengthBuffer*2);
-		memcpy(&directionCurrentSquares, &directionCurrentSquaresBuffer, currentSquaresLengthBuffer); //kan krasha allt möjligt om currentSquaresLengthBuffer >  CURRENT_SQUARES_SIZE som växer lite för fort tror detta beror på att element kan upprepas
+		memcpy(currentSquares, currentSquaresBuffer, currentSquaresLengthBuffer*2);
+		memcpy(directionCurrentSquares, directionCurrentSquaresBuffer, currentSquaresLengthBuffer); //kan krasha allt möjligt om currentSquaresLengthBuffer >  CURRENT_SQUARES_SIZE
 		currentSquaresLength = currentSquaresLengthBuffer;
 		currentSquaresLengthBuffer = 0;
 		if(currentSquaresLength == 0) //kan optimeras till current rutor har en kostnad som är större än mårutans kostnad
