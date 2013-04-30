@@ -19,12 +19,12 @@ uint8_t startSquareY;
 
 void reglering_init()
 {
-	globals.virtual_direction = DIRECTION_FORWARD;
-	globals.x = 0;
-	globals.y = 0;
-	globals.v = 0;
-	globals.theta = 0;
-	globals.omega = 0;
+	glob_virtual_direction = DIRECTION_FORWARD;
+	glob_x = 0;
+	glob_y = 0;
+	glob_v = 0;
+	glob_theta = 0;
+	glob_omega = 0;
 	/*
 	*	Initierar registrerna för PWM
 	*
@@ -60,19 +60,19 @@ void reglering_init()
 int8_t getRelativeX() //x som om roboten har riktning up
 {
 	int8_t ret = 0;
-	switch(globals.logical_direction)
+	switch(glob_logical_direction)
 	{
 		case(LOGICAL_DIR_UP):
-			ret = globals.x;
+			ret = glob_x;
 			break;
 		case(LOGICAL_DIR_RIGHT):
-			ret = -globals.y;
+			ret = -glob_y;
 			break;
 		case(LOGICAL_DIR_DOWN):
-			ret = -globals.x;
+			ret = -glob_x;
 			break;
 		case(LOGICAL_DIR_LEFT):
-			ret = globals.y;
+			ret = glob_y;
 			break;
 	}
 	return ret;
@@ -81,26 +81,26 @@ int8_t getRelativeX() //x som om roboten har riktning up
 int8_t getRelativeY(void) //Y som om roboten har riktning upp
 {
 	int8_t ret = 0;
-	switch(globals.logical_direction)
+	switch(glob_logical_direction)
 	{
 		case(LOGICAL_DIR_UP):
-			ret = globals.y;
+			ret = glob_y;
 			break;
 		case(LOGICAL_DIR_RIGHT):
-			ret = globals.x;
+			ret = glob_x;
 			break;
 		case(LOGICAL_DIR_DOWN):
-			ret = -globals.y;
+			ret = -glob_y;
 			break;
 		case(LOGICAL_DIR_LEFT):
-			ret = -globals.x;
+			ret = -glob_x;
 			break;
 	}
 	return ret;
 }
 
 void setSpeedRight(uint8_t speed){
-	if(globals.virtual_direction == DIRECTION_FORWARD)
+	if(glob_virtual_direction == DIRECTION_FORWARD)
 	{
 		OCR2B = speed;	
 	}
@@ -110,7 +110,7 @@ void setSpeedRight(uint8_t speed){
 	}
 }
 void setSpeedLeft(uint8_t speed){
-	if(globals.virtual_direction == DIRECTION_FORWARD)
+	if(glob_virtual_direction == DIRECTION_FORWARD)
 	{
 		OCR2A = speed;
 	}
@@ -121,7 +121,7 @@ void setSpeedLeft(uint8_t speed){
 }
 
 void setDirLeft(uint8_t dir){
-	if(globals.virtual_direction == DIRECTION_FORWARD)
+	if(glob_virtual_direction == DIRECTION_FORWARD)
 	{
 		if(dir == 1){
 			PORTA = PORTA | (1 << PORTA2);
@@ -141,7 +141,7 @@ void setDirLeft(uint8_t dir){
 	}
 }
 void setDirRight(uint8_t dir){
-	if(globals.virtual_direction == DIRECTION_FORWARD)
+	if(glob_virtual_direction == DIRECTION_FORWARD)
 	{
 		if(dir == 1){
 			PORTA = PORTA | (1 << PORTA3);
@@ -175,18 +175,17 @@ void regulateStraight()
 	int16_t max;
 	setDirRight(1);
 	setDirLeft(1);
-	while(!((startSquareX != globals.mapX || startSquareY != globals.mapY)&&(0 < getRelativeY())))
+	while(!((startSquareX != glob_mapX || startSquareY != glob_mapY)&&(0 < getRelativeY())))
 	{
-
 		/*
 		uint8_t a = 0;
-		uint8_t l1 = 8 / (globals.v*2^a);
+		uint8_t l1 = 8 / (glob_v*2^a);
 		uint8_t l2 = 12>>a;
 		uint8_t l3 = 6>>a;
 		*/
-		//TODO: Ska inte använda globals.vLeft!!!!
+		//TODO: Ska inte använda glob_vLeft!!!!
 		int16_t ur,ul;
-		max = -(((10*globals.L1_straightX*getRelativeX()/globals.vLeft)>>SHORTFACTOR) + ((globals.L2_straightTheta*degToRad(globals.theta))>>DIVISIONFACTOR) + (globals.L3_straightOmega*globals.omega));
+		max = -(((10*glob_L1_straightX*getRelativeX()/glob_vLeft)>>SHORTFACTOR) + ((glob_L2_straightTheta*degToRad(glob_theta))>>DIVISIONFACTOR) + (glob_L3_straightOmega*glob_omega));
 		if(max > 0 )
 		{
 			ur = 254;
@@ -209,7 +208,7 @@ void turnLeft90(){
 	setDirRight(1);
 	while(1)
 	{
-		if(globals.theta > STOPTURN90)
+		if(glob_theta > STOPTURN90)
 		{
 			return;
 		}
@@ -222,7 +221,7 @@ void turnLeft90(){
 		*/
 		uint8_t ur,ul;
 	
-		int16_t max ;//= - ((globals.L1_turnTheta*degToRad(90-globals.theta))>>DIVISIONFACTOR + globals.L2_turnOmega*globals.omega);
+		int16_t max ;//= - ((glob_L1_turnTheta*degToRad(90-glob_theta))>>DIVISIONFACTOR + glob_L2_turnOmega*glob_omega);
 		if(max > 0 )
 		{
 			ur = 254 - max;
@@ -242,7 +241,7 @@ void turnRight90(){
 	setDirRight(0);
 	while(1)
 	{
-		if(globals.theta < -STOPTURN90)
+		if(glob_theta < -STOPTURN90)
 		{
 			return;
 		}
@@ -253,7 +252,7 @@ void turnRight90(){
 		*/
 		uint8_t ur,ul;
 	
-		int16_t max;// = - ((globals.L1_turnTheta*degToRad(90+globals.theta))>>DIVISIONFACTOR + globals.L2_turnOmega*globals.omega);
+		int16_t max;// = - ((glob_L1_turnTheta*degToRad(90+glob_theta))>>DIVISIONFACTOR + glob_L2_turnOmega*glob_omega);
 		if(max > 0 )
 		{
 			ur = 254;
@@ -273,7 +272,7 @@ void turnLeft45(){
 	setDirRight(1);
 	while(1)
 	{
-		if(globals.theta > STOPTURN45)
+		if(glob_theta > STOPTURN45)
 		{
 			return;
 		}
@@ -284,7 +283,7 @@ void turnLeft45(){
 		*/
 		uint8_t ur,ul;
 	
-		int16_t max;// = - ((globals.L1_turnTheta*degToRad(45-globals.theta))>>DIVISIONFACTOR + globals.L2_turnOmega*globals.omega);
+		int16_t max;// = - ((glob_L1_turnTheta*degToRad(45-glob_theta))>>DIVISIONFACTOR + glob_L2_turnOmega*glob_omega);
 		if(max > 0 )
 		{
 			ur = 254;
@@ -305,7 +304,7 @@ void turnRight45(){
 	setDirRight(0);
 	while(1)
 	{
-		/*if(globals.theta < -STOPTURN45)
+		/*if(glob_theta < -STOPTURN45)
 		{
 			return;
 		}*/
@@ -316,7 +315,7 @@ void turnRight45(){
 		*/
 		uint8_t ur,ul;
 	
-		int16_t max;// = - ((globals.L1_turnTheta*degToRad(45+globals.theta))>>DIVISIONFACTOR + globals.L2_turnOmega*globals.omega);
+		int16_t max;// = - ((glob_L1_turnTheta*degToRad(45+glob_theta))>>DIVISIONFACTOR + glob_L2_turnOmega*glob_omega);
 		if(max > 0 )
 		{
 			ur = 254;
@@ -334,15 +333,15 @@ void turnRight45(){
 
 void virtualTurn()
 {
-	if(globals.virtual_direction == DIRECTION_FORWARD)
+	if(glob_virtual_direction == DIRECTION_FORWARD)
 	{
-		globals.virtual_direction = DIRECTION_REVERSE;
+		glob_virtual_direction = DIRECTION_REVERSE;
 	}
 	else
 	{
-		globals.virtual_direction = DIRECTION_FORWARD;
+		glob_virtual_direction = DIRECTION_FORWARD;
 	}
-	//globals.logical_direction = TODO;
+	//glob_logical_direction = TODO;
 	return;
 }
 
@@ -350,8 +349,8 @@ void customSteering()
 {
 	setDirLeft(1);
 	setDirRight(1);
-	setSpeedRight(globals.paramCustomRight);
-	setSpeedLeft(globals.paramCustomLeft);
+	setSpeedRight(glob_paramCustomRight);
+	setSpeedLeft(glob_paramCustomLeft);
 }
 
 //Returnerar 2^DIVISIONFACTOR*radianer 

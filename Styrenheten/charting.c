@@ -19,35 +19,35 @@ void pathfind_init()
 	{
 		for(uint8_t j = 0; j < 16; ++j)
 		{
-			globals.map[j][i] = UNKNOWN;
+			glob_map[j][i] = UNKNOWN;
 		}
 	}
-	globals.logical_direction = LOGICAL_DIR_UP;
-	globals.routeSquaresLength = 0;
-	globals.metaRouteLenght = 0;
-	globals.shouldPathfind = 1;
-	globals.adjecentNewSquaresLenght  = 0;
+	glob_logical_direction = LOGICAL_DIR_UP;
+	glob_routeSquaresLength = 0;
+	glob_metaRouteLenght = 0;
+	glob_shouldPathfind = 1;
+	glob_adjecentNewSquaresLenght  = 0;
 }
 
 void manual_logical_chart(uint8_t x, uint8_t y, uint8_t info)
 {
-	if(globals.map[y][x] != info)
+	if(glob_map[y][x] != info)
 	{
-		globals.map[y][x] = info;
+		glob_map[y][x] = info;
 		//send data to PC
-		cbWrite(&globals.mapDataToSend, x);
-		cbWrite(&globals.mapDataToSend, y);
+		cbWrite(&glob_mapDataToSend, x);
+		cbWrite(&glob_mapDataToSend, y);
 	}
 }
 
 void auto_logical_chart(uint8_t x, uint8_t y, uint8_t info)
 {
-	if(globals.map[y][x] != info)
+	if(glob_map[y][x] != info)
 	{
-		globals.map[y][x] = info;
+		glob_map[y][x] = info;
 		//send data to PC
-		cbWrite(&globals.mapDataToSend, x);
-		cbWrite(&globals.mapDataToSend, y);
+		cbWrite(&glob_mapDataToSend, x);
+		cbWrite(&glob_mapDataToSend, y);
 		if(info == 0)
 		{
 			addToAdjecentNewSquares(x+1, y);
@@ -55,15 +55,15 @@ void auto_logical_chart(uint8_t x, uint8_t y, uint8_t info)
 			addToAdjecentNewSquares(x, y+1);
 			addToAdjecentNewSquares(x, y-1);
 		}
-		if(x == globals.metaRoute[globals.metaRouteLenght-2] && y == globals.metaRoute[globals.metaRouteLenght-1])
+		if(x == glob_metaRoute[glob_metaRouteLenght-2] && y == glob_metaRoute[glob_metaRouteLenght-1])
 		{
-			globals.shouldPathfind = 1;
+			glob_shouldPathfind = 1;
 		}
-		for(uint8_t i = 0; i < globals.routeSquaresLength; i = i+2)
+		for(uint8_t i = 0; i < glob_routeSquaresLength; i = i+2)
 		{
-			if(globals.routeSquares[i] == x && globals.routeSquares[i+1] == y)
+			if(glob_routeSquares[i] == x && glob_routeSquares[i+1] == y)
 			{
-				globals.shouldPathfind = 1;
+				glob_shouldPathfind = 1;
 				break;
 			}
 		}
@@ -73,18 +73,18 @@ void auto_logical_chart(uint8_t x, uint8_t y, uint8_t info)
 uint8_t foundInAdjOrMeta(uint8_t x, uint8_t y)
 {
 	uint8_t i = 0;
-	while(i < globals.adjecentNewSquaresLenght>>1)
+	while(i < glob_adjecentNewSquaresLenght>>1)
 	{
-		if(globals.adjecentNewSquares[i] == x && globals.adjecentNewSquares[i+1] == y)
+		if(glob_adjecentNewSquares[i] == x && glob_adjecentNewSquares[i+1] == y)
 		{
 			return 1;
 		}
 		i = i+2;
 	}
 	i = 0;
-	while(i < globals.metaRouteLenght/2)
+	while(i < glob_metaRouteLenght/2)
 	{
-		if(globals.metaRoute[i] == x && globals.metaRoute[i+1] == y)
+		if(glob_metaRoute[i] == x && glob_metaRoute[i+1] == y)
 		{
 			return 1;
 		}
@@ -95,18 +95,18 @@ uint8_t foundInAdjOrMeta(uint8_t x, uint8_t y)
 
 void addToAdjecentNewSquares(uint8_t x, uint8_t y)
 {
-	if(foundInAdjOrMeta(x, y) == 0 && globals.map[y][x] == UNKNOWN)
+	if(foundInAdjOrMeta(x, y) == 0 && glob_map[y][x] == UNKNOWN)
 	{
-		globals.adjecentNewSquares[globals.adjecentNewSquaresLenght] = x;
-		globals.adjecentNewSquares[globals.adjecentNewSquaresLenght+1] = y;
-		globals.adjecentNewSquaresLenght = globals.adjecentNewSquaresLenght +2;
+		glob_adjecentNewSquares[glob_adjecentNewSquaresLenght] = x;
+		glob_adjecentNewSquares[glob_adjecentNewSquaresLenght+1] = y;
+		glob_adjecentNewSquaresLenght = glob_adjecentNewSquaresLenght +2;
 	}
 }
 
 void chart(uint8_t logical_direction, void (*charting_func)(uint8_t x, uint8_t y, uint8_t info))
 {
 	uint8_t sensorLength;
-	uint8_t targetSensor = (logical_direction+(4-globals.logical_direction))%4;
+	uint8_t targetSensor = (logical_direction+(4-glob_logical_direction))%4;
 	switch(targetSensor)
 	{
 		case LOGICAL_DIR_UP:
@@ -127,65 +127,65 @@ void chart(uint8_t logical_direction, void (*charting_func)(uint8_t x, uint8_t y
 		case(LOGICAL_DIR_UP):
 			if(SENSOROFFSET_2 < sensorLength)
 			{
-				charting_func(globals.mapX, globals.mapY+1, OPEN);
-				charting_func(globals.mapX, globals.mapY+2, OPEN);
+				charting_func(glob_mapX, glob_mapY+1, OPEN);
+				charting_func(glob_mapX, glob_mapY+2, OPEN);
 			}
 			else if(SENSOROFFSET_1 < sensorLength)
 			{
-				charting_func(globals.mapX, globals.mapY+2, WALL);
-				charting_func(globals.mapX, globals.mapY+1, OPEN);
+				charting_func(glob_mapX, glob_mapY+2, WALL);
+				charting_func(glob_mapX, glob_mapY+1, OPEN);
 			}
 			else
 			{
-				charting_func(globals.mapX, globals.mapY+1, WALL);
+				charting_func(glob_mapX, glob_mapY+1, WALL);
 			}						
 			break;
 		case(LOGICAL_DIR_RIGHT):
 			if(SENSOROFFSET_2 < sensorLength)
 			{
-				charting_func(globals.mapX+1, globals.mapY, OPEN);
-				charting_func(globals.mapX+2, globals.mapY, OPEN);
+				charting_func(glob_mapX+1, glob_mapY, OPEN);
+				charting_func(glob_mapX+2, glob_mapY, OPEN);
 			}
 			else if(SENSOROFFSET_1 < sensorLength)
 			{
-				charting_func(globals.mapX+2, globals.mapY, WALL);
-				charting_func(globals.mapX+1, globals.mapY, OPEN);
+				charting_func(glob_mapX+2, glob_mapY, WALL);
+				charting_func(glob_mapX+1, glob_mapY, OPEN);
 			}
 			else
 			{
-				charting_func(globals.mapX+1, globals.mapY, WALL);
+				charting_func(glob_mapX+1, glob_mapY, WALL);
 			}
 			break;
 		case(LOGICAL_DIR_DOWN):
 			if(SENSOROFFSET_2 < sensorLength)
 			{
-				charting_func(globals.mapX, globals.mapY-1, OPEN);
-				charting_func(globals.mapX, globals.mapY-2, OPEN);
+				charting_func(glob_mapX, glob_mapY-1, OPEN);
+				charting_func(glob_mapX, glob_mapY-2, OPEN);
 			}
 			else if(SENSOROFFSET_1 < sensorLength)
 			{
-				charting_func(globals.mapX, globals.mapY-2, WALL);
-				charting_func(globals.mapX, globals.mapY-1, OPEN);
+				charting_func(glob_mapX, glob_mapY-2, WALL);
+				charting_func(glob_mapX, glob_mapY-1, OPEN);
 			}
 			else
 			{
-				charting_func(globals.mapX, globals.mapY-1, WALL);
+				charting_func(glob_mapX, glob_mapY-1, WALL);
 			}
 			break;
 		case(LOGICAL_DIR_LEFT):
 			if(SENSOROFFSET_2 < sensorLength)
 			{
-				charting_func(globals.mapX-1, globals.mapY, OPEN);
-				charting_func(globals.mapX-2, globals.mapY, OPEN);
+				charting_func(glob_mapX-1, glob_mapY, OPEN);
+				charting_func(glob_mapX-2, glob_mapY, OPEN);
 			}
 			else if(SENSOROFFSET_1 < sensorLength)
 			{
-				charting_func(globals.mapX-2, globals.mapY, WALL);
-				charting_func(globals.mapX-1, globals.mapY, OPEN);
+				charting_func(glob_mapX-2, glob_mapY, WALL);
+				charting_func(glob_mapX-1, glob_mapY, OPEN);
 			}
 			else
 			{
-				charting_func(globals.mapX-1, globals.mapY, WALL);
+				charting_func(glob_mapX-1, glob_mapY, WALL);
 			}
 			break;
 		default:

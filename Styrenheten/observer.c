@@ -5,20 +5,20 @@
 
 void setRelativeX(uint8_t shortFront, uint8_t shortRear) //x som om roboten har riktning up
 {
-	uint8_t value = ((shortFront + shortRear)*(2 - globals.theta^2))>>2;
-	switch(globals.logical_direction)
+	uint8_t value = ((shortFront + shortRear)*(2 - glob_theta^2))>>2;
+	switch(glob_logical_direction)
 	{
 		case(LOGICAL_DIR_UP):
-			globals.x = value;
+			glob_x = value;
 			break;
 		case(LOGICAL_DIR_RIGHT):
-			globals.y = -value;
+			glob_y = -value;
 			break;
 		case(LOGICAL_DIR_DOWN):
-			globals.x = -value;
+			glob_x = -value;
 			break;
 		case(LOGICAL_DIR_LEFT):
-		globals.y = value;
+		glob_y = value;
 			break;
 	}
 	return;
@@ -26,19 +26,19 @@ void setRelativeX(uint8_t shortFront, uint8_t shortRear) //x som om roboten har 
 /* 
 int8_t getRelativeY(int8_t value) //Y som om roboten har riktning upp
 {
-	switch(globals.logical_direction)
+	switch(glob_logical_direction)
 	{
 		case(LOGICAL_DIR_UP):
-			globals.y = value;
+			glob_y = value;
 			break;
 		case(LOGICAL_DIR_RIGHT):
-			globals.x = value;
+			glob_x = value;
 			break;
 		case(LOGICAL_DIR_DOWN):
-			globals.y = -value;
+			glob_y = -value;
 			break;
 		case(LOGICAL_DIR_LEFT):
-			globals.x = -value;
+			glob_x = -value;
 			break;
 	}
 	return;
@@ -54,51 +54,51 @@ const uint8_t lookupShort[140] PROGMEM = {
 /*
 void setThetaOmegaLeft(uint8_t shortLeftFront, uint8_t shortLeftRear)
 {
-	globals.thetaOld = globals.theta;
+	glob_thetaOld = glob_theta;
 	uint8_t diff;
 	if (shortLeftFront < shortLeftRear)
 	{
 		diff = shortLeftRear - shortLeftFront;
-		globals.theta = pgm_read_byte(&(lookupShort[diff]))>>2;
+		glob_theta = pgm_read_byte(&(lookupShort[diff]))>>2;
 	}
 	else
 	{
 		diff = shortLeftFront - shortLeftRear;
-		globals.theta = -(pgm_read_byte(&(lookupShort[diff]))>>2);	
+		glob_theta = -(pgm_read_byte(&(lookupShort[diff]))>>2);	
 	}
-	globals.omega = (globals.theta - globals.thetaOld)>>TIME;
+	glob_omega = (glob_theta - glob_thetaOld)>>TIME;
 	return;
 }
 	
 void setThetaOmegaRight(uint8_t shortRightFront, uint8_t shortRightRear)
 {
-	globals.thetaOld = globals.theta;
+	glob_thetaOld = glob_theta;
 	uint8_t diff;
 	if (shortLeftFront < shortLeftRear)
 	{
 		diff = shortLeftRear - shortLeftFront;
-		globals.theta = -(pgm_read_byte(&(lookupShort[diff]))>>2);
+		glob_theta = -(pgm_read_byte(&(lookupShort[diff]))>>2);
 	}
 	else
 	{
 		diff = shortLeftFront - shortLeftRear;
-		globals.theta = pgm_read_byte(&(lookupShort[diff]))>>2;
+		glob_theta = pgm_read_byte(&(lookupShort[diff]))>>2;
 	}
-	globals.omega = (globals.theta - globals.thetaOld)>>TIME;
+	glob_omega = (glob_theta - glob_thetaOld)>>TIME;
 	return;
 }
 */
 
 void setOmega()
 {
-	int16_t gyroValue = globals.gyro;
+	int16_t gyroValue = glob_gyro;
 	if((gyroValue < 10) && (gyroValue > -10))
 	{
-		globals.omega = (globals.theta - globals.thetaOld)/TIME;
+		glob_omega = (glob_theta - glob_thetaOld)/TIME;
 	}
 	else
 	{
-		globals.omega = gyroValue;
+		glob_omega = gyroValue;
 	}
 	return;
 }
