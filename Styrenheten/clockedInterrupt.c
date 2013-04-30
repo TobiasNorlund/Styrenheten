@@ -157,6 +157,8 @@ void timedInterupt(void)
 	//skicka vidare till PC
 	SPI_set_kom(START);
 	SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, len);
+	uint8_t msg[4]={12, glob_x, 13, glob_y};
+	SPI_MASTER_write(msg, TYPE_DEBUG_DATA, 4);
 	//TODO STÅR här i oändlihet. Kan bero på att pc:n ej var inkopplad.
 	volatile uint8_t answer = 0;
 	uint8_t answerCounter=0;

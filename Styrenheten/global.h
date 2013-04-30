@@ -74,6 +74,7 @@
 	uint8_t glob_map[16][16]; //initieras i pathfind_init
 
 	CircularBuffer glob_debugMesssageBuffer;
+	uint8_t glob_debugMesssageBufferLength;
 
 	CircularBuffer glob_mapDataToSend; //initieras i clockedInterupt_init
 
