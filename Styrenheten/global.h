@@ -102,6 +102,8 @@
 	//sväng
 	uint8_t glob_L1_turnTheta;
 	uint8_t glob_L2_turnOmega;
+	
+	volatile int16_t glob_max;
 //} Globals;
 
 //volatile Globals globals;

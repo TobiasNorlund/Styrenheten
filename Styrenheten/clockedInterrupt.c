@@ -37,6 +37,7 @@ void updateState(void)
 {
 	setStraightObserver();
 }
+
 uint8_t temp = 0;
 ISR(TIMER1_COMPB_vect)
 {
@@ -80,7 +81,7 @@ void timedInterupt(void)
 	}
 	SPI_set_sensor(END);
 
-
+	/*
 	//send debug data
 	uint8_t bytesToSend = 0;
 	while(cbBytesUsed(&glob_debugMesssageBuffer) != 0)
@@ -92,7 +93,10 @@ void timedInterupt(void)
 	{
 		SPI_MASTER_write(msgSend, TYPE_DEBUG_DATA, bytesToSend);
 	}
-	//end send debug data
+	//end send debug data*/
+	
+	if(answerCounterSensor == 255)
+		return;
 	
 	//tolka/spara sensordata
 	if(type==TYPE_SENSOR_DATA && len!=0)
@@ -156,10 +160,19 @@ void timedInterupt(void)
 #ifndef KOM_OFF
 	//skicka vidare till PC
 	SPI_set_kom(START);
-	SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, len);
-	uint8_t msg[4]={12, glob_x, 13, glob_y};
-	SPI_MASTER_write(msg, TYPE_DEBUG_DATA, 4);
-	//TODO STÅR här i oändlihet. Kan bero på att pc:n ej var inkopplad.
+	msgRecieve[len] = 12;
+	msgRecieve[len+1] = glob_x;
+	msgRecieve[len+2] = 13;
+	msgRecieve[len+3] = glob_max;
+	msgRecieve[len+4] = 14;
+	msgRecieve[len+5] = glob_theta;
+
+	
+	SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, len+6);
+
+	//uint8_t msg[4]={12, glob_x, 13, glob_y};
+	//SPI_MASTER_write(msg, TYPE_DEBUG_DATA, 4);
+	
 	volatile uint8_t answer = 0;
 	uint8_t answerCounter=0;
 	do

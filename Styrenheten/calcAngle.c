@@ -80,6 +80,7 @@ void setTheta(uint8_t LongFront, uint8_t LongRear, uint8_t LongLeft, uint8_t Lon
 	{
 		right19FAngleK=calc19K(ShortRightFront, LongRight);
 		right19FAngleDiff=calcSideSensors19(ShortRightFront,LongRight,1) - glob_theta;
+		
 	}
 
 	//Vänsta sidan, endast korta
@@ -101,6 +102,7 @@ void setTheta(uint8_t LongFront, uint8_t LongRear, uint8_t LongLeft, uint8_t Lon
 	}
 	
 	//Räkna ut från tidigare vinkelhastighet*tid
+	//TODO
 	uint8_t omegaK=0;
 	int8_t omegaDiff=0;
 	if(OK_SENSOR_VALUE(ShortLeftRear)&&OK_SENSOR_VALUE(LongLeft))
@@ -111,13 +113,17 @@ void setTheta(uint8_t LongFront, uint8_t LongRear, uint8_t LongLeft, uint8_t Lon
 	
 	uint8_t irSensorK = calcKirSensorK(glob_theta);
 
-	int16_t taljare = irSensorK*(frontAngleK*frontAngleDiff + middleAngleK*middleAngleDiff + backAngleK*backAngleDiff + right36AngleDiff*right36AngleK + right19FAngleDiff*right19FAngleK + left36AngleDiff*left36AngleK + left19FAngleDiff*left19FAngleK) + omegaDiff*omegaK;
-	int16_t namnare = irSensorK*(frontAngleK + middleAngleK + backAngleK + right36AngleK + right19FAngleK + left36AngleK + left19FAngleK) + omegaK;
-
-	int16_t newAngleDiff = taljare/namnare;
-	
 	glob_thetaOld = glob_theta;
-	glob_theta = glob_theta+newAngleDiff;
+	//int16_t taljare = irSensorK*(frontAngleK*frontAngleDiff + middleAngleK*middleAngleDiff + backAngleK*backAngleDiff + right36AngleDiff*right36AngleK + right19FAngleDiff*right19FAngleK + left36AngleDiff*left36AngleK + left19FAngleDiff*left19FAngleK);// + omegaDiff*omegaK;
+	//int16_t namnare = irSensorK*(frontAngleK + middleAngleK + backAngleK + right36AngleK + right19FAngleK + left36AngleK + left19FAngleK); //+ omegaK;
+
+	//int16_t taljare = right36AngleDiff*right36AngleK + left36AngleDiff*left36AngleK;
+	int16_t taljare = calcSideSensors36(ShortLeftFront,ShortLeftRear,0)*left36AngleK + calcSideSensors36(ShortRightFront,ShortRightRear,1)*right36AngleK;
+	int16_t namnare = right36AngleK + left36AngleK;
+	
+	//int16_t newAngleDiff = taljare/namnare;
+	//glob_theta = glob_theta+newAngleDiff;
+	glob_theta = taljare/namnare;
 }
 
 //Värde mellan 0 och 25
@@ -227,6 +233,7 @@ int8_t calcSideSensors36(uint8_t frontDistance,uint8_t rearDistance, int8_t side
 		else
 		{
 			diff = frontDistance - rearDistance;
+			
 			return pgm_read_byte(&(lookup36[diff]))>>2; // >>2 = *0.25 Pga dimensionen är 0.25grader
 		}
 	}
@@ -236,6 +243,7 @@ int8_t calcSideSensors36(uint8_t frontDistance,uint8_t rearDistance, int8_t side
  * return [grader]
  */
 #define rearDistance 100 //TODO fix to compile
+
 int8_t calcSideSensors19(uint8_t frontDistance,uint8_t longDistance, int8_t side)
 {
 	uint8_t realFrontDistance = frontDistance>>SHORTFACTOR; //Ändrar dimensionen till hela cm

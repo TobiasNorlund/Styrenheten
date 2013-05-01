@@ -3,9 +3,21 @@
 #include <avr/pgmspace.h>
 
 
-void setRelativeX(uint8_t shortFront, uint8_t shortRear) //x som om roboten har riktning up
+void setRelativeX(uint8_t shortFront, uint8_t shortRear, uint8_t side) //x som om roboten har riktning up
 {
-	uint8_t value = ((shortFront + shortRear)*(2 - glob_theta^2))>>2;
+	int8_t test = degToRad(glob_theta)>> DIVISIONFACTOR;
+ 	uint8_t value = (shortFront + shortRear)>>1; // ((shortFront + shortRear)*(2 - (test^2)))>>2;
+	
+	//Vänster sida
+	if(side == 0)
+	{
+		value = value - 35; //TODO: Define Factor
+	}
+	else
+	{
+		value = 35 - value; //TODO: Define Factor
+	}
+	
 	switch(glob_logical_direction)
 	{
 		case(LOGICAL_DIR_UP):
@@ -136,15 +148,19 @@ void setStraightObserver()
 	
 	setTheta(LongFront, LongRear, LongLeft, LongRight, ShortLeftFront, ShortLeftRear, ShortRightFront, ShortRightRear);
 	setOmega();
-	
+	int16_t testX;
 	if(OK_SENSOR_VALUE(ShortLeftFront)&&OK_SENSOR_VALUE(ShortLeftRear))
 	{
-		setRelativeX(ShortLeftFront, ShortLeftRear);
+		testX = ((ShortLeftFront + ShortLeftRear)*(2 - (glob_theta^2)))>>2;
+		setRelativeX(ShortLeftFront, ShortLeftRear, 0);
 	}
+	/*
 	else if(OK_SENSOR_VALUE(ShortRightFront)&&OK_SENSOR_VALUE(ShortRightRear))
 	{
-		setRelativeX(ShortRightFront, ShortRightRear);
+		testX = ((ShortRightFront + ShortRightRear)*(2 - (glob_theta^2)))>>2;
+		setRelativeX(ShortRightFront, ShortRightRear, 1);
 	}	
+	*/
 	return;
 }
 	

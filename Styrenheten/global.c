@@ -60,11 +60,11 @@ uint8_t getSensorShortLeftForward()
 {
 	if(glob_virtual_direction == DIRECTION_FORWARD)
 	{
-		return glob_shortRearRight;
+		return glob_shortFrontLeft;
 	}
 	else
 	{
-		return glob_shortFrontLeft;
+		return glob_shortRearRight;
 	}
 }
 
@@ -96,10 +96,11 @@ uint8_t getSensorShortRightRear()
 {
 	if(glob_virtual_direction == DIRECTION_FORWARD)
 	{
-		return glob_shortFrontLeft;
+		return glob_shortRearRight;
 	}
 	else
 	{
-		return glob_shortRearRight;
+		return glob_shortFrontLeft;
+		
 	}
 }
