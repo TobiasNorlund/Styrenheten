@@ -172,7 +172,6 @@ void setDirRight(uint8_t dir){
 //#pragma GCC optimize ("O0")
 void regulateStraight()
 {
-//	int16_t testX;
 	setDirRight(1);
 	setDirLeft(1);
 	while(!((startSquareX != glob_mapX || startSquareY != glob_mapY)&&(0 < getRelativeY())))
