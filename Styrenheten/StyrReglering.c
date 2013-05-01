@@ -172,7 +172,6 @@ void setDirRight(uint8_t dir){
 //#pragma GCC optimize ("O0")
 void regulateStraight()
 {
-	int16_t max;
 	setDirRight(1);
 	setDirLeft(1);
 	while(!((startSquareX != glob_mapX || startSquareY != glob_mapY)&&(0 < getRelativeY())))
@@ -185,16 +184,24 @@ void regulateStraight()
 		*/
 		//TODO: Ska inte använda glob_vLeft!!!!
 		int16_t ur,ul;
-		max = -(((10*glob_L1_straightX*getRelativeX()/glob_vLeft)>>SHORTFACTOR) + ((glob_L2_straightTheta*degToRad(glob_theta))>>DIVISIONFACTOR) + (glob_L3_straightOmega*glob_omega));
-		if(max > 0 )
+		glob_max = -(((10*glob_L1_straightX*getRelativeX()/glob_vLeft)>>SHORTFACTOR) + ((glob_L2_straightTheta*degToRad(glob_theta))>>DIVISIONFACTOR) + (glob_L3_straightOmega*glob_omega));
+		if(glob_max > 254)
+		{
+			glob_max = 254;
+		}	
+		if(glob_max < -254)
+		{
+			glob_max = -254;
+		}
+		if(glob_max > 0 )
 		{
 			ur = 254;
-			ul = ur - max;
+			ul = ur - glob_max;
 		}
 		else
 		{
 			ul = 254;
-			ur = max + ul;
+			ur = glob_max + ul;
 		}
 		setSpeedLeft(ul);
 		setSpeedRight(ur);
