@@ -13,27 +13,27 @@
 
 #define HALFSQUAREWIDTH 80 //halva cm
 
-void setRelativeX(uint8_t value) //x som om roboten har riktning up
+void setRelativeX(int8_t val) //x som om roboten har riktning up
 {
 	switch(glob_logical_direction)
 	{
 		case(LOGICAL_DIR_UP):
-			glob_x = value;
+			glob_x = val;
 			break;
 		case(LOGICAL_DIR_RIGHT):
-			glob_y = -value;
+			glob_y = -val;
 			break;
+			
 		case(LOGICAL_DIR_DOWN):
-			glob_x = -value;
+			glob_x = -val;
 			break;
 		case(LOGICAL_DIR_LEFT):
-		glob_y = value;
+		glob_y = val;
 			break;
 	}
-	return;
 }
 
-int8_t setRelativeY(int8_t value) //Y som om roboten har riktning upp
+void setRelativeY(int8_t value) //Y som om roboten har riktning upp
 {
 	switch(glob_logical_direction)
 	{
@@ -174,12 +174,15 @@ int16_t max(int16_t a, int16_t b)
 	return b;
 }
 
+//turn off optimization 
+#pragma GCC push_options
+#pragma GCC optimize ("O0")
 int16_t getShiftedSensorX(int16_t sensorVal)
 {
 	int16_t iter = sensorVal-(HALFSQUAREWIDTH<<2);
 	while(1)
 	{
-		if(max(iter-glob_x, glob_x-iter) =< HALFSQUAREWIDTH)
+		if(max(iter-glob_x, glob_x-iter) <= HALFSQUAREWIDTH)
 		{
 			return iter;
 		}
@@ -192,14 +195,15 @@ int16_t getShiftedSensorY(int16_t sensorVal)
 	int16_t iter = sensorVal-(HALFSQUAREWIDTH<<2);
 	while(1)
 	{
-		if(max(iter-glob_y, glob_y-iter) =< HALFSQUAREWIDTH)
+		if(max(iter-glob_y, glob_y-iter) <= HALFSQUAREWIDTH)
 		{
 			return iter;
 		}
 		iter = iter+(HALFSQUAREWIDTH<<1);
 	}
 }
-
+#pragma GCC pop_options
+//end turn off optimization 
 void moveForwards()
 {
 	switch(glob_logical_direction)
@@ -219,7 +223,9 @@ void moveForwards()
 	}
 	setRelativeY(getRelativeY()-HALFSQUAREWIDTH<<1);
 }
-
+//turn off optimization
+#pragma GCC push_options
+#pragma GCC optimize ("O0")
 void straightObserver()
 {
 	volatile int16_t LongFront=getSensorLongForward();	// Används ej
@@ -242,25 +248,27 @@ void straightObserver()
 	uint16_t overNoiseShortRightFront = getSensorShortOverNoise(ShortRightFront);
 	uint16_t overNoiseShortRightRear = getSensorShortOverNoise(ShortRightRear);
 	
-	uint16_t overXPosUncert = 10;
+	
+	uint16_t overXPosUncert = 1;
 	//ta fram x i korridor // du är här. blir problem då en sensor säger att man är på posY -80 och en annan säger att man är på +80 du har inte tänkt på att långa x sensorer kan se flera rutor
 	int16_t XShortLeftFront = getShiftedSensorX(ShortLeftFront+CHASSITOSHORTSIDE-HALFSQUAREWIDTH);
 	int16_t XShortLeftRear = getShiftedSensorX(ShortLeftRear+CHASSITOSHORTSIDE-HALFSQUAREWIDTH);
 	int16_t XShortRightFront = getShiftedSensorX(HALFSQUAREWIDTH-ShortRightFront-CHASSITOSHORTSIDE);
 	int16_t XShortRightRear = getShiftedSensorX(HALFSQUAREWIDTH-ShortRightRear-CHASSITOSHORTSIDE);
 	
-	int16_t XLongLeft = getShiftedSensorX(LongLeft<<1+CHASSITOLONGSIDE-HALFSQUAREWIDTH);
-	int16_t XLongRight = getShiftedSensorX(HALFSQUAREWIDTH-LongRight<<1-CHASSITOLONGSIDE);
+	int16_t XLongLeft = getShiftedSensorX((LongLeft<<1)+CHASSITOLONGSIDE-HALFSQUAREWIDTH);
+	int16_t XLongRight = getShiftedSensorX(HALFSQUAREWIDTH-(LongRight<<1)-CHASSITOLONGSIDE);
 	
-	uint16_t taljare = XLongLeft*overNoiseLongLeft+XLongRight*overNoiseLongRight+XShortLeftFront*overNoiseShortLeftFront+XShortLeftRear*overNoiseShortLeftRear+XShortRightFront*overNoiseShortRightFront+XShortRightRear*overNoiseShortRightRear+overXPosUncert*getRelativeX();
-	uint16_t namnare = overNoiseLongLeft+overNoiseLongRight+overNoiseShortLeftFront+overNoiseShortLeftRear+overNoiseShortRightFront+overNoiseShortRightRear+overXPosUncert;
-	setRelativeX(taljare/namnare);
+	int16_t taljare = XLongLeft*overNoiseLongLeft+XLongRight*overNoiseLongRight+XShortLeftFront*overNoiseShortLeftFront+XShortLeftRear*overNoiseShortLeftRear+XShortRightFront*overNoiseShortRightFront+XShortRightRear*overNoiseShortRightRear+overXPosUncert*((int16_t) getRelativeX());
+	int16_t namnare = overNoiseLongLeft+overNoiseLongRight+overNoiseShortLeftFront+overNoiseShortLeftRear+overNoiseShortRightFront+overNoiseShortRightRear+overXPosUncert;
+	int16_t divAns=taljare/namnare;
+	setRelativeX(divAns);
 	//ta fram y
-	int16_t YLongForward = getShiftedSensorY(HALFSQUAREWIDTH-CHASSITOLONGFRONT-LongFront<<1); // du är här. blir problem då en sensor säger att man är på posY -80 och en annan säger att man är på +80
-	int16_t YLongBack = getShiftedSensorY(LongFront<<1+CHASSITOLONGFRONT-HALFSQUAREWIDTH);
+	int16_t YLongForward = getShiftedSensorY((HALFSQUAREWIDTH-CHASSITOLONGFRONT)-(LongFront<<1)); // du är här. blir problem då en sensor säger att man är på posY -80 och en annan säger att man är på +80
+	int16_t YLongBack = getShiftedSensorY((LongFront<<1)+CHASSITOLONGFRONT-HALFSQUAREWIDTH);
 	uint16_t overYPosUncert = 1; //inkluderar osäkerhet i y pga hast.
 	
-	taljare = YLongForward+overNoiseLongFront+YLongBack*overNoiseLongRear+overYPosUncert*(getRelativeY()); //lägg till hastighet*TIMECONSTANT vid getRelativeY i beräkningarna TODO
+	taljare = YLongForward+overNoiseLongFront+YLongBack*overNoiseLongRear+overYPosUncert*(getRelativeY()+(TIMECONSTANT*((uint16_t) (glob_vLeft+glob_vRight)))>>10); //lägg till hastighet*TIMECONSTANT vid getRelativeY i beräkningarna TODO
 	namnare = overNoiseLongFront+overNoiseLongRear+overYPosUncert;
 	setRelativeY(taljare/namnare);
 	if(getRelativeY() > HALFSQUAREWIDTH)
@@ -295,4 +303,5 @@ void straightObserver()
 	*/	
 	return;
 }
-	
+#pragma GCC pop_options
+//end turn off optimization
