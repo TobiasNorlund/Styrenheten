@@ -31,9 +31,6 @@ void init(void)
 	glob_L3_straightOmega=4;
 	glob_L1_turnTheta=12;
 	glob_L2_turnOmega=4;
-	//external interupt
-	EIMSK=(1<<INT0);// enable on int0
-	EICRA=(1<<ISC01)|(1<<ISC00);//on rising edge
 	
 	clockedInterrupt_init();
 	reglering_init();
@@ -44,19 +41,6 @@ void init(void)
 	
 	DDRB |= 0b00000001;
 }
-//nödstopp
-ISR(INT0_vect)
-{
-	setSpeedRight(0);
-	setSpeedLeft(0);
-	TIMSK0 = (0<<OCIE0A);// disable Interrupt TimerCounter0 Compare Match A (SIG_OUTPUT_COMPARE0A)
-	while(1)
-	{
-		setSpeedRight(0);
-		setSpeedLeft(0);
-	}
-}
-
 
 void signal_done()
 {
@@ -141,7 +125,6 @@ void manualSteering()
 
 int main(void)
 {
-	manualSteering();
 	init();
 	//while(START_PIN == 0);
 	if(1) //MANUAL_AUTO_SWITCH_PIN == MANUAL_SELECTED)

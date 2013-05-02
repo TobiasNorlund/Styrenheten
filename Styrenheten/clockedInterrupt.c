@@ -35,14 +35,23 @@ void clockedInterrupt_init()
 
 void updateState(void)
 {
-//	straightObserver();
-	turnObserver();
+	observe();
 }
 
 uint8_t temp = 0;
 ISR(TIMER1_COMPB_vect)
 {
-
+	if(PIND & 1<<PIND2)
+	{
+		setSpeedRight(0);
+		setSpeedLeft(0);
+		TIMSK0 = (0<<OCIE0A);// disable Interrupt TimerCounter0 Compare Match A (SIG_OUTPUT_COMPARE0A)
+		while(1)
+		{
+			setSpeedRight(0);
+			setSpeedLeft(0);
+		}
+	}
 	overFlowInteruptTimer1++;
 	if(overFlowInteruptTimer1==2)
 	{
@@ -164,12 +173,13 @@ void timedInterupt(void)
 	msgRecieve[len] = 12;
 	msgRecieve[len+1] = glob_x;
 	msgRecieve[len+2] = 13;
-	msgRecieve[len+3] = glob_max;
-	msgRecieve[len+4] = 14;
-	msgRecieve[len+5] = glob_theta;
+	msgRecieve[len+3] = (glob_max&0xFF00)>>8;
+	msgRecieve[len+4] = glob_max&0x00FF;
+	msgRecieve[len+5] = 14;
+	msgRecieve[len+6] = glob_theta;
 
 	
-	SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, len+6);
+	SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, len+7);
 
 	//uint8_t msg[4]={12, glob_x, 13, glob_y};
 	//SPI_MASTER_write(msg, TYPE_DEBUG_DATA, 4);

@@ -169,12 +169,14 @@ void setDirRight(uint8_t dir){
 	testa det först.                                                    */
 /************************************************************************/
 //turn off optimization 
-//#pragma GCC push_options
-//#pragma GCC optimize ("O0")
+#pragma GCC push_options
+#pragma GCC optimize ("O0")
 void regulateStraight()
 {
 	setDirRight(1);
 	setDirLeft(1);
+	startSquareX = glob_mapX;
+	startSquareY = glob_mapY;
 	while(!((startSquareX != glob_mapX || startSquareY != glob_mapY)&&(0 < getRelativeY())))
 	{
 		/*
@@ -187,30 +189,30 @@ void regulateStraight()
 		
 		//testX = getRelativeX();
 		int16_t ur,ul;
-		glob_max = -(((10*glob_L1_straightX*getRelativeX()/(glob_v+1))>>SHORTFACTOR) + ((glob_L2_straightTheta*degToRad(glob_theta))>>DIVISIONFACTOR) + (glob_L3_straightOmega*glob_omega));
-		if(glob_max > MAXSPEED)
+		glob_max = (((10*glob_L1_straightX*(int8to16(getRelativeX()))/(glob_v+1))>>SHORTFACTOR) + ((glob_L2_straightTheta*degToRad(glob_theta))>>DIVISIONFACTOR) + (glob_L3_straightOmega*glob_omega));
+		if(glob_max > 254)
 		{
-			glob_max = MAXSPEED;
+			glob_max = 254;
 		}
-		if(glob_max < -MAXSPEED)
+		else if(glob_max < -254)
 		{
-			glob_max = -MAXSPEED;
+			glob_max = -254;
 		}
 		if(glob_max > 0 )
 		{
-			ur = MAXSPEED;
+			ur = 254;
 			ul = ur - glob_max;
 		}
 		else
 		{
-			ul = MAXSPEED;
+			ul = 254;
 			ur = glob_max + ul;
 		}
 		setSpeedLeft(ul);
 		setSpeedRight(ur);
 	}	
 }
-//#pragma GCC pop_options
+#pragma GCC pop_options
 //end turn off optimization 
 
 void turnLeft90(){
@@ -286,7 +288,7 @@ void customSteering()
 }
 
 //Returnerar 2^DIVISIONFACTOR*radianer 
-int8_t degToRad(int8_t degree)
+int16_t degToRad(int8_t degree)
 {
-	return (2^DIVISIONFACTOR*9*degree>>9); // pi/180 = 0.0174532, 9/(2^9) = 0.017578
+	return (2^DIVISIONFACTOR*9*int8to16(degree)>>9); // pi/180 = 0.0174532, 9/(2^9) = 0.017578
 }

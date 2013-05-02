@@ -1,6 +1,7 @@
 #include "observer.h"
 #include "global.h"
 #include "../../TSEA27-include/message.h"
+#include "../../TSEA27-include/utils.h"
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 
@@ -129,13 +130,8 @@ void observe()
 	}
 	else
 	{
-		rotateObserver();
+		turnObserver();
 	}
-}
-
-void rotateObserver()
-{
-	//TODO
 }
 
 uint8_t getSensorLongOverNoise(uint8_t value)
@@ -229,28 +225,28 @@ void moveForwards()
 #pragma GCC optimize ("O0")
 void straightObserver()
 {
-	volatile int16_t LongFront=getSensorLongForward();	// Används ej
-	volatile int16_t LongRear=getSensorLongRear();		// Används ej
-	volatile int16_t LongLeft=getSensorLongLeft();
-	volatile int16_t LongRight=getSensorLongRight();
+	int16_t LongFront=getSensorLongForward();	// Används ej
+	int16_t LongRear=getSensorLongRear();		// Används ej
+	int16_t LongLeft=getSensorLongLeft();
+	int16_t LongRight=getSensorLongRight();
 	
-	volatile uint16_t ShortLeftFront=getSensorShortLeftForward();
-	volatile uint16_t ShortLeftRear=getSensorShortLeftRear();
-	volatile uint16_t ShortRightFront=getSensorShortRightForward();
-	volatile uint16_t ShortRightRear=getSensorShortRightRear();
+	int16_t ShortLeftFront=getSensorShortLeftForward();
+	int16_t ShortLeftRear=getSensorShortLeftRear();
+	int16_t ShortRightFront=getSensorShortRightForward();
+	int16_t ShortRightRear=getSensorShortRightRear();
  	
-	uint16_t overNoiseLongFront=getSensorLongOverNoise(LongFront);
-	uint16_t overNoiseLongRear=getSensorLongOverNoise(LongRear);
-	uint16_t overNoiseLongLeft=getSensorLongOverNoise(LongLeft);
-	uint16_t overNoiseLongRight=getSensorLongOverNoise(LongRight);
+	int16_t overNoiseLongFront=getSensorLongOverNoise(LongFront);
+	int16_t overNoiseLongRear=getSensorLongOverNoise(LongRear);
+	int16_t overNoiseLongLeft=getSensorLongOverNoise(LongLeft);
+	int16_t overNoiseLongRight=getSensorLongOverNoise(LongRight);
 	
-	uint16_t overNoiseShortLeftFront = getSensorShortOverNoise(ShortLeftFront);
-	uint16_t overNoiseShortLeftRear = getSensorShortOverNoise(ShortLeftRear);
-	uint16_t overNoiseShortRightFront = getSensorShortOverNoise(ShortRightFront);
-	uint16_t overNoiseShortRightRear = getSensorShortOverNoise(ShortRightRear);
+	int16_t overNoiseShortLeftFront = getSensorShortOverNoise(ShortLeftFront);
+	int16_t overNoiseShortLeftRear = getSensorShortOverNoise(ShortLeftRear);
+	int16_t overNoiseShortRightFront = getSensorShortOverNoise(ShortRightFront);
+	int16_t overNoiseShortRightRear = getSensorShortOverNoise(ShortRightRear);
 	
 	
-	uint16_t overXPosUncert = 1;
+	int16_t overXPosUncert = 1;
 	//ta fram x i korridor // du är här. blir problem då en sensor säger att man är på posY -80 och en annan säger att man är på +80 du har inte tänkt på att långa x sensorer kan se flera rutor
 	int16_t XShortLeftFront = getShiftedSensorX(ShortLeftFront+CHASSITOSHORTSIDE-HALFSQUAREWIDTH);
 	int16_t XShortLeftRear = getShiftedSensorX(ShortLeftRear+CHASSITOSHORTSIDE-HALFSQUAREWIDTH);
@@ -259,8 +255,14 @@ void straightObserver()
 	
 	int16_t XLongLeft = getShiftedSensorX((LongLeft<<1)+CHASSITOLONGSIDE-HALFSQUAREWIDTH);
 	int16_t XLongRight = getShiftedSensorX(HALFSQUAREWIDTH-(LongRight<<1)-CHASSITOLONGSIDE);
-	
-	int16_t taljare = XLongLeft*overNoiseLongLeft+XLongRight*overNoiseLongRight+XShortLeftFront*overNoiseShortLeftFront+XShortLeftRear*overNoiseShortLeftRear+XShortRightFront*overNoiseShortRightFront+XShortRightRear*overNoiseShortRightRear+overXPosUncert*((int16_t) getRelativeX());
+	int16_t sum1 = XLongLeft*overNoiseLongLeft;
+	int16_t sum2 = XLongRight*overNoiseLongRight;
+	int16_t sum3 = XShortLeftFront*overNoiseShortLeftFront;
+	int16_t sum4 = XShortLeftRear*overNoiseShortLeftRear;
+	int16_t sum5 = XShortRightFront*overNoiseShortRightFront;
+	int16_t sum6 = XShortRightRear*overNoiseShortRightRear;
+	int16_t sum7 = overXPosUncert*int8to16(getRelativeX());
+	int16_t taljare = sum1+sum2+sum3+sum4+sum5+sum6+sum7;
 	int16_t namnare = overNoiseLongLeft+overNoiseLongRight+overNoiseShortLeftFront+overNoiseShortLeftRear+overNoiseShortRightFront+overNoiseShortRightRear+overXPosUncert;
 	int16_t divAns=taljare/namnare;
 	setRelativeX(divAns);

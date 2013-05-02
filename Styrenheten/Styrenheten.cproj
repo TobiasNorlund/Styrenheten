@@ -143,6 +143,14 @@
       <SubType>compile</SubType>
       <Link>spi_master.h</Link>
     </Compile>
+    <Compile Include="..\..\TSEA27-include\utils.c">
+      <SubType>compile</SubType>
+      <Link>utils.c</Link>
+    </Compile>
+    <Compile Include="..\..\TSEA27-include\utils.h">
+      <SubType>compile</SubType>
+      <Link>utils.h</Link>
+    </Compile>
     <Compile Include="calcAngle.c">
       <SubType>compile</SubType>
     </Compile>
