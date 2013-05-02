@@ -15,20 +15,19 @@
 
 void setRelativeX(uint8_t value) //x som om roboten har riktning up
 {
-	uint8_t value = ((shortFront + shortRear)*(2 - globals.theta^2))>>2;
-	switch(globals.logical_direction)
+	switch(glob_logical_direction)
 	{
 		case(LOGICAL_DIR_UP):
-			globals.x = value;
+			glob_x = value;
 			break;
 		case(LOGICAL_DIR_RIGHT):
-			globals.y = -value;
+			glob_y = -value;
 			break;
 		case(LOGICAL_DIR_DOWN):
-			globals.x = -value;
+			glob_x = -value;
 			break;
 		case(LOGICAL_DIR_LEFT):
-		globals.y = value;
+		glob_y = value;
 			break;
 	}
 	return;
@@ -36,19 +35,19 @@ void setRelativeX(uint8_t value) //x som om roboten har riktning up
 
 int8_t setRelativeY(int8_t value) //Y som om roboten har riktning upp
 {
-	switch(globals.logical_direction)
+	switch(glob_logical_direction)
 	{
 		case(LOGICAL_DIR_UP):
-			globals.y = value;
+			glob_y = value;
 			break;
 		case(LOGICAL_DIR_RIGHT):
-			globals.x = value;
+			glob_x = value;
 			break;
 		case(LOGICAL_DIR_DOWN):
-			globals.y = -value;
+			glob_y = -value;
 			break;
 		case(LOGICAL_DIR_LEFT):
-			globals.x = -value;
+			glob_x = -value;
 			break;
 	}
 	return;
@@ -64,51 +63,51 @@ const uint8_t lookupShort[140] PROGMEM = {
 /*
 void setThetaOmegaLeft(uint8_t shortLeftFront, uint8_t shortLeftRear)
 {
-	globals.thetaOld = globals.theta;
+	glob_thetaOld = glob_theta;
 	uint8_t diff;
 	if (shortLeftFront < shortLeftRear)
 	{
 		diff = shortLeftRear - shortLeftFront;
-		globals.theta = pgm_read_byte(&(lookupShort[diff]))>>2;
+		glob_theta = pgm_read_byte(&(lookupShort[diff]))>>2;
 	}
 	else
 	{
 		diff = shortLeftFront - shortLeftRear;
-		globals.theta = -(pgm_read_byte(&(lookupShort[diff]))>>2);	
+		glob_theta = -(pgm_read_byte(&(lookupShort[diff]))>>2);	
 	}
-	globals.omega = (globals.theta - globals.thetaOld)>>TIME;
+	glob_omega = (glob_theta - glob_thetaOld)>>TIME;
 	return;
 }
 	
 void setThetaOmegaRight(uint8_t shortRightFront, uint8_t shortRightRear)
 {
-	globals.thetaOld = globals.theta;
+	glob_thetaOld = glob_theta;
 	uint8_t diff;
 	if (shortLeftFront < shortLeftRear)
 	{
 		diff = shortLeftRear - shortLeftFront;
-		globals.theta = -(pgm_read_byte(&(lookupShort[diff]))>>2);
+		glob_theta = -(pgm_read_byte(&(lookupShort[diff]))>>2);
 	}
 	else
 	{
 		diff = shortLeftFront - shortLeftRear;
-		globals.theta = pgm_read_byte(&(lookupShort[diff]))>>2;
+		glob_theta = pgm_read_byte(&(lookupShort[diff]))>>2;
 	}
-	globals.omega = (globals.theta - globals.thetaOld)>>TIME;
+	glob_omega = (glob_theta - glob_thetaOld)>>TIME;
 	return;
 }
 */
 
 void setOmega()
 {
-	int16_t gyroValue = globals.gyro;
+	int16_t gyroValue = glob_gyro;
 	if((gyroValue < 10) && (gyroValue > -10))
 	{
-		globals.omega = (globals.theta - globals.thetaOld)/TIME;
+		glob_omega = (glob_theta - glob_thetaOld)/TIME;
 	}
 	else
 	{
-		globals.omega = gyroValue;
+		glob_omega = gyroValue;
 	}
 	return;
 }
@@ -123,7 +122,7 @@ void setOmega()
 
 void observe()
 {
-	if(globals.route[globals.routeLength] == FORWARD_COMMAND)
+	if(glob_route[glob_routeLength] == FORWARD_COMMAND)
 	{
 		straightObserver();
 	}
@@ -180,7 +179,7 @@ int16_t getShiftedSensorX(int16_t sensorVal)
 	int16_t iter = sensorVal-(HALFSQUAREWIDTH<<2);
 	while(1)
 	{
-		if(max(iter-globals.x, globals.x-iter) < (HALFSQUAREWIDTH<<1))
+		if(max(iter-glob_x, glob_x-iter) < (HALFSQUAREWIDTH<<1))
 		{
 			return iter;
 		}
@@ -193,7 +192,7 @@ int16_t getShiftedSensorY(int16_t sensorVal)
 	int16_t iter = sensorVal-(HALFSQUAREWIDTH<<2);
 	while(1)
 	{
-		if(max(iter-globals.x, globals.x-iter) < (HALFSQUAREWIDTH<<1))
+		if(max(iter-glob_x, glob_x-iter) < (HALFSQUAREWIDTH<<1))
 		{
 			return iter;
 		}
@@ -203,19 +202,19 @@ int16_t getShiftedSensorY(int16_t sensorVal)
 
 void moveForwards()
 {
-	switch(globals.logical_direction)
+	switch(glob_logical_direction)
 	{
 		case LOGICAL_DIR_UP:
-			++globals.mapY;
+			++glob_mapY;
 			break;
 		case LOGICAL_DIR_RIGHT:
-			++globals.mapX;
+			++glob_mapX;
 			break;
 		case LOGICAL_DIR_DOWN:
-			--globals.mapY;
+			--glob_mapY;
 			break;
 		default:
-			--globals.mapX;
+			--glob_mapX;
 			break;
 	}
 	setRelativeY(getRelativeY()-HALFSQUAREWIDTH<<1);
@@ -284,7 +283,7 @@ void straightObserver()
 	
 	setTheta(LongFront, LongRear, LongLeft, LongRight, ShortLeftFront, ShortLeftRear, ShortRightFront, ShortRightRear);
 	setOmega();
-	
+	/*
 	if(OK_SENSOR_VALUE(ShortLeftFront)&&OK_SENSOR_VALUE(ShortLeftRear))
 	{
 		setRelativeX(ShortLeftFront, ShortLeftRear);
@@ -292,7 +291,8 @@ void straightObserver()
 	else if(OK_SENSOR_VALUE(ShortRightFront)&&OK_SENSOR_VALUE(ShortRightRear))
 	{
 		setRelativeX(ShortRightFront, ShortRightRear);
-	}	
+	}
+	*/	
 	return;
 }
 	
