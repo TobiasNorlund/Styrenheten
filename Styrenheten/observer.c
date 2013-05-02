@@ -9,7 +9,8 @@
 #define CHASSITOLONGBACK 18 //halva cm
 #define CHASSITOLONGFRONT 18 //halva cm
 
-#define TIMECONSTANT 100
+#define TIMECONSTANT 100 // ms
+#define INVERTTIMECONSTANT 10 //Dimension 1/s
 
 #define HALFSQUAREWIDTH 80 //halva cm
 
@@ -103,7 +104,7 @@ void setOmega()
 	int16_t gyroValue = glob_gyro;
 	if((gyroValue < 10) && (gyroValue > -10))
 	{
-		glob_omega = (glob_theta - glob_thetaOld)/TIME;
+		glob_omega = (glob_theta - glob_thetaOld)*INVERTTIMECONSTANT; //TODO
 	}
 	else
 	{
@@ -290,7 +291,9 @@ void straightObserver()
 	*/
 	
 	setTheta(LongFront, LongRear, LongLeft, LongRight, ShortLeftFront, ShortLeftRear, ShortRightFront, ShortRightRear);
+	
 	setOmega();
+	
 	/*
 	if(OK_SENSOR_VALUE(ShortLeftFront)&&OK_SENSOR_VALUE(ShortLeftRear))
 	{
@@ -305,3 +308,9 @@ void straightObserver()
 }
 #pragma GCC pop_options
 //end turn off optimization
+
+void turnObserver()
+{
+	int16_t tempTheta = (glob_gyro*TIMECONSTANT)>>10;
+	glob_theta = glob_theta + tempTheta;
+}

@@ -28,6 +28,6 @@ void rotateObserver();
 void observe();
 void setRelativeX(int8_t val);
 void setRelativeY(int8_t val);
-
+void turnObserver();
 
 #endif /* OBSERVER_H_ */

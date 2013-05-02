@@ -35,7 +35,8 @@ void clockedInterrupt_init()
 
 void updateState(void)
 {
-	straightObserver();
+//	straightObserver();
+	turnObserver();
 }
 
 uint8_t temp = 0;

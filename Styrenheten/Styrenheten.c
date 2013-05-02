@@ -119,7 +119,8 @@ void autoSteering()
 	}
 	return;
 }
-
+#pragma GCC push_options
+#pragma GCC optimize ("O0")
 void manualSteering()
 {
 	while(1)
@@ -134,11 +135,13 @@ void manualSteering()
 		}
 	}
 }
-
+#pragma GCC pop_options
+//end turn off optimization
 
 
 int main(void)
 {
+	manualSteering();
 	init();
 	//while(START_PIN == 0);
 	if(1) //MANUAL_AUTO_SWITCH_PIN == MANUAL_SELECTED)
