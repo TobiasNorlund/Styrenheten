@@ -4,10 +4,10 @@
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 
-#define CHASSITOSHORTSIDE 10 //halva cm
-#define CHASSITOLONGSIDE 10 //halva cm
-#define CHASSITOLONGBACK 10 //halva cm
-#define CHASSITOLONGFRONT 10 //halva cm
+#define CHASSITOSHORTSIDE 7 //halva cm 7 18 21
+#define CHASSITOLONGSIDE 21 //halva cm
+#define CHASSITOLONGBACK 18 //halva cm
+#define CHASSITOLONGFRONT 18 //halva cm
 
 #define TIMECONSTANT 100
 
@@ -122,7 +122,7 @@ void setOmega()
 
 void observe()
 {
-	if(glob_route[glob_routeLength] == FORWARD_COMMAND)
+	if(glob_curComm == FORWARD_COMMAND)
 	{
 		straightObserver();
 	}
@@ -179,7 +179,7 @@ int16_t getShiftedSensorX(int16_t sensorVal)
 	int16_t iter = sensorVal-(HALFSQUAREWIDTH<<2);
 	while(1)
 	{
-		if(max(iter-glob_x, glob_x-iter) < (HALFSQUAREWIDTH<<1))
+		if(max(iter-glob_x, glob_x-iter) =< HALFSQUAREWIDTH)
 		{
 			return iter;
 		}
@@ -192,7 +192,7 @@ int16_t getShiftedSensorY(int16_t sensorVal)
 	int16_t iter = sensorVal-(HALFSQUAREWIDTH<<2);
 	while(1)
 	{
-		if(max(iter-glob_y, glob_y-iter) < (HALFSQUAREWIDTH<<1))
+		if(max(iter-glob_y, glob_y-iter) =< HALFSQUAREWIDTH)
 		{
 			return iter;
 		}

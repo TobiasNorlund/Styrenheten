@@ -10,6 +10,7 @@
 
 #include "charting.h"
 #include "global.h"
+#include "../../TSEA27-include/message.h"
 
 #define TIME 10 //i ms
 
@@ -27,6 +28,7 @@ void pathfind_init()
 	glob_metaRouteLenght = 0;
 	glob_shouldPathfind = 1;
 	glob_adjecentNewSquaresLenght  = 0;
+	glob_curComm = FORWARD_COMMAND;
 }
 
 void manual_logical_chart(uint8_t x, uint8_t y, uint8_t info)
