@@ -14,12 +14,12 @@
 
 void pathfind()
 {
-	globals.shouldPathfind = 0;
+	glob_shouldPathfind = 0;
 	truncateMetaRoute(); //flyttar över element från metarutten till adj. new squares enl designspec.
 	adjecentNewSquaresRemoveChartedSquares(); //tar bort element från adj. new squares som har blivit upptäkta
-	if(globals.metaRouteLenght == 0)
+	if(glob_metaRouteLenght == 0)
 	{
-		if(globals.adjecentNewSquaresLenght == 0)
+		if(glob_adjecentNewSquaresLenght == 0)
 		{
 			return;
 		}
@@ -34,19 +34,19 @@ void pathfind()
 
 void truncateMetaRoute()
 {
-	for(uint8_t i = 0; i < globals.metaRouteLenght; i=i+2)
+	for(uint8_t i = 0; i < glob_metaRouteLenght; i=i+2)
 	{
-		if(globals.map[globals.metaRoute[i+1]][globals.metaRoute[i]] != UNKNOWN)
+		if(glob_map[glob_metaRoute[i+1]][glob_metaRoute[i]] != UNKNOWN)
 		{
-			uint8_t metaRouteSave = globals.metaRouteLenght;
-			globals.metaRouteLenght = i;
+			uint8_t metaRouteSave = glob_metaRouteLenght;
+			glob_metaRouteLenght = i;
 			while(i < metaRouteSave)
 			{
-				if(foundInAdjOrMeta(globals.metaRoute[i], globals.metaRoute[i+1]) == 0)
+				if(foundInAdjOrMeta(glob_metaRoute[i], glob_metaRoute[i+1]) == 0)
 				{
-					globals.adjecentNewSquares[globals.adjecentNewSquaresLenght] = globals.metaRoute[i];
-					globals.adjecentNewSquares[globals.adjecentNewSquaresLenght+1] = globals.metaRoute[i+1];
-					globals.adjecentNewSquaresLenght = globals.adjecentNewSquaresLenght+2;
+					glob_adjecentNewSquares[glob_adjecentNewSquaresLenght] = glob_metaRoute[i];
+					glob_adjecentNewSquares[glob_adjecentNewSquaresLenght+1] = glob_metaRoute[i+1];
+					glob_adjecentNewSquaresLenght = glob_adjecentNewSquaresLenght+2;
 				}
 				i = i+2;
 			}
@@ -58,18 +58,18 @@ void truncateMetaRoute()
 void adjecentNewSquaresRemoveChartedSquares()
 {
 	uint8_t i = 0;
-	while(i < globals.adjecentNewSquaresLenght)
+	while(i < glob_adjecentNewSquaresLenght)
 	{
-		if(globals.map[i+1][i] != UNKNOWN)
+		if(glob_map[i+1][i] != UNKNOWN)
 		{
 			//ta bort elementet
 			uint8_t k = i;
-			while(k < globals.adjecentNewSquaresLenght)
+			while(k < glob_adjecentNewSquaresLenght)
 			{
-				globals.adjecentNewSquares[k] = globals.adjecentNewSquares[k+2];
+				glob_adjecentNewSquares[k] = glob_adjecentNewSquares[k+2];
 				k = k + 1;
 			}
-			globals.adjecentNewSquaresLenght = globals.adjecentNewSquaresLenght-2;
+			glob_adjecentNewSquaresLenght = glob_adjecentNewSquaresLenght-2;
 		}			
 		else
 		{
@@ -84,9 +84,9 @@ void initMetaRoute()
 	uint8_t closestSquareIndex = 1;
 	uint16_t smallestLength = 500;
 	uint8_t i = 0;
-	while(i<globals.adjecentNewSquaresLenght)
+	while(i<glob_adjecentNewSquaresLenght)
 	{
-		uint16_t lenCand = norm2pow2(globals.adjecentNewSquares[i], globals.adjecentNewSquares[i+1], globals.mapX, globals.mapY);
+		uint16_t lenCand = norm2pow2(glob_adjecentNewSquares[i], glob_adjecentNewSquares[i+1], glob_mapX, glob_mapY);
 		if(lenCand < smallestLength)
 		{
 			smallestLength = lenCand;
@@ -95,25 +95,25 @@ void initMetaRoute()
 		i = i+2;
 	}
 	//add this square to the meta route
-	globals.metaRoute[METAROUTEMAXLEN-2] = globals.adjecentNewSquares[closestSquareIndex];
-	globals.metaRoute[METAROUTEMAXLEN-1] = globals.adjecentNewSquares[closestSquareIndex+1];
-	globals.metaRouteLenght = 2; //ska vara tom innan
+	glob_metaRoute[METAROUTEMAXLEN-2] = glob_adjecentNewSquares[closestSquareIndex];
+	glob_metaRoute[METAROUTEMAXLEN-1] = glob_adjecentNewSquares[closestSquareIndex+1];
+	glob_metaRouteLenght = 2; //ska vara tom innan
 	uint8_t j = closestSquareIndex;
-	while(j < globals.adjecentNewSquaresLenght)
+	while(j < glob_adjecentNewSquaresLenght)
 	{
-		globals.adjecentNewSquares[j] = globals.adjecentNewSquares[j+2];
+		glob_adjecentNewSquares[j] = glob_adjecentNewSquares[j+2];
 		j = j + 1;
 	}
-	globals.adjecentNewSquaresLenght = globals.adjecentNewSquaresLenght-2;
+	glob_adjecentNewSquaresLenght = glob_adjecentNewSquaresLenght-2;
 	//for each adj square
-	while(globals.adjecentNewSquaresLenght != 0)
+	while(glob_adjecentNewSquaresLenght != 0)
 	{
 		//find square closest last order in meta route
 		smallestLength = 500;
 		i = 0;
-		while(i<globals.adjecentNewSquaresLenght)
+		while(i<glob_adjecentNewSquaresLenght)
 		{
-			uint16_t lenCand = norm2pow2(globals.adjecentNewSquares[i], globals.adjecentNewSquares[i+1], globals.metaRoute[METAROUTEMAXLEN-globals.metaRouteLenght], globals.metaRoute[METAROUTEMAXLEN-globals.metaRouteLenght+1]);
+			uint16_t lenCand = norm2pow2(glob_adjecentNewSquares[i], glob_adjecentNewSquares[i+1], glob_metaRoute[METAROUTEMAXLEN-glob_metaRouteLenght], glob_metaRoute[METAROUTEMAXLEN-glob_metaRouteLenght+1]);
 			if(lenCand < smallestLength)
 			{
 				smallestLength = lenCand;
@@ -122,36 +122,36 @@ void initMetaRoute()
 			i = i+2;
 		}
 		//add this square to the meta route
-		globals.metaRoute[METAROUTEMAXLEN-globals.metaRouteLenght-2] = globals.adjecentNewSquares[closestSquareIndex];
-		globals.metaRoute[METAROUTEMAXLEN-globals.metaRouteLenght-1] = globals.adjecentNewSquares[closestSquareIndex+1];
-		globals.metaRouteLenght = globals.metaRouteLenght + 2;
+		glob_metaRoute[METAROUTEMAXLEN-glob_metaRouteLenght-2] = glob_adjecentNewSquares[closestSquareIndex];
+		glob_metaRoute[METAROUTEMAXLEN-glob_metaRouteLenght-1] = glob_adjecentNewSquares[closestSquareIndex+1];
+		glob_metaRouteLenght = glob_metaRouteLenght + 2;
 		j = closestSquareIndex;
-		while(j < globals.adjecentNewSquaresLenght)
+		while(j < glob_adjecentNewSquaresLenght)
 		{
-			globals.adjecentNewSquares[j] = globals.adjecentNewSquares[j+2];
+			glob_adjecentNewSquares[j] = glob_adjecentNewSquares[j+2];
 			j = j + 1;
 		}
-		globals.adjecentNewSquaresLenght = globals.adjecentNewSquaresLenght-2;
+		glob_adjecentNewSquaresLenght = glob_adjecentNewSquaresLenght-2;
 	}
 	i = 0;
-	while(i < globals.metaRouteLenght)
+	while(i < glob_metaRouteLenght)
 	{
-		globals.metaRoute[i] = globals.metaRoute[i+METAROUTEMAXLEN-globals.metaRouteLenght];
+		glob_metaRoute[i] = glob_metaRoute[i+METAROUTEMAXLEN-glob_metaRouteLenght];
 		i = i+1;
 	}
 }
 
 void createNewMetaRoute()
 {
-	while(globals.adjecentNewSquaresLenght != 0)
+	while(glob_adjecentNewSquaresLenght != 0)
 	{
 		uint8_t closestSquareIndex = 0;
 		uint16_t smallestLength = 500;
 		uint8_t i = 0;
 		//find the square which is closest to the last in meta route
-		while(i<globals.adjecentNewSquaresLenght)
+		while(i<glob_adjecentNewSquaresLenght)
 		{
-			uint16_t lenCand = norm2pow2(globals.adjecentNewSquares[i], globals.adjecentNewSquares[i+1], globals.metaRoute[globals.metaRouteLenght-2], globals.metaRoute[globals.metaRouteLenght-1]);
+			uint16_t lenCand = norm2pow2(glob_adjecentNewSquares[i], glob_adjecentNewSquares[i+1], glob_metaRoute[glob_metaRouteLenght-2], glob_metaRoute[glob_metaRouteLenght-1]);
 			if(lenCand < smallestLength)
 			{
 				smallestLength = lenCand;
@@ -160,17 +160,17 @@ void createNewMetaRoute()
 			i = i+2;
 		}
 		//add this square to the meta route
-		globals.metaRoute[globals.metaRouteLenght] = globals.adjecentNewSquares[closestSquareIndex];
-		globals.metaRoute[globals.metaRouteLenght+1] = globals.adjecentNewSquares[closestSquareIndex+1];
-		globals.metaRouteLenght = globals.metaRouteLenght + 2;
+		glob_metaRoute[glob_metaRouteLenght] = glob_adjecentNewSquares[closestSquareIndex];
+		glob_metaRoute[glob_metaRouteLenght+1] = glob_adjecentNewSquares[closestSquareIndex+1];
+		glob_metaRouteLenght = glob_metaRouteLenght + 2;
 		//remove this square from the candidates
 		uint8_t j = closestSquareIndex;
-		while(j < globals.adjecentNewSquaresLenght)
+		while(j < glob_adjecentNewSquaresLenght)
 		{
-			globals.adjecentNewSquares[j] = globals.adjecentNewSquares[j+2];
+			glob_adjecentNewSquares[j] = glob_adjecentNewSquares[j+2];
 			j = j + 1;
 		}
-		globals.adjecentNewSquaresLenght = globals.adjecentNewSquaresLenght-2;
+		glob_adjecentNewSquaresLenght = glob_adjecentNewSquaresLenght-2;
 	}
 }
 
@@ -207,28 +207,28 @@ void createRouteToNextMeta()
 		i = i+1;
 	}
 	//init values
-	currentSquares[0] = globals.mapX;
-	currentSquares[1] = globals.mapY;
+	currentSquares[0] = glob_mapX;
+	currentSquares[1] = glob_mapY;
 	uint8_t currentSquaresLength = 1; //HÄR
-	if(globals.logical_direction == LOGICAL_DIR_UP) //beror på hur riktning skall vara kodad senare
+	if(glob_logical_direction == LOGICAL_DIR_UP) //beror på hur riktning skall vara kodad senare
 	{
 		directionCurrentSquares[0] = LOGICAL_DIR_UP;
-		mapCostUp[globals.mapY][globals.mapX] = 0;
+		mapCostUp[glob_mapY][glob_mapX] = 0;
 	}
-	else if(globals.logical_direction == LOGICAL_DIR_RIGHT)
+	else if(glob_logical_direction == LOGICAL_DIR_RIGHT)
 	{
 		directionCurrentSquares[0] = LOGICAL_DIR_RIGHT;
-		mapCostRight[globals.mapY][globals.mapX] = 0;
+		mapCostRight[glob_mapY][glob_mapX] = 0;
 	}
-	else if(globals.logical_direction == LOGICAL_DIR_DOWN)
+	else if(glob_logical_direction == LOGICAL_DIR_DOWN)
 	{
 		directionCurrentSquares[0] = LOGICAL_DIR_DOWN;
-		mapCostDown[globals.mapY][globals.mapX] = 0;
+		mapCostDown[glob_mapY][glob_mapX] = 0;
 	}
-	else if(globals.logical_direction == LOGICAL_DIR_LEFT)
+	else if(glob_logical_direction == LOGICAL_DIR_LEFT)
 	{
 		directionCurrentSquares[0] = LOGICAL_DIR_LEFT;
-		mapCostLeft[globals.mapY][globals.mapX] = 0;
+		mapCostLeft[glob_mapY][glob_mapX] = 0;
 	}
 	//for each
 	uint8_t notDone = 1;
@@ -378,8 +378,8 @@ void createRouteToNextMeta()
 				minCurSqCost = cand;
 			}
 		}
-		uint8_t goalX = globals.metaRoute[globals.metaRouteLenght-2];
-		uint8_t goalY = globals.metaRoute[globals.metaRouteLenght-1];
+		uint8_t goalX = glob_metaRoute[glob_metaRouteLenght-2];
+		uint8_t goalY = glob_metaRoute[glob_metaRouteLenght-1];
 		if(mapCostUp[goalY][goalX] < minCurSqCost)
 		{
 			notDone = 0;
@@ -390,8 +390,8 @@ void createRouteToNextMeta()
 	uint8_t CurrentRoutingX;
 	uint8_t CurrentRoutingY;
 	uint8_t pathfinToDirection;
-	uint8_t X = globals.metaRoute[globals.metaRouteLenght-2];
-	uint8_t Y = globals.metaRoute[globals.metaRouteLenght-1];
+	uint8_t X = glob_metaRoute[glob_metaRouteLenght-2];
+	uint8_t Y = glob_metaRoute[glob_metaRouteLenght-1];
 
 	uint8_t overCostHoriz = min(mapCostLeft[Y+1][X], mapCostLeft[Y+1][X]);
 	uint8_t underCostHoriz = min(mapCostLeft[Y-1][X], mapCostRight[Y-1][X]);
@@ -452,10 +452,10 @@ void createRouteToNextMeta()
 		pathfinToDirection = LOGICAL_DIR_LEFT;
 	}
 	// pathfindToX, pathfindToY och pathfinToDirection har målrutan
-	globals.routeSquares[0] = CurrentRoutingX;
-	globals.routeSquares[1] = CurrentRoutingY;
-	globals.routeSquaresLength  = 2;
-	globals.routeLength = 0;
+	glob_routeSquares[0] = CurrentRoutingX;
+	glob_routeSquares[1] = CurrentRoutingY;
+	glob_routeSquaresLength  = 2;
+	glob_routeLength = 0;
 	uint8_t currentCost = minAll;
 	while(currentCost != 0)
 	{
@@ -471,33 +471,33 @@ void createRouteToNextMeta()
 			{
 				CurrentRoutingY = CurrentRoutingY-1;
 
-				globals.routeSquares[globals.routeSquaresLength] = CurrentRoutingX;
-				globals.routeSquares[globals.routeSquaresLength+1] = CurrentRoutingY;
-				globals.routeSquaresLength  = globals.routeSquaresLength+2;
+				glob_routeSquares[glob_routeSquaresLength] = CurrentRoutingX;
+				glob_routeSquares[glob_routeSquaresLength+1] = CurrentRoutingY;
+				glob_routeSquaresLength  = glob_routeSquaresLength+2;
 
-				globals.route[globals.routeLength] = FORWARD_COMMAND;
-				globals.routeLength = globals.routeLength +1;
+				glob_route[glob_routeLength] = FORWARD_COMMAND;
+				glob_routeLength = glob_routeLength +1;
 			}
 			else if(minAllRoute == turnLeftCost)
 			{
 				pathfinToDirection = LOGICAL_DIR_RIGHT;
 
-				globals.route[globals.routeLength] = LEFT_90_COMMAND;
-				globals.routeLength = globals.routeLength +1;
+				glob_route[glob_routeLength] = LEFT_90_COMMAND;
+				glob_routeLength = glob_routeLength +1;
 			}
 			else if(minAllRoute == turnRightCost)
 			{
 				pathfinToDirection = LOGICAL_DIR_LEFT;
 
-				globals.route[globals.routeLength] = RIGHT_90_COMMAND;
-				globals.routeLength = globals.routeLength +1;
+				glob_route[glob_routeLength] = RIGHT_90_COMMAND;
+				glob_routeLength = glob_routeLength +1;
 			}
 			else
 			{
 				pathfinToDirection = LOGICAL_DIR_DOWN;
 
-				globals.route[globals.routeLength] = VIRTUAL_REVERSE_COMMAND;
-				globals.routeLength = globals.routeLength +1;
+				glob_route[glob_routeLength] = VIRTUAL_REVERSE_COMMAND;
+				glob_routeLength = glob_routeLength +1;
 			}
 		}
 		else if(pathfinToDirection == LOGICAL_DIR_RIGHT)
@@ -512,33 +512,33 @@ void createRouteToNextMeta()
 			{
 				CurrentRoutingX = CurrentRoutingX-1;
 
-				globals.routeSquares[globals.routeSquaresLength] = CurrentRoutingX;
-				globals.routeSquares[globals.routeSquaresLength+1] = CurrentRoutingY;
-				globals.routeSquaresLength  = globals.routeSquaresLength+2;
+				glob_routeSquares[glob_routeSquaresLength] = CurrentRoutingX;
+				glob_routeSquares[glob_routeSquaresLength+1] = CurrentRoutingY;
+				glob_routeSquaresLength  = glob_routeSquaresLength+2;
 
-				globals.route[globals.routeLength] = FORWARD_COMMAND;
-				globals.routeLength = globals.routeLength +1;
+				glob_route[glob_routeLength] = FORWARD_COMMAND;
+				glob_routeLength = glob_routeLength +1;
 			}
 			else if(minAllRoute == turnLeftCost)
 			{
 				pathfinToDirection = LOGICAL_DIR_DOWN;
 
-				globals.route[globals.routeLength] = LEFT_90_COMMAND;
-				globals.routeLength = globals.routeLength +1;
+				glob_route[glob_routeLength] = LEFT_90_COMMAND;
+				glob_routeLength = glob_routeLength +1;
 			}
 			else if(minAllRoute == turnRightCost)
 			{
 				pathfinToDirection = LOGICAL_DIR_UP;
 
-				globals.route[globals.routeLength] = RIGHT_90_COMMAND;
-				globals.routeLength = globals.routeLength +1;
+				glob_route[glob_routeLength] = RIGHT_90_COMMAND;
+				glob_routeLength = glob_routeLength +1;
 			}
 			else
 			{
 				pathfinToDirection = LOGICAL_DIR_LEFT;
 
-				globals.route[globals.routeLength] = VIRTUAL_REVERSE_COMMAND;
-				globals.routeLength = globals.routeLength +1;
+				glob_route[glob_routeLength] = VIRTUAL_REVERSE_COMMAND;
+				glob_routeLength = glob_routeLength +1;
 			}
 		}
 		else if(pathfinToDirection == LOGICAL_DIR_DOWN)
@@ -553,33 +553,33 @@ void createRouteToNextMeta()
 			{
 				CurrentRoutingY = CurrentRoutingY+1;
 
-				globals.routeSquares[globals.routeSquaresLength] = CurrentRoutingX;
-				globals.routeSquares[globals.routeSquaresLength+1] = CurrentRoutingY;
-				globals.routeSquaresLength  = globals.routeSquaresLength+2;
+				glob_routeSquares[glob_routeSquaresLength] = CurrentRoutingX;
+				glob_routeSquares[glob_routeSquaresLength+1] = CurrentRoutingY;
+				glob_routeSquaresLength  = glob_routeSquaresLength+2;
 
-				globals.route[globals.routeLength] = FORWARD_COMMAND;
-				globals.routeLength = globals.routeLength +1;
+				glob_route[glob_routeLength] = FORWARD_COMMAND;
+				glob_routeLength = glob_routeLength +1;
 			}
 			else if(minAllRoute == turnLeftCost)
 			{
 				pathfinToDirection = LOGICAL_DIR_LEFT;
 
-				globals.route[globals.routeLength] = LEFT_90_COMMAND;
-				globals.routeLength = globals.routeLength +1;
+				glob_route[glob_routeLength] = LEFT_90_COMMAND;
+				glob_routeLength = glob_routeLength +1;
 			}
 			else if(minAllRoute == turnRightCost)
 			{
 				pathfinToDirection = LOGICAL_DIR_RIGHT;
 
-				globals.route[globals.routeLength] = RIGHT_90_COMMAND;
-				globals.routeLength = globals.routeLength +1;
+				glob_route[glob_routeLength] = RIGHT_90_COMMAND;
+				glob_routeLength = glob_routeLength +1;
 			}
 			else
 			{
 				pathfinToDirection = LOGICAL_DIR_UP;
 
-				globals.route[globals.routeLength] = VIRTUAL_REVERSE_COMMAND;
-				globals.routeLength = globals.routeLength +1;
+				glob_route[glob_routeLength] = VIRTUAL_REVERSE_COMMAND;
+				glob_routeLength = glob_routeLength +1;
 			}
 		}
 		else
@@ -594,33 +594,33 @@ void createRouteToNextMeta()
 			{
 				CurrentRoutingX = CurrentRoutingX+1;
 
-				globals.routeSquares[globals.routeSquaresLength] = CurrentRoutingX;
-				globals.routeSquares[globals.routeSquaresLength+1] = CurrentRoutingY;
-				globals.routeSquaresLength  = globals.routeSquaresLength+2;
+				glob_routeSquares[glob_routeSquaresLength] = CurrentRoutingX;
+				glob_routeSquares[glob_routeSquaresLength+1] = CurrentRoutingY;
+				glob_routeSquaresLength  = glob_routeSquaresLength+2;
 
-				globals.route[globals.routeLength] = FORWARD_COMMAND;
-				globals.routeLength = globals.routeLength +1;
+				glob_route[glob_routeLength] = FORWARD_COMMAND;
+				glob_routeLength = glob_routeLength +1;
 			}
 			else if(minAllRoute == turnLeftCost)
 			{
 				pathfinToDirection = LOGICAL_DIR_UP;
 
-				globals.route[globals.routeLength] = LEFT_90_COMMAND;
-				globals.routeLength = globals.routeLength +1;
+				glob_route[glob_routeLength] = LEFT_90_COMMAND;
+				glob_routeLength = glob_routeLength +1;
 			}
 			else if(minAllRoute == turnRightCost)
 			{
 				pathfinToDirection = LOGICAL_DIR_DOWN;
 
-				globals.route[globals.routeLength] = RIGHT_90_COMMAND;
-				globals.routeLength = globals.routeLength +1;
+				glob_route[glob_routeLength] = RIGHT_90_COMMAND;
+				glob_routeLength = glob_routeLength +1;
 			}
 			else
 			{
 				pathfinToDirection = LOGICAL_DIR_RIGHT;
 
-				globals.route[globals.routeLength] = VIRTUAL_REVERSE_COMMAND;
-				globals.routeLength = globals.routeLength +1;
+				glob_route[glob_routeLength] = VIRTUAL_REVERSE_COMMAND;
+				glob_routeLength = glob_routeLength +1;
 			}
 		}
 	}
@@ -629,7 +629,7 @@ void createRouteToNextMeta()
 uint8_t getCostMove(uint8_t toX, uint8_t toY)
 {
 	{
-		if(globals.map[toY][toX] == OPEN)
+		if(glob_map[toY][toX] == OPEN)
 		{
 			return 1; //kostnad att åka genom en vanlig ruta kommer nog att ändras
 		}
@@ -638,7 +638,7 @@ uint8_t getCostMove(uint8_t toX, uint8_t toY)
 		{
 			return 128;
 		}
-		else if(globals.map[toY][toX] == UNKNOWN)
+		else if(glob_map[toY][toX] == UNKNOWN)
 		{
 			return 1;
 		}

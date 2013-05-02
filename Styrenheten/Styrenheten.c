@@ -24,13 +24,13 @@
 
 void init(void)
 {
-	globals.mapX = 8;
-	globals.mapY = 8;
-	globals.L1_straightX=8;
-	globals.L2_straightTheta=12;
-	globals.L3_straightOmega=4;
-	globals.L1_turnTheta=12;
-	globals.L2_turnOmega=4;
+	glob_mapX = 8;
+	glob_mapY = 8;
+	glob_L1_straightX=8;
+	glob_L2_straightTheta=12;
+	glob_L3_straightOmega=4;
+	glob_L1_turnTheta=12;
+	glob_L2_turnOmega=4;
 	//external interupt
 	EIMSK=(1<<INT0);// enable on int0
 	EICRA=(1<<ISC01)|(1<<ISC00);//on rising edge
@@ -43,7 +43,6 @@ void init(void)
 	sei();
 	
 	DDRB |= 0b00000001;
-	return 1;
 }
 //nödstopp
 ISR(INT0_vect)
@@ -102,14 +101,14 @@ void autoSteering()
 	while(1)
 	{
 		updateMapAuto();
-		if(globals.shouldPathfind)
+		if(glob_shouldPathfind)
 		{
 			pathfind();
 		}
-		if(globals.routeLength != 0)
+		if(glob_routeLength != 0)
 		{
-			executeCommand(globals.route[globals.routeLength-1]);
-			--globals.routeLength;
+			executeCommand(glob_route[glob_routeLength-1]);
+			--glob_routeLength;
 		}
 		else
 		{
@@ -124,17 +123,15 @@ void manualSteering()
 {
 	while(1)
 	{
-		updateMapManual();
-		if(globals.routeLength != 0)
+		regulateStraight();
+		//updateMapManual();
+		if(glob_routeLength != 0)
 		{
-			executeCommand(globals.route[globals.routeLength-1]);
-			--globals.routeLength;
+		
+			executeCommand(glob_route[glob_routeLength-1]);
+			glob_routeLength--;
 		}
 	}
-}
-void autoSteering()
-{
-	return;
 }
 
 

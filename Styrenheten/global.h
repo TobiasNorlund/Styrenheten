@@ -43,67 +43,70 @@
 
 #include <avr/io.h>
 //dessa variabler kan diskuteras
-typedef struct  
-{
-	uint8_t mapX; //Xcoord för nuvarande ruta i kartindex initieras i init
-	uint8_t mapY; //Xcoord för nuvarande ruta i kartindex initieras i init
-	int8_t x; //offset från origo för x i nuvarande ruta mäts i 1/2 cm origo är i mitten av rutan, initieras i styrinit
-	int8_t y; //offset från origo för x i nuvarande ruta mäts i 1/2 cm, initieras i styrinit
-	uint8_t v; //hastighet i 1/2 cm/s, initieras i styrinit
-	int8_t  theta; // Vridning i grader
-	int8_t  thetaOld; // Vridning i grader
-	int16_t  omega; //grader/sekund, initieras i styrinit
-	uint8_t virtual_direction; // initieras i reglering_init
-	uint8_t logical_direction; //ska initieras i pathfind_init
+//typedef struct  
+//{
+	uint8_t glob_mapX; //Xcoord för nuvarande ruta i kartindex initieras i init
+	uint8_t glob_mapY; //Xcoord för nuvarande ruta i kartindex initieras i init
+	int8_t glob_x; //offset från origo för x i nuvarande ruta mäts i 1/2 cm origo är i mitten av rutan, initieras i styrinit
+	int8_t glob_y; //offset från origo för x i nuvarande ruta mäts i 1/2 cm, initieras i styrinit
+	uint8_t glob_v; //hastighet i 1/2 cm/s, initieras i styrinit
+	int8_t glob_theta; // Vridning i grader
+	int8_t glob_thetaOld; // Vridning i grader
+	int16_t glob_omega; //grader/sekund, initieras i styrinit
+	uint8_t glob_virtual_direction; // initieras i reglering_init
+	uint8_t glob_logical_direction; //ska initieras i pathfind_init
 
 	//pathfind stuff
-	uint8_t route[ROUTELENGTH];
-	uint8_t routeLength; //initieras i clockedInterupt_init
+	uint8_t glob_route[ROUTELENGTH];
+	uint8_t glob_routeLength; //initieras i clockedInterupt_init
 	
-	uint8_t routeSquares[ROUTELENGTH*2]; //rutor som finns med i route
-	uint8_t routeSquaresLength; //initieras i pathfind init
+	uint8_t glob_routeSquares[ROUTELENGTH*2]; //rutor som finns med i route
+	uint8_t glob_routeSquaresLength; //initieras i pathfind init
 	
-	uint8_t metaRoute[METAROUTEMAXLEN]; //jämna index X och udda Y
-	uint8_t metaRouteLenght; //initieras i pathfind init
+	uint8_t glob_metaRoute[METAROUTEMAXLEN]; //jämna index X och udda Y
+	uint8_t glob_metaRouteLenght; //initieras i pathfind init
 	
-	uint8_t shouldPathfind; //initieras i pathfind init
+	uint8_t glob_shouldPathfind; //initieras i pathfind init
 	
-	uint8_t adjecentNewSquares[METAROUTEMAXLEN]; //jämna index X och udda Y
-	uint8_t adjecentNewSquaresLenght; //initieras i pathfind init
+	uint8_t glob_adjecentNewSquares[METAROUTEMAXLEN]; //jämna index X och udda Y
+	uint8_t glob_adjecentNewSquaresLenght; //initieras i pathfind init
 
-	uint8_t map[16][16]; //initieras i pathfind_init
+	uint8_t glob_map[16][16]; //initieras i pathfind_init
 
-	CircularBuffer debugMesssageBuffer;
+	CircularBuffer glob_debugMesssageBuffer;
+	uint8_t glob_debugMesssageBufferLength;
 
-	CircularBuffer mapDataToSend; //initieras i clockedInterupt_init
+	CircularBuffer glob_mapDataToSend; //initieras i clockedInterupt_init
 
-	uint8_t longFront; // cm
-	uint8_t longRight; // cm
-	uint8_t longRear; // cm
-	uint8_t longLeft; // cm
-	uint8_t shortFrontRight; // cm/2
-	uint8_t shortFrontLeft; // cm/2
-	uint8_t shortRearRight; // cm/2
-	uint8_t shortRearLeft; // cm/2
+	uint8_t glob_longFront; // cm
+	uint8_t glob_longRight; // cm
+	uint8_t glob_longRear; // cm
+	uint8_t glob_longLeft; // cm
+	uint8_t glob_shortFrontRight; // cm/2
+	uint8_t glob_shortFrontLeft; // cm/2
+	uint8_t glob_shortRearRight; // cm/2
+	uint8_t glob_shortRearLeft; // cm/2
 	
-	int16_t gyro; // grader/s
+	int16_t glob_gyro; // grader/s
 	
-	uint8_t vRight; // cm/s
-	uint8_t vLeft; // cm/s
+	uint8_t glob_vRight; // cm/s
+	uint8_t glob_vLeft; // cm/s
 
 	//parametrar
-	uint8_t paramCustomLeft;
-	uint8_t paramCustomRight;
+	uint8_t glob_paramCustomLeft;
+	uint8_t glob_paramCustomRight;
 	//rakt reglering
-	uint8_t L1_straightX;
-	uint8_t L2_straightTheta;
-	uint8_t L3_straightOmega;
+	uint8_t glob_L1_straightX;
+	uint8_t glob_L2_straightTheta;
+	uint8_t glob_L3_straightOmega;
 	//sväng
-	uint8_t L1_turnTheta;
-	uint8_t L2_turnOmega;
-} Globals;
+	uint8_t glob_L1_turnTheta;
+	uint8_t glob_L2_turnOmega;
+	
+	volatile int16_t glob_max;
+//} Globals;
 
-volatile Globals globals;
+//volatile Globals globals;
 
 uint8_t getSensorLongForward();
 uint8_t getSensorLongRear();

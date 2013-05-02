@@ -16,9 +16,9 @@ volatile uint8_t overFlowInteruptTimer1=0;
 
 void clockedInterrupt_init()
 {
-	cbInit(&globals.mapDataToSend, 32);
-	cbInit(&globals.debugMesssageBuffer, 32);
-	globals.routeLength = 0;
+	cbInit(&glob_mapDataToSend, 32);
+	cbInit(&glob_debugMesssageBuffer, 32);
+	glob_routeLength = 0;
 	//setup timers 1 och 3 16bit timers
 	//start clock and set clock devider.
 	
@@ -37,6 +37,7 @@ void updateState(void)
 {
 	setStraightObserver();
 }
+
 uint8_t temp = 0;
 ISR(TIMER1_COMPB_vect)
 {
@@ -80,19 +81,22 @@ void timedInterupt(void)
 	}
 	SPI_set_sensor(END);
 
-
+	/*
 	//send debug data
 	uint8_t bytesToSend = 0;
-	while(cbBytesUsed(&globals.debugMesssageBuffer) != 0)
+	while(cbBytesUsed(&glob_debugMesssageBuffer) != 0)
 	{
-		msgSend[bytesToSend] = cbRead(&globals.debugMesssageBuffer);
+		msgSend[bytesToSend] = cbRead(&glob_debugMesssageBuffer);
 		++bytesToSend;
 	}
 	if(bytesToSend != 0)
 	{
 		SPI_MASTER_write(msgSend, TYPE_DEBUG_DATA, bytesToSend);
 	}
-	//end send debug data
+	//end send debug data*/
+	
+	if(answerCounterSensor == 255)
+		return;
 	
 	//tolka/spara sensordata
 	if(type==TYPE_SENSOR_DATA && len!=0)
@@ -103,47 +107,47 @@ void timedInterupt(void)
 			switch(id)
 			{
 				case LONGFRONT:
-					globals.longFront = msgRecieve[i+1];
+					glob_longFront = msgRecieve[i+1];
 					++i;
 					break;
 				case LONGRIGHT:
-					globals.longRight = msgRecieve[i+1];
+					glob_longRight = msgRecieve[i+1];
 					++i;
 					break;
 				case LONGREAR:
-					globals.longRear = msgRecieve[i+1];
+					glob_longRear = msgRecieve[i+1];
 					++i;
 					break;
 				case LONGLEFT:
-					globals.longLeft = msgRecieve[i+1];
+					glob_longLeft = msgRecieve[i+1];
 					++i;
 					break;
 				case SHORTFRONTRIGHT:
-					globals.shortFrontRight = msgRecieve[i+1];
+					glob_shortFrontRight = msgRecieve[i+1];
 					++i;
 					break;
 				case SHORTFRONTLEFT:
-					globals.shortFrontLeft = msgRecieve[i+1];
+					glob_shortFrontLeft = msgRecieve[i+1];
 					++i;
 					break;
 				case SHORTREARRIGHT:
-					globals.shortRearRight = msgRecieve[i+1];
+					glob_shortRearRight = msgRecieve[i+1];
 					++i;
 					break;
 				case SHORTREARLEFT:
-					globals.shortRearLeft = msgRecieve[i+1];
+					glob_shortRearLeft = msgRecieve[i+1];
 					++i;
 					break;
 				case IDGYROSENSOR:
-					globals.gyro = (msgRecieve[i+1]<<8)|msgRecieve[i+2];
+					glob_gyro = (msgRecieve[i+1]<<8)|msgRecieve[i+2];
 					i = i+2;
 					break;
 				case IDSPEEDRIGHT:
-					globals.vRight = msgRecieve[i+1];
+					glob_vRight = msgRecieve[i+1];
 					++i;
 					break;
 				case IDSPEEDLEFT:
-					globals.vLeft = msgRecieve[i+1];
+					glob_vLeft = msgRecieve[i+1];
 					++i;
 					break;
 			}	
@@ -156,8 +160,19 @@ void timedInterupt(void)
 #ifndef KOM_OFF
 	//skicka vidare till PC
 	SPI_set_kom(START);
-	SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, len);
-	//TODO STÅR här i oändlihet. Kan bero på att pc:n ej var inkopplad.
+	msgRecieve[len] = 12;
+	msgRecieve[len+1] = glob_x;
+	msgRecieve[len+2] = 13;
+	msgRecieve[len+3] = glob_max;
+	msgRecieve[len+4] = 14;
+	msgRecieve[len+5] = glob_theta;
+
+	
+	SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, len+6);
+
+	//uint8_t msg[4]={12, glob_x, 13, glob_y};
+	//SPI_MASTER_write(msg, TYPE_DEBUG_DATA, 4);
+	
 	volatile uint8_t answer = 0;
 	uint8_t answerCounter=0;
 	do
@@ -177,12 +192,12 @@ void timedInterupt(void)
 		if(type == TYPE_MANUAL_COMMAND)
 		{
 			//lägg till msg[0] först i route
-			for(uint8_t i = globals.routeLength; i > 0; --i)
+			for(uint8_t i = glob_routeLength; i > 0; --i)
 			{
-				globals.route[globals.routeLength] = globals.route[globals.routeLength-1];
+				glob_route[glob_routeLength] = glob_route[glob_routeLength-1];
 			}
-			globals.route[0] = msgRecieve[0];
-			globals.routeLength = globals.routeLength+1;
+			glob_route[0] = msgRecieve[0];
+			glob_routeLength = glob_routeLength+1;
 			break;
 		}
 		else if(type == TYPE_CHANGE_PARM)
@@ -192,31 +207,31 @@ void timedInterupt(void)
 				
 			if (ID==PARAMLEFTCUSTOM)
 			{
-				globals.paramCustomLeft = val;
+				glob_paramCustomLeft = val;
 			}
 			else if (ID==PARAMRIGHTCUSTOM)
 			{
-				globals.paramCustomRight = val;
+				glob_paramCustomRight = val;
 			}
 			else if (ID==L1_STRAIGHTX)
 			{
-				globals.L1_straightX = val;
+				glob_L1_straightX = val;
 			}
 			else if (ID==L2_STRAIGHTTHETA)
 			{
-				globals.L2_straightTheta = val;
+				glob_L2_straightTheta = val;
 			}
 			else if (ID==L3_STRAIGHTOMEGA)
 			{
-				globals.L3_straightOmega = val;
+				glob_L3_straightOmega = val;
 			}
 			else if (ID==L1_TURNTHETA)
 			{
-				globals.L1_turnTheta = val;
+				glob_L1_turnTheta = val;
 			}
 			else if (ID==L2_TURNOMEGA)
 			{
-				globals.L2_turnOmega = val;
+				glob_L2_turnOmega = val;
 			}
 
 		}		
@@ -224,13 +239,13 @@ void timedInterupt(void)
 
 /*
 	//skicka all kartdata till komm
-	while(cbBytesUsed(&globals.mapDataToSend) > 1)
+	while(cbBytesUsed(&glob_mapDataToSend) > 1)
 	{
-		uint8_t x = cbRead(&globals.mapDataToSend);
-		uint8_t y = cbRead(&globals.mapDataToSend);
+		uint8_t x = cbRead(&glob_mapDataToSend);
+		uint8_t y = cbRead(&glob_mapDataToSend);
 		msgSend[0] = x;
 		msgSend[1] = y;
-		msgSend[2] = globals.map[y][x];
+		msgSend[2] = glob_map[y][x];
 		SPI_MASTER_write(msgSend, TYPE_MAP_DATA, 3);
 	}
 	*/

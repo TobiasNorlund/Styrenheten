@@ -14,11 +14,12 @@
 #include "calcAngle.h"
 #include "global.h"
 #include "../../TSEA27-include/geometrics.h"
+#include "StyrReglering.h"
 
 #define OK_SENSOR_VALUE(x) (((x) != 0)||((x) != 255))
 #define TIME 4 //i ms, ange i 2^n = t (TIME = 4 -> 16ms)
 
-void setXV(uint8_t shortForward, uint8_t shortRear);
+void setXV(uint8_t shortForward, uint8_t shortRear, uint8_t side);
 //void setThetaOmegaLeft(uint8_t shortLeftForward, uint8_t shortLeftRear);
 //void setThetaOmegaRight(uint8_t shortRightForward, uint8_t shortRightRear);
 void setOmega();

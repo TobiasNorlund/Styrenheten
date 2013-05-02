@@ -13,7 +13,7 @@
 
 #define HALFSQUAREWIDTH 80 //halva cm
 
-void setRelativeX(uint8_t shortFront, uint8_t shortRear) //x som om roboten har riktning up
+void setRelativeX(uint8_t value) //x som om roboten har riktning up
 {
 	uint8_t value = ((shortFront + shortRear)*(2 - globals.theta^2))>>2;
 	switch(globals.logical_direction)
@@ -138,7 +138,7 @@ void rotateObserver()
 	//TODO
 }
 
-void getSensorLongOverNoise(uint8_t value)
+uint8_t getSensorLongOverNoise(uint8_t value)
 {
 	if(value == 160)
 	{
@@ -201,7 +201,7 @@ int16_t getShiftedSensorY(int16_t sensorVal)
 	}
 }
 
-void moveForwards();
+void moveForwards()
 {
 	switch(globals.logical_direction)
 	{
