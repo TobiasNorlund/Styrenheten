@@ -123,7 +123,7 @@ void manualSteering()
 {
 	while(1)
 	{
-		regulateStraight();
+		
 		//updateMapManual();
 		if(glob_routeLength != 0)
 		{
