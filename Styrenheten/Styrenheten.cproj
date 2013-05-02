@@ -20,9 +20,10 @@
     <OverrideVtor>false</OverrideVtor>
     <OverrideVtorValue />
     <eraseonlaunchrule>0</eraseonlaunchrule>
-    <AsfVersion>3.1.3</AsfVersion>
-    <avrtoolinterface>JTAG</avrtoolinterface>
-    <avrtool>com.atmel.avrdbg.tool.jtagicemk3</avrtool>
+    <AsfVersion>2.11.1</AsfVersion>
+    <avrtoolinterface>
+    </avrtoolinterface>
+    <avrtool>com.atmel.avrdbg.tool.simulator</avrtool>
     <com_atmel_avrdbg_tool_simulator>
       <ToolType>com.atmel.avrdbg.tool.simulator</ToolType>
       <ToolName>AVR Simulator</ToolName>
@@ -34,21 +35,21 @@
       </OverrideVtorValue>
       <Channel>
         <host>127.0.0.1</host>
-        <port>49462</port>
+        <port>58388</port>
         <ssl>False</ssl>
       </Channel>
     </com_atmel_avrdbg_tool_simulator>
     <com_atmel_avrdbg_tool_jtagicemk3>
       <ToolType>com.atmel.avrdbg.tool.jtagicemk3</ToolType>
       <ToolName>JTAGICE3</ToolName>
-      <ToolNumber>J30200013091</ToolNumber>
+      <ToolNumber>J30200013325</ToolNumber>
       <KeepTimersRunning>true</KeepTimersRunning>
       <OverrideVtor>false</OverrideVtor>
       <OverrideVtorValue>
       </OverrideVtorValue>
       <Channel>
         <host>127.0.0.1</host>
-        <port>50529</port>
+        <port>58388</port>
         <ssl>False</ssl>
       </Channel>
       <ToolOptions>

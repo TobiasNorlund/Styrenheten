@@ -26,6 +26,7 @@ void setOmega();
 void straightObserver();
 void rotateObserver();
 void observe();
+void turnObserver();
 
 
 #endif /* OBSERVER_H_ */

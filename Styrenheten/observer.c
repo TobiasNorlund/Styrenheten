@@ -9,7 +9,8 @@
 #define CHASSITOLONGBACK 18 //halva cm
 #define CHASSITOLONGFRONT 18 //halva cm
 
-#define TIMECONSTANT 100
+#define TIMECONSTANT 100 // ms
+#define INVERTTIMECONSTANT 10 //Dimension 1/s
 
 #define HALFSQUAREWIDTH 80 //halva cm
 
@@ -103,7 +104,7 @@ void setOmega()
 	int16_t gyroValue = glob_gyro;
 	if((gyroValue < 10) && (gyroValue > -10))
 	{
-		glob_omega = (glob_theta - glob_thetaOld)/TIME;
+		glob_omega = (glob_theta - glob_thetaOld)*INVERTTIMECONSTANT; //TODO
 	}
 	else
 	{
@@ -179,7 +180,7 @@ int16_t getShiftedSensorX(int16_t sensorVal)
 	int16_t iter = sensorVal-(HALFSQUAREWIDTH<<2);
 	while(1)
 	{
-		if(max(iter-glob_x, glob_x-iter) =< HALFSQUAREWIDTH)
+		if(max(iter-glob_x, glob_x-iter) <= HALFSQUAREWIDTH)
 		{
 			return iter;
 		}
@@ -192,7 +193,7 @@ int16_t getShiftedSensorY(int16_t sensorVal)
 	int16_t iter = sensorVal-(HALFSQUAREWIDTH<<2);
 	while(1)
 	{
-		if(max(iter-glob_y, glob_y-iter) =< HALFSQUAREWIDTH)
+		if(max(iter-glob_y, glob_y-iter) <= HALFSQUAREWIDTH)
 		{
 			return iter;
 		}
@@ -282,7 +283,9 @@ void straightObserver()
 	*/
 	
 	setTheta(LongFront, LongRear, LongLeft, LongRight, ShortLeftFront, ShortLeftRear, ShortRightFront, ShortRightRear);
+	
 	setOmega();
+	
 	/*
 	if(OK_SENSOR_VALUE(ShortLeftFront)&&OK_SENSOR_VALUE(ShortLeftRear))
 	{
@@ -296,3 +299,9 @@ void straightObserver()
 	return;
 }
 	
+	
+void turnObserver()
+{
+	int16_t tempTheta = (glob_gyro*TIMECONSTANT)>>10;
+	glob_theta = glob_theta + tempTheta;
+}
