@@ -67,6 +67,7 @@ void signal_done()
 
 void executeCommand(uint8_t command)
 {
+	glob_curComm = command;
 	switch(command)
 	{
 		//implementera alla funktioner och se till att dessa är utan parametrar TODO

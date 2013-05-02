@@ -4,10 +4,10 @@
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 
-#define CHASSITOSHORTSIDE 10 //halva cm
-#define CHASSITOLONGSIDE 10 //halva cm
-#define CHASSITOLONGBACK 10 //halva cm
-#define CHASSITOLONGFRONT 10 //halva cm
+#define CHASSITOSHORTSIDE 7 //halva cm 7 18 21
+#define CHASSITOLONGSIDE 21 //halva cm
+#define CHASSITOLONGBACK 18 //halva cm
+#define CHASSITOLONGFRONT 18 //halva cm
 
 #define TIMECONSTANT 100
 
@@ -122,7 +122,7 @@ void setOmega()
 
 void observe()
 {
-	if(glob_route[glob_routeLength] == FORWARD_COMMAND)
+	if(glob_curComm == FORWARD_COMMAND)
 	{
 		straightObserver();
 	}
@@ -179,7 +179,7 @@ int16_t getShiftedSensorX(int16_t sensorVal)
 	int16_t iter = sensorVal-(HALFSQUAREWIDTH<<2);
 	while(1)
 	{
-		if(max(iter-glob_x, glob_x-iter) < (HALFSQUAREWIDTH<<1))
+		if(max(iter-glob_x, glob_x-iter) =< HALFSQUAREWIDTH)
 		{
 			return iter;
 		}
@@ -192,7 +192,7 @@ int16_t getShiftedSensorY(int16_t sensorVal)
 	int16_t iter = sensorVal-(HALFSQUAREWIDTH<<2);
 	while(1)
 	{
-		if(max(iter-glob_x, glob_x-iter) < (HALFSQUAREWIDTH<<1))
+		if(max(iter-glob_x, glob_x-iter) =< HALFSQUAREWIDTH)
 		{
 			return iter;
 		}
@@ -246,11 +246,11 @@ void straightObserver()
 	//ta fram x i korridor // du är här. blir problem då en sensor säger att man är på posY -80 och en annan säger att man är på +80 du har inte tänkt på att långa x sensorer kan se flera rutor
 	int16_t XShortLeftFront = getShiftedSensorX(ShortLeftFront+CHASSITOSHORTSIDE-HALFSQUAREWIDTH);
 	int16_t XShortLeftRear = getShiftedSensorX(ShortLeftRear+CHASSITOSHORTSIDE-HALFSQUAREWIDTH);
-	int16_t XShortRightFront = getShiftedSensorX(HALFSQUAREWIDTH<<1-ShortRightFront-CHASSITOSHORTSIDE);
-	int16_t XShortRightRear = getShiftedSensorX(HALFSQUAREWIDTH<<1-ShortRightRear-CHASSITOSHORTSIDE);
+	int16_t XShortRightFront = getShiftedSensorX(HALFSQUAREWIDTH-ShortRightFront-CHASSITOSHORTSIDE);
+	int16_t XShortRightRear = getShiftedSensorX(HALFSQUAREWIDTH-ShortRightRear-CHASSITOSHORTSIDE);
 	
 	int16_t XLongLeft = getShiftedSensorX(LongLeft<<1+CHASSITOLONGSIDE-HALFSQUAREWIDTH);
-	int16_t XLongRight = getShiftedSensorX(HALFSQUAREWIDTH<<1-LongRight<<1-CHASSITOLONGSIDE);
+	int16_t XLongRight = getShiftedSensorX(HALFSQUAREWIDTH-LongRight<<1-CHASSITOLONGSIDE);
 	
 	uint16_t taljare = XLongLeft*overNoiseLongLeft+XLongRight*overNoiseLongRight+XShortLeftFront*overNoiseShortLeftFront+XShortLeftRear*overNoiseShortLeftRear+XShortRightFront*overNoiseShortRightFront+XShortRightRear*overNoiseShortRightRear+overXPosUncert*getRelativeX();
 	uint16_t namnare = overNoiseLongLeft+overNoiseLongRight+overNoiseShortLeftFront+overNoiseShortLeftRear+overNoiseShortRightFront+overNoiseShortRightRear+overXPosUncert;
