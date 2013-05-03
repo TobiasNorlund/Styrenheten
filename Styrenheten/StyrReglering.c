@@ -46,10 +46,10 @@ void reglering_init()
 	/*
 		WGM22 = 0;
 		CS20 = 1;
-		CS21 = 0;
-		CS22 = 0;
+		CS21 = 1;
+		CS22 = 1;
 	*/
-	TCCR2B = (0 << WGM22) | (1 << CS20) | (0 << CS21) | (0 << CS22);
+	TCCR2B = (0 << WGM22) | (1 << CS20) | (1 << CS21) | (1 << CS22);
 	
 	/*
 	* Sätt upp port A och D
@@ -189,7 +189,12 @@ void regulateStraight()
 		
 		//testX = getRelativeX();
 		int16_t ur,ul;
-		glob_max = (((10*glob_L1_straightX*(int8to16(getRelativeX()))/(glob_v+1))>>SHORTFACTOR) + ((glob_L2_straightTheta*degToRad(glob_theta))>>DIVISIONFACTOR) + (glob_L3_straightOmega*glob_omega));
+		int16_t xRelative = int8to16(getRelativeX());
+		int16_t xFactor = (glob_L1_straightX*xRelative)>>SHORTFACTOR;
+		int16_t thetaDeg = degToRad(glob_theta);
+		int16_t thetaFactor = (glob_L2_straightTheta*thetaDeg)>>DIVISIONFACTOR;
+		int16_t omegaFactor = glob_L3_straightOmega*glob_omega;
+		glob_max = xFactor-thetaFactor;//+omegaFactor;
 		if(glob_max > 254)
 		{
 			glob_max = 254;
@@ -290,5 +295,5 @@ void customSteering()
 //Returnerar 2^DIVISIONFACTOR*radianer 
 int16_t degToRad(int8_t degree)
 {
-	return (2^DIVISIONFACTOR*9*int8to16(degree)>>9); // pi/180 = 0.0174532, 9/(2^9) = 0.017578
+	return (9*int8to16(degree))>>(9-DIVISIONFACTOR); // pi/180 = 0.0174532, 9/(2^9) = 0.017578
 }

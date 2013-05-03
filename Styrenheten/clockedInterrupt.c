@@ -48,6 +48,10 @@ ISR(TIMER1_COMPB_vect)
 		TIMSK0 = (0<<OCIE0A);// disable Interrupt TimerCounter0 Compare Match A (SIG_OUTPUT_COMPARE0A)
 		while(1)
 		{
+			if(!(PIND & 1<<PIND2))
+			{
+				break;
+			}
 			setSpeedRight(0);
 			setSpeedLeft(0);
 		}

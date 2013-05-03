@@ -45,20 +45,20 @@
 //dessa variabler kan diskuteras
 //typedef struct  
 //{
-	uint8_t glob_mapX; //Xcoord för nuvarande ruta i kartindex initieras i init
-	uint8_t glob_mapY; //Xcoord för nuvarande ruta i kartindex initieras i init
-	int8_t glob_x; //offset från origo för x i nuvarande ruta mäts i 1/2 cm origo är i mitten av rutan, initieras i styrinit
-	int8_t glob_y; //offset från origo för x i nuvarande ruta mäts i 1/2 cm, initieras i styrinit
-	uint8_t glob_v; //hastighet i 1/2 cm/s, initieras i styrinit
-	int8_t glob_theta; // Vridning i grader
+	volatile uint8_t glob_mapX; //Xcoord för nuvarande ruta i kartindex initieras i init
+	volatile uint8_t glob_mapY; //Xcoord för nuvarande ruta i kartindex initieras i init
+	volatile int8_t glob_x; //offset från origo för x i nuvarande ruta mäts i 1/2 cm origo är i mitten av rutan, initieras i styrinit
+	volatile int8_t glob_y; //offset från origo för x i nuvarande ruta mäts i 1/2 cm, initieras i styrinit
+	volatile uint8_t glob_v; //hastighet i 1/2 cm/s, initieras i styrinit
+	volatile int8_t glob_theta; // Vridning i grader
 	int8_t glob_thetaOld; // Vridning i grader
-	int16_t glob_omega; //grader/sekund, initieras i styrinit
+	volatile int16_t glob_omega; //grader/sekund, initieras i styrinit
 	uint8_t glob_virtual_direction; // initieras i reglering_init
 	uint8_t glob_logical_direction; //ska initieras i pathfind_init
 
 	//pathfind stuff
-	uint8_t glob_route[ROUTELENGTH];
-	uint8_t glob_routeLength; //initieras i clockedInterupt_init
+	volatile uint8_t glob_route[ROUTELENGTH];
+	volatile uint8_t glob_routeLength; //initieras i clockedInterupt_init
 	
 	uint8_t glob_routeSquares[ROUTELENGTH*2]; //rutor som finns med i route
 	uint8_t glob_routeSquaresLength; //initieras i pathfind init
@@ -73,37 +73,37 @@
 
 	uint8_t glob_map[16][16]; //initieras i pathfind_init
 
-	CircularBuffer glob_debugMesssageBuffer;
-	uint8_t glob_debugMesssageBufferLength;
+	volatile CircularBuffer glob_debugMesssageBuffer;
+	volatile uint8_t glob_debugMesssageBufferLength;
 
-	uint8_t glob_curComm; //initieras i pathfind init
+	volatile uint8_t glob_curComm; //initieras i pathfind init
 
-	CircularBuffer glob_mapDataToSend; //initieras i clockedInterupt_init
+	volatile CircularBuffer glob_mapDataToSend; //initieras i clockedInterupt_init
 
-	uint8_t glob_longFront; // cm
-	uint8_t glob_longRight; // cm
-	uint8_t glob_longRear; // cm
-	uint8_t glob_longLeft; // cm
-	uint8_t glob_shortFrontRight; // cm/2
-	uint8_t glob_shortFrontLeft; // cm/2
-	uint8_t glob_shortRearRight; // cm/2
-	uint8_t glob_shortRearLeft; // cm/2
+	volatile uint8_t glob_longFront; // cm
+	volatile uint8_t glob_longRight; // cm
+	volatile uint8_t glob_longRear; // cm
+	volatile uint8_t glob_longLeft; // cm
+	volatile uint8_t glob_shortFrontRight; // cm/2
+	volatile uint8_t glob_shortFrontLeft; // cm/2
+	volatile uint8_t glob_shortRearRight; // cm/2
+	volatile uint8_t glob_shortRearLeft; // cm/2
 	
 	int16_t glob_gyro; // grader/s
 	
-	uint8_t glob_vRight; // cm/s
-	uint8_t glob_vLeft; // cm/s
+	volatile uint8_t glob_vRight; // cm/s
+	volatile uint8_t glob_vLeft; // cm/s
 
 	//parametrar
-	uint8_t glob_paramCustomLeft;
-	uint8_t glob_paramCustomRight;
+	volatile uint8_t glob_paramCustomLeft;
+	volatile uint8_t glob_paramCustomRight;
 	//rakt reglering
-	uint8_t glob_L1_straightX;
-	uint8_t glob_L2_straightTheta;
-	uint8_t glob_L3_straightOmega;
+	volatile uint8_t glob_L1_straightX;
+	volatile uint8_t glob_L2_straightTheta;
+	volatile uint8_t glob_L3_straightOmega;
 	//sväng
-	uint8_t glob_L1_turnTheta;
-	uint8_t glob_L2_turnOmega;
+	volatile uint8_t glob_L1_turnTheta;
+	volatile uint8_t glob_L2_turnOmega;
 	
 	volatile int16_t glob_max;
 //} Globals;
