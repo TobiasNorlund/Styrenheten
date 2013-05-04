@@ -57,7 +57,7 @@ ISR(TIMER1_COMPB_vect)
 		}
 	}
 	overFlowInteruptTimer1++;
-	if(overFlowInteruptTimer1==2)
+	if(overFlowInteruptTimer1==1)
 	{
 		timedInterupt();
 		overFlowInteruptTimer1=0;

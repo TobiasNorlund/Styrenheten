@@ -10,8 +10,8 @@
 #define CHASSITOLONGBACK 18 //halva cm
 #define CHASSITOLONGFRONT 18 //halva cm
 
-#define TIMECONSTANT 100 // ms
-#define INVERTTIMECONSTANT 10 //Dimension 1/s
+#define TIMECONSTANT 50 // ms
+#define INVERTTIMECONSTANT 20 //Dimension 1/s
 
 #define HALFSQUAREWIDTH 80 //halva cm
 
@@ -124,7 +124,7 @@ void setOmega()
 
 void observe()
 {
-	if(glob_curComm == FORWARD_COMMAND)
+	if(glob_curComm == FORWARD_COMMAND || glob_curComm == CUSTOM_STEERING_COMMAND)
 	{
 		straightObserver();
 	}

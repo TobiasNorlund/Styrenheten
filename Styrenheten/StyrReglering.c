@@ -6,9 +6,9 @@
  */ 
 
 #define MAXSPEED 254
-#define STOPTURN90 85
-#define STOPTURN45 43
-
+#define STOPTURN90 8
+#define STOPTURN45 35
+#define RIGHTWHEELDIFF 23
 #include <avr/io.h>
 #include "global.h"
 
@@ -103,22 +103,37 @@ int8_t getRelativeY(void) //Y som om roboten har riktning upp
 void setSpeedRight(uint8_t speed){
 	if(glob_virtual_direction == DIRECTION_FORWARD)
 	{
-		OCR2B = speed;	
+		if(speed < RIGHTWHEELDIFF)
+		{
+			OCR2B = 0;
+		}
+		else
+		{
+			OCR2B = speed-RIGHTWHEELDIFF;//Höger hjulpar	
+		}
 	}
 	else
 	{
-		OCR2A = speed;	
+		OCR2A = speed;	//Vänster hjulpar
 	}
 }
 void setSpeedLeft(uint8_t speed){
 	if(glob_virtual_direction == DIRECTION_FORWARD)
 	{
-		OCR2A = speed;
+		OCR2A = speed; //Vänster hjulpar
 	}
 	else
 	{
-		OCR2B = speed;
+		if (speed < RIGHTWHEELDIFF)
+		{
+			OCR2B = 0;
+		}
+		else
+		{
+			OCR2B = speed-RIGHTWHEELDIFF; //Höger hjulpar
+		}		
 	}
+	
 }
 
 void setDirLeft(uint8_t dir){
@@ -192,7 +207,7 @@ void regulateStraight()
 		int16_t xRelative = int8to16(getRelativeX());
 		int16_t xFactor = (glob_L1_straightX*xRelative)>>SHORTFACTOR;
 		int16_t thetaDeg = degToRad(glob_theta);
-		int16_t thetaFactor = (glob_L2_straightTheta*thetaDeg)>>DIVISIONFACTOR;
+		int16_t thetaFactor = (glob_L2_straightTheta*thetaDeg)>>(DIVISIONFACTOR-4);
 		int16_t omegaFactor = glob_L3_straightOmega*glob_omega;
 		glob_max = xFactor-thetaFactor;//+omegaFactor;
 		if(glob_max > 254)
@@ -217,32 +232,32 @@ void regulateStraight()
 		setSpeedRight(ur);
 	}	
 }
-#pragma GCC pop_options
-//end turn off optimization 
+
 
 void turnLeft90(){
 	setDirLeft(0);
 	setDirRight(1);
 	setSpeedRight(MAXSPEED);
 	setSpeedLeft(MAXSPEED);
-	while(glob_theta < STOPTURN90)
-	{	
+	while(glob_theta < (int16_t)STOPTURN90)
+	{
+		
 	}
 	setSpeedRight(0);
 	setSpeedLeft(0); 
-	glob_theta = glob_theta - 90;
+	glob_theta = glob_theta - (int16_t) 90;
 }
 void turnRight90(){
 	setDirLeft(1);
 	setDirRight(0);
 	setSpeedRight(MAXSPEED);
 	setSpeedLeft(MAXSPEED); 
-	while(glob_theta > -STOPTURN90)
+	while(glob_theta > (int16_t)(-STOPTURN90))
 	{
 	}
 	setSpeedRight(0); 
 	setSpeedLeft(0); 
-	glob_theta = 90 + glob_theta;
+	glob_theta = glob_theta + (int16_t) 90;
 }
 void turnLeft45(){
 	setDirLeft(0);
@@ -254,7 +269,7 @@ void turnLeft45(){
 	}
 	setSpeedRight(0); 
 	setSpeedLeft(0); 
-	glob_theta = glob_theta - 45;
+	glob_theta = glob_theta - (int16_t) 45;
 }
 	
 void turnRight45(){
@@ -267,9 +282,10 @@ void turnRight45(){
 	}
 	setSpeedRight(0); 
 	setSpeedLeft(0); 
-	glob_theta = 45 + glob_theta;
+	glob_theta = glob_theta + (int16_t) 45;
 }
-
+#pragma GCC pop_options
+//end turn off optimization
 void virtualTurn()
 {
 	if(glob_virtual_direction == DIRECTION_FORWARD)
