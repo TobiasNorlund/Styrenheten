@@ -30,7 +30,7 @@ void setRelativeX(int8_t val) //x som om roboten har riktning up
 			glob_x = -val;
 			break;
 		case(LOGICAL_DIR_LEFT):
-		glob_y = val;
+			glob_y = val;
 			break;
 	}
 }
@@ -128,15 +128,18 @@ void observe()
 	{
 		straightObserver();
 	}
-	else
+	else if(glob_curComm == RIGHT_90_COMMAND || glob_curComm == LEFT_90_COMMAND || glob_curComm == RIGHT_45_COMMAND || glob_curComm == LEFT_45_COMMAND)
 	{
 		turnObserver();
+	}
+	else if(glob_curComm == VIRTUAL_REVERSE_COMMAND || glob_curComm == NULL_COMMAND)
+	{
 	}
 }
 
 uint8_t getSensorLongOverNoise(uint8_t value)
 {
-	if(value == 160)
+	if(value == 255)
 	{
 		return 0;	
 	}
@@ -218,11 +221,32 @@ void moveForwards()
 			--glob_mapX;
 			break;
 	}
-	setRelativeY(getRelativeY()-HALFSQUAREWIDTH<<1);
+	setRelativeY(getRelativeY()-(HALFSQUAREWIDTH<<1));
 }
 //turn off optimization
 #pragma GCC push_options
 #pragma GCC optimize ("O0")
+
+int16_t getVelocity() //halva cm /s
+{
+	if(glob_vLeft == 255 && glob_vRight == 255)
+	{
+		return 0;
+	}
+	else if(glob_vLeft == 255)
+	{
+		return glob_vRight<<1;
+	}
+	else if(glob_vRight == 255)
+	{
+		return glob_vLeft<<1;
+	}
+	else
+	{
+		return glob_vRight+glob_vLeft;
+	}
+}
+
 void straightObserver()
 {
 	int16_t LongFront=getSensorLongForward();	// Används ej
@@ -268,10 +292,11 @@ void straightObserver()
 	setRelativeX(divAns);
 	//ta fram y
 	int16_t YLongForward = getShiftedSensorY((HALFSQUAREWIDTH-CHASSITOLONGFRONT)-(LongFront<<1)); // du är här. blir problem då en sensor säger att man är på posY -80 och en annan säger att man är på +80
-	int16_t YLongBack = getShiftedSensorY((LongFront<<1)+CHASSITOLONGFRONT-HALFSQUAREWIDTH);
+	int16_t YLongBack = getShiftedSensorY((LongRear<<1)+CHASSITOLONGBACK-HALFSQUAREWIDTH);
 	uint16_t overYPosUncert = 1; //inkluderar osäkerhet i y pga hast.
+	int16_t velocity = getVelocity();
 	
-	taljare = YLongForward+overNoiseLongFront+YLongBack*overNoiseLongRear+overYPosUncert*(getRelativeY()+(TIMECONSTANT*((uint16_t) (glob_vLeft+glob_vRight)))>>10); //lägg till hastighet*TIMECONSTANT vid getRelativeY i beräkningarna TODO
+	taljare = YLongForward*overNoiseLongFront+YLongBack*overNoiseLongRear+overYPosUncert*(getRelativeY()+((TIMECONSTANT*velocity)>>10)); //lägg till hastighet*TIMECONSTANT vid getRelativeY i beräkningarna TODO
 	namnare = overNoiseLongFront+overNoiseLongRear+overYPosUncert;
 	setRelativeY(taljare/namnare);
 	if(getRelativeY() > HALFSQUAREWIDTH)

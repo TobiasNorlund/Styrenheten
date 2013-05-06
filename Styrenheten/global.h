@@ -6,8 +6,8 @@
  *  Author: tobno568
  */ 
 
-#define START_PIN PB4
-#define MANUAL_AUTO_SWITCH_PIN PB5
+#define START_PIN PINA & 1<<PINA4
+#define MANUAL_AUTO_SWITCH_PIN PINA & 1<<PINA5
 #define MANUAL_SELECTED 1
 
 #define DIRECTION_FORWARD 1

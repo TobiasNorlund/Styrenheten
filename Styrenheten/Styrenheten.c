@@ -79,6 +79,7 @@ void executeCommand(uint8_t command)
 		default:
 			break;
 	}
+	glob_curComm = NULL_COMMAND;
 }
 
 void autoSteering()
@@ -126,8 +127,8 @@ void manualSteering()
 int main(void)
 {
 	init();
-	//while(START_PIN == 0);
-	if(1) //MANUAL_AUTO_SWITCH_PIN == MANUAL_SELECTED)
+	while(!START_PIN);
+	if(MANUAL_AUTO_SWITCH_PIN)
 	{
 		manualSteering();
 	}

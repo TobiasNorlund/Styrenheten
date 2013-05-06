@@ -28,7 +28,7 @@ void pathfind_init()
 	glob_metaRouteLenght = 0;
 	glob_shouldPathfind = 1;
 	glob_adjecentNewSquaresLenght  = 0;
-	glob_curComm = FORWARD_COMMAND;
+	glob_curComm = NULL_COMMAND;
 }
 
 void manual_logical_chart(uint8_t x, uint8_t y, uint8_t info)

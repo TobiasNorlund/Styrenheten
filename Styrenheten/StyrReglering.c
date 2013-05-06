@@ -6,7 +6,8 @@
  */ 
 
 #define MAXSPEED 254
-#define STOPTURN90 8
+#define TURNSPEED 150
+#define STOPTURN90 85
 #define STOPTURN45 35
 #define RIGHTWHEELDIFF 23
 #include <avr/io.h>
@@ -79,7 +80,7 @@ int8_t getRelativeX() //x som om roboten har riktning up
 	return ret;
 }
 
-int8_t getRelativeY(void) //Y som om roboten har riktning upp
+int8_t getRelativeY() //Y som om roboten har riktning upp
 {
 	int8_t ret = 0;
 	switch(glob_logical_direction)
@@ -230,15 +231,17 @@ void regulateStraight()
 		}
 		setSpeedLeft(ul);
 		setSpeedRight(ur);
-	}	
+	}
+	setSpeedLeft(0);
+	setSpeedRight(0);
 }
 
 
 void turnLeft90(){
 	setDirLeft(0);
 	setDirRight(1);
-	setSpeedRight(MAXSPEED);
-	setSpeedLeft(MAXSPEED);
+	setSpeedRight(TURNSPEED);
+	setSpeedLeft(TURNSPEED);
 	while(glob_theta < (int16_t)STOPTURN90)
 	{
 		
@@ -246,24 +249,56 @@ void turnLeft90(){
 	setSpeedRight(0);
 	setSpeedLeft(0); 
 	glob_theta = glob_theta - (int16_t) 90;
+	switch(glob_logical_direction)
+	{
+		case LOGICAL_DIR_UP:
+			glob_logical_direction = LOGICAL_DIR_LEFT;
+			break;
+		case LOGICAL_DIR_RIGHT:
+			glob_logical_direction = LOGICAL_DIR_UP;
+			break;
+		case LOGICAL_DIR_DOWN:
+			glob_logical_direction = LOGICAL_DIR_RIGHT;
+			break;
+		default:
+		glob_logical_direction = LOGICAL_DIR_DOWN;
+		break;
+			
+	}
 }
 void turnRight90(){
 	setDirLeft(1);
 	setDirRight(0);
-	setSpeedRight(MAXSPEED);
-	setSpeedLeft(MAXSPEED); 
+	setSpeedRight(TURNSPEED);
+	setSpeedLeft(TURNSPEED); 
 	while(glob_theta > (int16_t)(-STOPTURN90))
 	{
 	}
 	setSpeedRight(0); 
 	setSpeedLeft(0); 
 	glob_theta = glob_theta + (int16_t) 90;
+	switch(glob_logical_direction)
+	{
+		case LOGICAL_DIR_UP:
+		glob_logical_direction = LOGICAL_DIR_RIGHT;
+		break;
+		case LOGICAL_DIR_RIGHT:
+		glob_logical_direction = LOGICAL_DIR_DOWN;
+		break;
+		case LOGICAL_DIR_DOWN:
+		glob_logical_direction = LOGICAL_DIR_LEFT;
+		break;
+		default:
+		glob_logical_direction = LOGICAL_DIR_UP;
+		break;
+		
+	}
 }
 void turnLeft45(){
 	setDirLeft(0);
 	setDirRight(1);
-	setSpeedRight(MAXSPEED);
-	setSpeedLeft(MAXSPEED); 
+	setSpeedRight(TURNSPEED);
+	setSpeedLeft(TURNSPEED); 
 	while(glob_theta < STOPTURN45)
 	{
 	}
@@ -275,8 +310,8 @@ void turnLeft45(){
 void turnRight45(){
 	setDirLeft(1);
 	setDirRight(0);
-	setSpeedRight(MAXSPEED); 
-	setSpeedLeft(MAXSPEED); 
+	setSpeedRight(TURNSPEED); 
+	setSpeedLeft(TURNSPEED); 
 	while(glob_theta > -STOPTURN45)
 	{
 	}
