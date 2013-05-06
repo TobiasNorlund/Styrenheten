@@ -5,10 +5,10 @@
  *  Author: davmo049
  */ 
 
-#define MAXSPEED 254
+#define MAXSPEED 150
 #define TURNSPEED 150
-#define STOPTURN90 85
-#define STOPTURN45 35
+#define STOPTURN90 88
+#define STOPTURN45 43
 #define RIGHTWHEELDIFF 23
 #include <avr/io.h>
 #include "global.h"
@@ -261,9 +261,8 @@ void turnLeft90(){
 			glob_logical_direction = LOGICAL_DIR_RIGHT;
 			break;
 		default:
-		glob_logical_direction = LOGICAL_DIR_DOWN;
-		break;
-			
+			glob_logical_direction = LOGICAL_DIR_DOWN;
+			break;
 	}
 }
 void turnRight90(){
@@ -280,18 +279,17 @@ void turnRight90(){
 	switch(glob_logical_direction)
 	{
 		case LOGICAL_DIR_UP:
-		glob_logical_direction = LOGICAL_DIR_RIGHT;
-		break;
+			glob_logical_direction = LOGICAL_DIR_RIGHT;
+			break;
 		case LOGICAL_DIR_RIGHT:
-		glob_logical_direction = LOGICAL_DIR_DOWN;
-		break;
+			glob_logical_direction = LOGICAL_DIR_DOWN;
+			break;
 		case LOGICAL_DIR_DOWN:
-		glob_logical_direction = LOGICAL_DIR_LEFT;
-		break;
+			glob_logical_direction = LOGICAL_DIR_LEFT;
+			break;
 		default:
-		glob_logical_direction = LOGICAL_DIR_UP;
-		break;
-		
+			glob_logical_direction = LOGICAL_DIR_UP;
+			break;
 	}
 }
 void turnLeft45(){
@@ -331,7 +329,21 @@ void virtualTurn()
 	{
 		glob_virtual_direction = DIRECTION_FORWARD;
 	}
-	//glob_logical_direction = TODO;
+	switch(glob_logical_direction)
+	{
+		case LOGICAL_DIR_UP:
+			glob_logical_direction = LOGICAL_DIR_DOWN;
+			break;
+		case LOGICAL_DIR_RIGHT:
+			glob_logical_direction = LOGICAL_DIR_LEFT;
+			break;
+		case LOGICAL_DIR_DOWN:
+			glob_logical_direction = LOGICAL_DIR_UP;
+			break;
+		default:
+			glob_logical_direction = LOGICAL_DIR_RIGHT;
+			break;
+	}
 	return;
 }
 

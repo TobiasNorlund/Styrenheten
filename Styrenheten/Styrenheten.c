@@ -65,10 +65,10 @@ void executeCommand(uint8_t command)
 			turnLeft90();
 			break;
 		case RIGHT_45_COMMAND:
-			//turnRight45();
+			turnRight45();
 			break;
 		case LEFT_45_COMMAND:
-			//turnLeft45();
+			turnLeft45();
 			break;
 		case VIRTUAL_REVERSE_COMMAND:
 			virtualTurn();

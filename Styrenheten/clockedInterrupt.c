@@ -174,16 +174,16 @@ void timedInterupt(void)
 #ifndef KOM_OFF
 	//skicka vidare till PC
 	SPI_set_kom(START);
+	//väldigt ful kod gör om, gör rätt
 	msgRecieve[len] = 12;
 	msgRecieve[len+1] = glob_x;
 	msgRecieve[len+2] = 13;
-	msgRecieve[len+3] = (glob_max&0xFF00)>>8;
-	msgRecieve[len+4] = glob_max&0x00FF;
-	msgRecieve[len+5] = 14;
-	msgRecieve[len+6] = glob_theta;
+	msgRecieve[len+3] = glob_y;
+	msgRecieve[len+4] = 14;
+	msgRecieve[len+5] = glob_logical_direction;//glob_theta;
 
 	
-	SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, len+7);
+	SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, len+6);
 
 	//uint8_t msg[4]={12, glob_x, 13, glob_y};
 	//SPI_MASTER_write(msg, TYPE_DEBUG_DATA, 4);

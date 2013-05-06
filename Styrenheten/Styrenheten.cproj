@@ -34,29 +34,29 @@
       </OverrideVtorValue>
       <Channel>
         <host>127.0.0.1</host>
-        <port>49462</port>
+        <port>50062</port>
         <ssl>False</ssl>
       </Channel>
     </com_atmel_avrdbg_tool_simulator>
     <com_atmel_avrdbg_tool_jtagicemk3>
       <ToolType>com.atmel.avrdbg.tool.jtagicemk3</ToolType>
       <ToolName>JTAGICE3</ToolName>
-      <ToolNumber>J30200009017</ToolNumber>
+      <ToolNumber>J30200013091</ToolNumber>
       <KeepTimersRunning>true</KeepTimersRunning>
       <OverrideVtor>false</OverrideVtor>
       <OverrideVtorValue>
       </OverrideVtorValue>
       <Channel>
         <host>127.0.0.1</host>
-        <port>49332</port>
+        <port>50062</port>
         <ssl>False</ssl>
       </Channel>
       <ToolOptions>
         <InterfaceName>JTAG</InterfaceName>
         <InterfaceProperties>
-          <JtagDbgClock>3000000</JtagDbgClock>
+          <JtagDbgClock>621470</JtagDbgClock>
           <JtagProgClock>1000000</JtagProgClock>
-          <IspClock>150000</IspClock>
+          <IspClock>621470</IspClock>
           <JtagInChain>false</JtagInChain>
           <JtagEnableExtResetOnStartSession>false</JtagEnableExtResetOnStartSession>
           <JtagDevicesBefore>0</JtagDevicesBefore>

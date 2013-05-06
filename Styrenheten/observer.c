@@ -25,7 +25,6 @@ void setRelativeX(int8_t val) //x som om roboten har riktning up
 		case(LOGICAL_DIR_RIGHT):
 			glob_y = -val;
 			break;
-			
 		case(LOGICAL_DIR_DOWN):
 			glob_x = -val;
 			break;
@@ -115,12 +114,6 @@ void setOmega()
 }
 
 
-/**
- * Ska bli en helvetes massa if-satser beroende på
- * vad man får för värden. Dvs reglera på olika sätt
- * beroende på vilka sensordata vi får´+-
- .
- */
 
 void observe()
 {
@@ -192,14 +185,14 @@ int16_t getShiftedSensorX(int16_t sensorVal)
 
 int16_t getShiftedSensorY(int16_t sensorVal)
 {
-	int16_t iter = sensorVal-(HALFSQUAREWIDTH<<2);
+	int16_t iter = sensorVal-(int8to16(HALFSQUAREWIDTH)<<2);
 	while(1)
 	{
-		if(max(iter-glob_y, glob_y-iter) <= HALFSQUAREWIDTH)
+		if(max(iter-glob_y, glob_y-iter) <= int8to16(HALFSQUAREWIDTH))
 		{
 			return iter;
 		}
-		iter = iter+(HALFSQUAREWIDTH<<1);
+		iter = iter+(int8to16(HALFSQUAREWIDTH)<<1);
 	}
 }
 #pragma GCC pop_options
@@ -221,7 +214,7 @@ void moveForwards()
 			--glob_mapX;
 			break;
 	}
-	setRelativeY(getRelativeY()-(HALFSQUAREWIDTH<<1));
+	setRelativeY(getRelativeY()-(int8to16(HALFSQUAREWIDTH)<<1));
 }
 //turn off optimization
 #pragma GCC push_options
@@ -293,7 +286,7 @@ void straightObserver()
 	//ta fram y
 	int16_t YLongForward = getShiftedSensorY((HALFSQUAREWIDTH-CHASSITOLONGFRONT)-(LongFront<<1)); // du är här. blir problem då en sensor säger att man är på posY -80 och en annan säger att man är på +80
 	int16_t YLongBack = getShiftedSensorY((LongRear<<1)+CHASSITOLONGBACK-HALFSQUAREWIDTH);
-	uint16_t overYPosUncert = 1; //inkluderar osäkerhet i y pga hast.
+	uint16_t overYPosUncert = 10; //inkluderar osäkerhet i y pga hast.
 	int16_t velocity = getVelocity();
 	
 	taljare = YLongForward*overNoiseLongFront+YLongBack*overNoiseLongRear+overYPosUncert*(getRelativeY()+((TIMECONSTANT*velocity)>>10)); //lägg till hastighet*TIMECONSTANT vid getRelativeY i beräkningarna TODO
