@@ -127,7 +127,11 @@ void manualSteering()
 int main(void)
 {
 	init();
-	while(!START_PIN);
+	volatile uint8_t blaj = START_PIN;
+	while(!blaj)
+	{
+		blaj = START_PIN;
+	}
 	if(MANUAL_AUTO_SWITCH_PIN) 
 	{
 		manualSteering();

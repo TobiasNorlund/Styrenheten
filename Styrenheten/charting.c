@@ -5,8 +5,8 @@
  *  Author: davmo049
  */ 
 
-#define SENSOROFFSET_1 60
-#define SENSOROFFSET_2 130
+#define SENSOROFFSET_1 80
+#define SENSOROFFSET_2 140
 
 #include "charting.h"
 #include "global.h"
@@ -23,6 +23,7 @@ void pathfind_init()
 			glob_map[j][i] = UNKNOWN;
 		}
 	}
+	glob_map[8][8] = OPEN;
 	glob_logical_direction = LOGICAL_DIR_UP;
 	glob_routeSquaresLength = 0;
 	glob_metaRouteLenght = 0;

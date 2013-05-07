@@ -252,7 +252,7 @@ void timedInterupt(void)
 		}		
 	}while((type != TYPE_NO_PC_MESSAGES) && (type != TYPE_REQUEST_PC_MESSAGE) && (answerCounter<254));//type != TYPE_REQUEST_PC_MESSAGE betyder att vi ej laggt in ny data i kom. dvs ej handskakat.
 
-/*
+
 	//skicka all kartdata till komm
 	while(cbBytesUsed(&glob_mapDataToSend) > 1)
 	{
@@ -263,7 +263,6 @@ void timedInterupt(void)
 		msgSend[2] = glob_map[y][x];
 		SPI_MASTER_write(msgSend, TYPE_MAP_DATA, 3);
 	}
-	*/
 	SPI_set_kom(END);
 #endif
 }

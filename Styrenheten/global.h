@@ -6,7 +6,7 @@
  *  Author: tobno568
  */ 
 	
-#define START_PIN PINA & 1<<PINA4
+#define START_PIN (PINA & 0b00010000)
 #define MANUAL_AUTO_SWITCH_PIN (PINA & 0b00100000)>>5
 #define MANUAL_SELECTED 1
 

@@ -252,8 +252,8 @@ void straightObserver()
 	int16_t ShortRightFront=getSensorShortRightForward();
 	int16_t ShortRightRear=getSensorShortRightRear();
  	
-	int16_t overNoiseLongFront=getSensorLongOverNoise(LongFront);
-	int16_t overNoiseLongRear=getSensorLongOverNoise(LongRear);
+	int16_t overNoiseLongFront= 0; //getSensorLongOverNoise(LongFront);
+	int16_t overNoiseLongRear= 0; //getSensorLongOverNoise(LongRear);
 	int16_t overNoiseLongLeft=getSensorLongOverNoise(LongLeft);
 	int16_t overNoiseLongRight=getSensorLongOverNoise(LongRight);
 	

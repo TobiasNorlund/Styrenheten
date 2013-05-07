@@ -60,7 +60,7 @@ void adjecentNewSquaresRemoveChartedSquares()
 	uint8_t i = 0;
 	while(i < glob_adjecentNewSquaresLenght)
 	{
-		if(glob_map[i+1][i] != UNKNOWN)
+		if(glob_map[glob_adjecentNewSquares[i+1]][glob_adjecentNewSquares[i]] != UNKNOWN)
 		{
 			//ta bort elementet
 			uint8_t k = i;

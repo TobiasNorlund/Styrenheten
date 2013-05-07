@@ -5,7 +5,7 @@
  *  Author: davmo049
  */ 
 
-#define MAXSPEED 150
+#define MAXSPEED 200
 #define TURNSPEED 150
 #define STOPTURN90 88
 #define STOPTURN45 43
