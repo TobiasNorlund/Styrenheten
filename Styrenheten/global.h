@@ -5,9 +5,9 @@
  * Created: 4/5/2013 11:23:22 AM
  *  Author: tobno568
  */ 
-
+	
 #define START_PIN PINA & 1<<PINA4
-#define MANUAL_AUTO_SWITCH_PIN PINA & 1<<PINA5
+#define MANUAL_AUTO_SWITCH_PIN (PINA & 0b00100000)>>5
 #define MANUAL_SELECTED 1
 
 #define DIRECTION_FORWARD 1

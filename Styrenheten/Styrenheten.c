@@ -128,7 +128,7 @@ int main(void)
 {
 	init();
 	while(!START_PIN);
-	if(MANUAL_AUTO_SWITCH_PIN)
+	if(MANUAL_AUTO_SWITCH_PIN) 
 	{
 		manualSteering();
 	}
