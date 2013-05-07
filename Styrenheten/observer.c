@@ -10,7 +10,7 @@
 #define CHASSITOLONGBACK 18 //halva cm
 #define CHASSITOLONGFRONT 18 //halva cm
 
-#define TIMECONSTANT 50 // ms
+#define TIMECONSTANT 100 // ms
 #define INVERTTIMECONSTANT 20 //Dimension 1/s
 
 #define HALFSQUAREWIDTH 80 //halva cm
