@@ -10,6 +10,7 @@
 #define STOPTURN90 88
 #define STOPTURN45 43
 #define RIGHTWHEELDIFF 23
+#define LENGTH_OFFSET -17
 #include <avr/io.h>
 #include "global.h"
 
@@ -193,7 +194,7 @@ void regulateStraight()
 	setDirLeft(1);
 	startSquareX = glob_mapX;
 	startSquareY = glob_mapY;
-	while(!((startSquareX != glob_mapX || startSquareY != glob_mapY)&&(0 < getRelativeY())))
+	while(!((startSquareX != glob_mapX || startSquareY != glob_mapY)&&(LENGTH_OFFSET < getRelativeY())))
 	{
 		/*
 		uint8_t a = 0;

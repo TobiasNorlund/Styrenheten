@@ -26,8 +26,8 @@ void init(void)
 {
 	glob_mapX = 8;
 	glob_mapY = 8;
-	glob_L1_straightX=8;
-	glob_L2_straightTheta=12;
+	glob_L1_straightX=4;
+	glob_L2_straightTheta=16;
 	glob_L3_straightOmega=4;
 	glob_L1_turnTheta=12;
 	glob_L2_turnOmega=4;
@@ -39,13 +39,12 @@ void init(void)
 	SPI_MASTER_init();
 	sei();
 	
-	DDRB |= 0b00000001;
+	DDRB |= 0b00000101;
 }
 
 void signal_done()
 {
-	//TODO
-	return;
+	PORTB |= 0b00000100;
 }
 
 
@@ -79,6 +78,7 @@ void executeCommand(uint8_t command)
 		default:
 			break;
 	}
+	_delay_ms(500);
 	glob_curComm = NULL_COMMAND;
 }
 
