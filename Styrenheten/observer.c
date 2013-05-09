@@ -7,8 +7,8 @@
 
 #define CHASSITOSHORTSIDE 7 //halva cm 7 18 21
 #define CHASSITOLONGSIDE 21 //halva cm
-#define CHASSITOLONGBACK 18 //halva cm
-#define CHASSITOLONGFRONT 18 //halva cm
+#define CHASSITOLONGBACK 36 //halva cm
+#define CHASSITOLONGFRONT 36 //halva cm
 
 #define TIMECONSTANT 100 // ms
 #define INVERTTIMECONSTANT 20 //Dimension 1/s
@@ -132,6 +132,10 @@ void observe()
 
 uint8_t getSensorLongOverNoise(uint8_t value)
 {
+	if(value < 20)
+	{
+		return 0;
+	}
 	if(value == 255)
 	{
 		return 0;	
@@ -154,7 +158,7 @@ uint16_t getSensorShortOverNoise(uint8_t value)
 	}
 	else
 	{
-		return 1;
+		return 10;
 	}
 }
 
@@ -263,7 +267,7 @@ void straightObserver()
 	int16_t overNoiseShortRightRear = getSensorShortOverNoise(ShortRightRear);
 	
 	
-	int16_t overXPosUncert = 1;
+	int16_t overXPosUncert = 10;
 	//ta fram x i korridor // du är här. blir problem då en sensor säger att man är på posY -80 och en annan säger att man är på +80 du har inte tänkt på att långa x sensorer kan se flera rutor
 	int16_t XShortLeftFront = getShiftedSensorX(ShortLeftFront+CHASSITOSHORTSIDE-HALFSQUAREWIDTH);
 	int16_t XShortLeftRear = getShiftedSensorX(ShortLeftRear+CHASSITOSHORTSIDE-HALFSQUAREWIDTH);
@@ -286,7 +290,7 @@ void straightObserver()
 	//ta fram y
 	int16_t YLongForward = getShiftedSensorY((HALFSQUAREWIDTH-CHASSITOLONGFRONT)-(LongFront<<1)); // du är här. blir problem då en sensor säger att man är på posY -80 och en annan säger att man är på +80
 	int16_t YLongBack = getShiftedSensorY((LongRear<<1)+CHASSITOLONGBACK-HALFSQUAREWIDTH);
-	uint16_t overYPosUncert = 1; //inkluderar osäkerhet i y pga hast.
+	int16_t overYPosUncert = 10; //inkluderar osäkerhet i y pga hast.
 	int16_t velocity = getVelocity();
 	
 	taljare = YLongForward*overNoiseLongFront+YLongBack*overNoiseLongRear+overYPosUncert*(getRelativeY()+((TIMECONSTANT*velocity)>>10)); //lägg till hastighet*TIMECONSTANT vid getRelativeY i beräkningarna TODO

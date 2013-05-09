@@ -37,6 +37,7 @@ const uint8_t lookup19[130] PROGMEM = {
 
 void setTheta(uint8_t LongFront, uint8_t LongRear, uint8_t LongLeft, uint8_t LongRight, uint8_t ShortLeftFront, uint8_t ShortLeftRear, uint8_t ShortRightFront, uint8_t ShortRightRear)
 {
+	/*
 	//Endast främre
 	uint8_t frontAngleK=0;
 	int8_t frontAngleDiff=0;
@@ -64,6 +65,7 @@ void setTheta(uint8_t LongFront, uint8_t LongRear, uint8_t LongLeft, uint8_t Lon
 		backAngleDiff=calcOppositeSensors(ShortRightRear,ShortLeftRear) - glob_theta;
 	}
 	
+	*/
 	//Högra sidan, endast korta
 	uint8_t right36AngleK=0;
 	int8_t right36AngleDiff=0;
@@ -72,7 +74,7 @@ void setTheta(uint8_t LongFront, uint8_t LongRear, uint8_t LongLeft, uint8_t Lon
 		right36AngleK=calc36K(ShortRightFront, ShortRightRear);
 		right36AngleDiff=calcSideSensors36(ShortRightFront,ShortRightRear,1) - glob_theta;
 	}
-
+	/*
 	//Högra sidan, främre kort & långa 
 	uint8_t right19FAngleK=0;
 	int8_t right19FAngleDiff=0;
@@ -82,7 +84,8 @@ void setTheta(uint8_t LongFront, uint8_t LongRear, uint8_t LongLeft, uint8_t Lon
 		right19FAngleDiff=calcSideSensors19(ShortRightFront,LongRight,1) - glob_theta;
 		
 	}
-
+	*/
+	
 	//Vänsta sidan, endast korta
 	uint8_t left36AngleK=0;
 	int8_t left36AngleDiff=0;
@@ -91,7 +94,7 @@ void setTheta(uint8_t LongFront, uint8_t LongRear, uint8_t LongLeft, uint8_t Lon
 		left36AngleK=calc36K(ShortLeftFront, ShortLeftRear);
 		left36AngleDiff=calcSideSensors36(ShortLeftFront,ShortLeftRear,0) - glob_theta;
 	}
-
+	/*
 	//Vänstra sidan, främre kort & långa
 	uint8_t left19FAngleK=0;
 	int8_t left19FAngleDiff=0;
@@ -100,9 +103,10 @@ void setTheta(uint8_t LongFront, uint8_t LongRear, uint8_t LongLeft, uint8_t Lon
 		left19FAngleK=calc19K(ShortLeftFront, LongLeft);
 		left19FAngleDiff=calcSideSensors19(ShortLeftFront,LongLeft,0) - glob_theta;
 	}
-	
+	*/
 	//Räkna ut från tidigare vinkelhastighet*tid
 	//TODO
+	/*
 	uint8_t omegaK=0;
 	int8_t omegaDiff=0;
 	if(OK_SENSOR_VALUE(ShortLeftRear)&&OK_SENSOR_VALUE(LongLeft))
@@ -112,7 +116,8 @@ void setTheta(uint8_t LongFront, uint8_t LongRear, uint8_t LongLeft, uint8_t Lon
 	}
 	
 	uint8_t irSensorK = calcKirSensorK(glob_theta);
-
+	*/
+	
 	glob_thetaOld = glob_theta;
 	//int16_t taljare = irSensorK*(frontAngleK*frontAngleDiff + middleAngleK*middleAngleDiff + backAngleK*backAngleDiff + right36AngleDiff*right36AngleK + right19FAngleDiff*right19FAngleK + left36AngleDiff*left36AngleK + left19FAngleDiff*left19FAngleK);// + omegaDiff*omegaK;
 	//int16_t namnare = irSensorK*(frontAngleK + middleAngleK + backAngleK + right36AngleK + right19FAngleK + left36AngleK + left19FAngleK); //+ omegaK;
@@ -154,6 +159,20 @@ uint8_t calcOppositeLongK(uint8_t leftLongSensor, uint8_t rightLongSensor)
 // vill vi ju i princip göra det?
 uint8_t calc36K(uint8_t shortFront, uint8_t shortRear)
 {
+	if(shortFront > shortRear)
+	{
+		if(shortFront-shortRear>50)
+		{
+			return 0;
+		}
+	}
+	else
+	{
+		if(shortRear-shortFront>50)
+		{
+			return 0;
+		}
+	}
 	return 25;//TODO Ordentligare
 }
 

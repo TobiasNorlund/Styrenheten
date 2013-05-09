@@ -110,11 +110,9 @@ void manualSteering()
 {
 	while(1)
 	{
-		
-		//updateMapManual();
 		if(glob_routeLength != 0)
 		{
-		
+			updateMapManual();
 			executeCommand(glob_route[glob_routeLength-1]);
 			glob_routeLength--;
 		}

@@ -180,7 +180,7 @@ void timedInterupt(void)
 	msgRecieve[len+2] = 13;
 	msgRecieve[len+3] = glob_y;
 	msgRecieve[len+4] = 14;
-	msgRecieve[len+5] = glob_logical_direction;//glob_theta;
+	msgRecieve[len+5] = glob_theta;
 
 	
 	SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, len+6);

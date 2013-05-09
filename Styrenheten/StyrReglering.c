@@ -10,7 +10,8 @@
 #define STOPTURN90 88
 #define STOPTURN45 43
 #define RIGHTWHEELDIFF 23
-#define LENGTH_OFFSET -17
+#define LENGTH_OFFSET -51
+
 #include <avr/io.h>
 #include "global.h"
 
