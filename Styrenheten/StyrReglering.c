@@ -22,6 +22,7 @@
 #define RIGHTWHEELDIFF 23
 #define LENGTH_OFFSET -51
 #define ROTMIN 80
+#define TURN_FINE 0 //VAD VAR DETTA?
 
 #include "StyrReglering.h"
 

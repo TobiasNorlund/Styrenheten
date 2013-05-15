@@ -267,19 +267,15 @@ void turnFine()
 	int16_t ShortRightRear=getSensorShortRightRear();
 	
 	uint8_t right36AngleK=0;
-	int8_t right36AngleDiff=0;
 	if(OK_SENSOR_VALUE(ShortRightFront)&&OK_SENSOR_VALUE(ShortRightRear))
 	{
-		right36AngleK=calc36K(ShortRightFront, ShortRightRear);
-		right36AngleDiff=calcSideSensors36(ShortRightFront,ShortRightRear,1) - glob_theta;
+		right36AngleK=1;
 	}
 	//Vänsta sidan, endast korta
 	uint8_t left36AngleK=0;
-	int8_t left36AngleDiff=0;
 	if(OK_SENSOR_VALUE(ShortLeftFront)&&OK_SENSOR_VALUE(ShortLeftRear))
 	{
-		left36AngleK=calc36K(ShortLeftFront, ShortLeftRear);
-		left36AngleDiff=calcSideSensors36(ShortLeftFront,ShortLeftRear,0) - glob_theta;
+		left36AngleK=1;
 	}
 	glob_thetaOld = glob_theta;
 	int16_t thetaLeft = int8to16(calcSideSensors36(ShortLeftFront,ShortLeftRear,0))-90;
