@@ -133,6 +133,10 @@ volatile uint8_t glob_L2_turnOmega;
  * bestämning av gaspådrag på motererna.
  */
 volatile int16_t glob_max;
+/**
+ * DEBUG, SKA TAS BORT SENARE
+ */
+uint8_t glob_syncSpike;
 
 /** 
  * Returnerar sensorvärden från given sensor.
