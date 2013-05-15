@@ -1,21 +1,33 @@
-﻿/*
- * Styrenheten.c
- *
- * Created: 4/5/2013 11:22:36 AM
- *  Author: carka684 
- */
-
+﻿	/**
+	 * TSEA27 Elektronikprojekt
+	 *
+	 * IDENTIFIERING
+	 *
+	 * Modul: Styrenheten
+	 * Filnamn: Styrenheten.c
+	 * Skriven av: C. Karlsson Schmidt, D. Molin			   
+	 * Datum: 2013-05-15
+	 * Version: 1.0
+	 *
+	 * BESKRIVNING
+	 *
+	 * Main-fil för styrenheten.
+	 */	
+	
 // in "Makefile" 
 //#define F_CPU 20000000UL // 20mhz
-#include <util/delay.h>
 
+#include <util/delay.h>
+#include <avr/io.h>
+#include <avr/interrupt.h>
 #include "global.h"
 #include "clockedInterrupt.h"
 #include "charting.h"
 #include "StyrReglering.h"
+#include "pathfind.h"
 #include "../../TSEA27-include/message.h"
 #include "../../TSEA27-include/SPI/spi_master.h"
-#include "pathfind.h"
+
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -36,7 +48,9 @@ void sendAllMapData()
 	}
 }
 
-
+/** 
+ * Initierar styrenheten.
+ */
 void init(void)
 {
 	glob_mapX = 8;
@@ -48,7 +62,7 @@ void init(void)
 	glob_L2_turnOmega=4;
 	
 	clockedInterrupt_init();
-	reglering_init();
+	regulate_init();
 	pathfind_init();
 	_delay_ms(500); //ge tid innan styr börjar
 	SPI_MASTER_init();
@@ -57,6 +71,10 @@ void init(void)
 	DDRB |= 0b00000101;
 }
 
+/** 
+ * Tänder en lampa på roboten och skickar kartdata
+ * kontinuerligt tills reset. 
+ */
 void signal_done()
 {
 	PORTB |= 0b00000100;
@@ -68,7 +86,9 @@ void signal_done()
 	}
 }
 
-
+/** 
+ * Anropar nuvarande kommando i kön
+ */
 void executeCommand(uint8_t command)
 {
 	glob_curComm = command;
@@ -104,6 +124,9 @@ void executeCommand(uint8_t command)
 	_delay_ms(500);
 }
 
+/** 
+ * Kör autonomt
+ */
 void autoSteering()
 {
 	while(1)
@@ -126,6 +149,10 @@ void autoSteering()
 	}
 	return;
 }
+
+/** 
+ * Kör manuellt
+ */
 #pragma GCC push_options
 #pragma GCC optimize ("O0")
 void manualSteering()

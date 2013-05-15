@@ -1,16 +1,21 @@
-﻿/*
- * pathfind.c
- *
- * Created: 4/29/2013 11:43:58 AM
- *  Author: davmo049
- */ 
+﻿	/**
+	 * TSEA27 Elektronikprojekt
+	 *
+	 * IDENTIFIERING
+	 *
+	 * Modul: Styrenheten
+	 * Filnamn: pathfind.c
+	 * Skriven av: D. Molin
+	 *			   
+	 * Datum: 2013-05-15
+	 * Version: 1.0
+	 *
+	 * BESKRIVNING
+	 *
+	 * Algoritmkod för roboten pathfinding.
+	 */	
 
 #include "pathfind.h"
-#include "../../TSEA27-include/message.h"
-#include "global.h"
-#include "charting.h"
-#include <string.h>
-
 
 void pathfind()
 {

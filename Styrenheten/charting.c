@@ -1,20 +1,22 @@
-﻿/*
- * charting.c
- *
- * Created: 4/17/2013 8:52:18 AM
- *  Author: davmo049
- */ 
-
-#define SENSOROFFSET_1 80
-#define SENSOROFFSET_2 140
+﻿	/**
+	 * TSEA27 Elektronikprojekt
+	 *
+	 * IDENTIFIERING
+	 *
+	 * Modul:Styrenheten
+	 * Filnamn: charting.c
+	 * Skriven av: D. Molin
+	 * Datum: 2013-05-15
+	 * Version: 1.0
+	 *
+	 * BESKRIVNING
+	 *
+	 * Sköter kartläggningen av banan i styrenheten.
+	 */	
 
 #include "observer.h"
 
 #include "charting.h"
-#include "global.h"
-#include "../../TSEA27-include/message.h"
-
-#define TIME 10 //i ms
 
 void pathfind_init()
 {
