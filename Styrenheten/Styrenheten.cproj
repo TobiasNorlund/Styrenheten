@@ -123,10 +123,6 @@
       <SubType>compile</SubType>
       <Link>circularbuffer.h</Link>
     </Compile>
-    <Compile Include="..\..\TSEA27-include\geometrics.h">
-      <SubType>compile</SubType>
-      <Link>geometrics.h</Link>
-    </Compile>
     <Compile Include="..\..\TSEA27-include\message.c">
       <SubType>compile</SubType>
       <Link>message.c</Link>

@@ -1,19 +1,22 @@
+	/**
+	 * TSEA27 Elektronikprojekt
+	 *
+	 * IDENTIFIERING
+	 *
+	 * Modul:Styrenheten
+	 * Filnamn: observer.c
+	 * Skriven av: C. Karlsson, M. Karlsson, D. Molin
+	 *			   
+	 * Datum: 2013-05-15
+	 * Version: 1.0
+	 *
+	 * BESKRIVNING
+	 *
+	 * Har hand om styrenhetens observatör. 
+	 * Sätter de observatörens värden utefter sensorvärden.
+	 */	
+
 #include "observer.h"
-#include "global.h"
-#include "../../TSEA27-include/message.h"
-#include "../../TSEA27-include/utils.h"
-#include <avr/io.h>
-#include <avr/pgmspace.h>
-
-#define CHASSITOSHORTSIDE 7 //halva cm 7 18 21
-#define CHASSITOLONGSIDE 21 //halva cm
-#define CHASSITOLONGBACK 36 //halva cm
-#define CHASSITOLONGFRONT 36 //halva cm
-
-#define TIMECONSTANT 100 // ms
-#define INVERTTIMECONSTANT 20 //Dimension 1/s
-
-#define HALFSQUAREWIDTH 80 //halva cm
 
 void setRelativeX(int8_t val) //x som om roboten har riktning up
 {
@@ -53,67 +56,6 @@ void setRelativeY(int8_t value) //Y som om roboten har riktning upp
 	}
 	return;
 }
-
-/*
-const uint8_t lookupShort[140] PROGMEM = {
-	0,3,6,10,13,16,19,22,25,29,32,35,38,41,44,47,50,53,56,59,62,65,68,71,74,77,79,82,85,88,90,93,96,98,101,104,106,109,111,114,116,119,121,123,126,128,130,133,135,137,139,141,143,145,147,150,151,153,155,157,159,161,163,165,167,168,170,172,173,175,177,178,180,182,183,185,186,188,189,191,192,193,195,196,198,199,200,202,203,204,205,207,208,209,210,211,213,214,215,216,217,218,219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,234,235,236,237,238,239,239,240,241,242,243,243,244,245,246,246,247,248,248,249,250,250
-	};
-*/
-
-
-/*
-void setThetaOmegaLeft(uint8_t shortLeftFront, uint8_t shortLeftRear)
-{
-	glob_thetaOld = glob_theta;
-	uint8_t diff;
-	if (shortLeftFront < shortLeftRear)
-	{
-		diff = shortLeftRear - shortLeftFront;
-		glob_theta = pgm_read_byte(&(lookupShort[diff]))>>2;
-	}
-	else
-	{
-		diff = shortLeftFront - shortLeftRear;
-		glob_theta = -(pgm_read_byte(&(lookupShort[diff]))>>2);	
-	}
-	glob_omega = (glob_theta - glob_thetaOld)>>TIME;
-	return;
-}
-	
-void setThetaOmegaRight(uint8_t shortRightFront, uint8_t shortRightRear)
-{
-	glob_thetaOld = glob_theta;
-	uint8_t diff;
-	if (shortLeftFront < shortLeftRear)
-	{
-		diff = shortLeftRear - shortLeftFront;
-		glob_theta = -(pgm_read_byte(&(lookupShort[diff]))>>2);
-	}
-	else
-	{
-		diff = shortLeftFront - shortLeftRear;
-		glob_theta = pgm_read_byte(&(lookupShort[diff]))>>2;
-	}
-	glob_omega = (glob_theta - glob_thetaOld)>>TIME;
-	return;
-}
-*/
-
-void setOmega()
-{
-	int16_t gyroValue = glob_gyro;
-	if((gyroValue < 10) && (gyroValue > -10))
-	{
-		glob_omega = (glob_theta - glob_thetaOld)*INVERTTIMECONSTANT; //TODO
-	}
-	else
-	{
-		glob_omega = gyroValue;
-	}
-	return;
-}
-
-
 
 void observe()
 {
@@ -201,7 +143,7 @@ int16_t getShiftedSensorY(int16_t sensorVal)
 }
 #pragma GCC pop_options
 //end turn off optimization 
-void moveForwards()
+void moveForward()
 {
 	switch(glob_logical_direction)
 	{
@@ -283,9 +225,9 @@ void straightObserver()
 	int16_t sum5 = XShortRightFront*overNoiseShortRightFront;
 	int16_t sum6 = XShortRightRear*overNoiseShortRightRear;
 	int16_t sum7 = overXPosUncert*int8to16(getRelativeX());
-	int16_t taljare = sum1+sum2+sum3+sum4+sum5+sum6+sum7;
-	int16_t namnare = overNoiseLongLeft+overNoiseLongRight+overNoiseShortLeftFront+overNoiseShortLeftRear+overNoiseShortRightFront+overNoiseShortRightRear+overXPosUncert;
-	int16_t divAns=taljare/namnare;
+	int16_t numerator = sum1+sum2+sum3+sum4+sum5+sum6+sum7;
+	int16_t denominator = overNoiseLongLeft+overNoiseLongRight+overNoiseShortLeftFront+overNoiseShortLeftRear+overNoiseShortRightFront+overNoiseShortRightRear+overXPosUncert;
+	int16_t divAns=numerator/denominator;
 	setRelativeX(divAns);
 	//ta fram y
 	int16_t YLongForward = getShiftedSensorY((HALFSQUAREWIDTH-CHASSITOLONGFRONT)-(LongFront<<1)); // du är här. blir problem då en sensor säger att man är på posY -80 och en annan säger att man är på +80
@@ -293,41 +235,15 @@ void straightObserver()
 	int16_t overYPosUncert = 10; //inkluderar osäkerhet i y pga hast.
 	int16_t velocity = getVelocity();
 	
-	taljare = YLongForward*overNoiseLongFront+YLongBack*overNoiseLongRear+overYPosUncert*(getRelativeY()+((TIMECONSTANT*velocity)>>10)); //lägg till hastighet*TIMECONSTANT vid getRelativeY i beräkningarna TODO
-	namnare = overNoiseLongFront+overNoiseLongRear+overYPosUncert;
-	setRelativeY(taljare/namnare);
+	numerator = YLongForward*overNoiseLongFront+YLongBack*overNoiseLongRear+overYPosUncert*(getRelativeY()+((TIMECONSTANT*velocity)>>10)); //lägg till hastighet*TIMECONSTANT vid getRelativeY i beräkningarna TODO
+	denominator = overNoiseLongFront+overNoiseLongRear+overYPosUncert;
+	setRelativeY(numerator/denominator);
 	if(getRelativeY() > HALFSQUAREWIDTH)
 	{
-		moveForwards();
+		moveForward();
 	}
 	
-	/*
-	if((shortLeftFront + shortLeftRear) < (shortRightFront + shortRightRear))
-	{
-		setThetaOmegaLeft(shortLeftFront, shortLeftRear);
-		setXV(shortLeftFront,shortRightRear);
-	}
-	else
-	{
-		setThetaOmegaRight(shortRightFront, shortRightRear);
-		setXV(shortRightFront, shortRightRear);
-	}
-	*/
-	
-	setTheta(LongFront, LongRear, LongLeft, LongRight, ShortLeftFront, ShortLeftRear, ShortRightFront, ShortRightRear);
-	
-	setOmega();
-	
-	/*
-	if(OK_SENSOR_VALUE(ShortLeftFront)&&OK_SENSOR_VALUE(ShortLeftRear))
-	{
-		setRelativeX(ShortLeftFront, ShortLeftRear);
-	}
-	else if(OK_SENSOR_VALUE(ShortRightFront)&&OK_SENSOR_VALUE(ShortRightRear))
-	{
-		setRelativeX(ShortRightFront, ShortRightRear);
-	}
-	*/	
+	setTheta(ShortLeftFront, ShortLeftRear, ShortRightFront, ShortRightRear);
 	return;
 }
 #pragma GCC pop_options

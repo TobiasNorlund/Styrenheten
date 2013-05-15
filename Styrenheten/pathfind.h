@@ -1,10 +1,19 @@
-﻿/*
- * Pathfind.h
- *
- * Created: 4/29/2013 11:43:40 AM
- *  Author: davmo049
- */ 
-
+﻿	/**
+	 * TSEA27 Elektronikprojekt
+	 *
+	 * IDENTIFIERING
+	 *
+	 * Modul: Styrenheten
+	 * Filnamn: pathfind.h
+	 * Skriven av: D. Molin
+	 *			   
+	 * Datum: 2013-05-15
+	 * Version: 1.0
+	 *
+	 * BESKRIVNING
+	 *
+	 * Algoritmkod för roboten pathfinding.
+	 */	
 
 #ifndef PATHFIND_H_
 #define PATHFIND_H_
@@ -12,6 +21,10 @@
 #include <avr/io.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
+#include "../../TSEA27-include/message.h"
+#include "global.h"
+#include "charting.h"
 
 void pathfind();
 void truncateMetaRoute();

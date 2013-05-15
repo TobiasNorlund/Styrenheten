@@ -1,10 +1,20 @@
-﻿/*
- * global.c
- *
- * Created: 4/17/2013 9:45:13 AM
- *  Author: davmo049
- */ 
-
+﻿	/**
+	 * TSEA27 Elektronikprojekt
+	 *
+	 * IDENTIFIERING
+	 *
+	 * Modul:Styrenheten
+	 * Filnamn: global.c
+	 * Skriven av: I. Junaeus, C. Karlsson, M. Karlsson, J. Källström, 
+	 *			   D. Molin, T. Norlund		
+	 * Datum: 2013-05-15
+	 * Version: 1.0
+	 *
+	 * BESKRIVNING
+	 *
+	 * Definierar alla de globala variabler som styrenheten använder sig av.
+	 */	
+	
 #include "global.h"
 
 

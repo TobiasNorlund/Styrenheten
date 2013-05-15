@@ -1,9 +1,19 @@
-﻿/*
- * StyrReglering.c
- *
- * Created: 4/16/2013 11:32:16 AM
- *  Author: davmo049
- */ 
+﻿	/**
+	 * TSEA27 Elektronikprojekt
+	 *
+	 * IDENTIFIERING
+	 *
+	 * Modul: Styrenheten
+	 * Filnamn: StyrReglering.c
+	 * Skriven av: C. Karlsson Schmidt, M. Karlsson, D. Molin			   
+	 * Datum: 2013-05-15
+	 * Version: 1.0
+	 *
+	 * BESKRIVNING
+	 *
+	 * Reglerar gaspådraget på robotens hjul givet kommandon.
+	 */	
+	
 
 #define MAXSPEED 200
 #define TURNSPEED 150
@@ -12,16 +22,9 @@
 #define RIGHTWHEELDIFF 23
 #define LENGTH_OFFSET -51
 
-#include <avr/io.h>
-#include "global.h"
-
 #include "StyrReglering.h"
 
-uint8_t startSquareX;
-uint8_t startSquareY;
-
-
-void reglering_init()
+void regulate_init()
 {
 	glob_virtual_direction = DIRECTION_FORWARD;
 	glob_x = 0;
@@ -193,8 +196,9 @@ void regulateStraight()
 {
 	setDirRight(1);
 	setDirLeft(1);
-	startSquareX = glob_mapX;
-	startSquareY = glob_mapY;
+
+	uint8_t startSquareX = glob_mapX;
+	uint8_t startSquareY = glob_mapY;
 	while(!((startSquareX != glob_mapX || startSquareY != glob_mapY)&&(LENGTH_OFFSET < getRelativeY())))
 	{
 		/*

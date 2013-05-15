@@ -1,10 +1,18 @@
-/*
- * calcAngle.h
+/**
+ * TSEA27 Elektronikprojekt
  *
- * Created: 4/25/2013 7:14:49 PM
- *  Author: mikka789
- */ 
-
+ * IDENTIFIERING
+ *
+ * Modul:Styrenheten
+ * Filnamn: calcAngle.h
+ * Skriven av: M. Karlsson
+ * Datum: 2013-05-15
+ * Version: 1.0
+ *
+ * BESKRIVNING
+ *
+ * Används för att beräkna vinkeln global_theta vid rakreglering.
+ */	
 
 #ifndef CALCANGLE_H_
 #define CALCANGLE_H_
@@ -13,16 +21,16 @@
 #include "global.h"
 #include "observer.h"
 
-void setTheta(uint8_t LongFront, uint8_t LongRear, uint8_t LongLeft, uint8_t LongRight, uint8_t ShortLeftFront, uint8_t ShortLeftRear, uint8_t ShortRightFront, uint8_t ShortRightRear);
+/**
+ * Sätter theta med hjälp av sensorvärden.
+ */
+void setTheta(uint8_t ShortLeftFront, uint8_t ShortLeftRear, uint8_t ShortRightFront, uint8_t ShortRightRear);
 
-uint8_t calcOppositeShortK(uint8_t leftShortSensor, uint8_t rightShortSensor);
-uint8_t calcOppositeLongK(uint8_t leftLongSensor, uint8_t rightLongSensor);
-uint8_t calc36K(uint8_t shortFront, uint8_t shortRear);
-uint8_t calc19K(uint8_t shortSensor, uint8_t longSensor);
-uint8_t calcKOmega(uint16_t omega);
-uint8_t calcKirSensorK(uint8_t angle);
-int8_t calcOppositeSensors(uint8_t rightFrontSensor,uint8_t leftFrontSensor);
+/**
+ * Returnerar ett theta som givs av en sidas sensorer.
+ * int8_t side, 0 om vänster, 1 om höger
+ * return: [grader]
+ */
 int8_t calcSideSensors36(uint8_t frontDistance,uint8_t rearDistance, int8_t side);
-int8_t calcSideSensors19(uint8_t frontDistance,uint8_t longDistance, int8_t side);
 
 #endif /* CALCANGLE_H_ */
