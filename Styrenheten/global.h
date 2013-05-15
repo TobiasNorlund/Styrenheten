@@ -55,6 +55,7 @@
 	volatile int16_t glob_omega; //grader/sekund, initieras i styrinit
 	uint8_t glob_virtual_direction; // initieras i reglering_init
 	uint8_t glob_logical_direction; //ska initieras i pathfind_init
+	uint8_t glob_syncSpike;
 
 	//pathfind stuff
 	volatile uint8_t glob_route[ROUTELENGTH];

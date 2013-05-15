@@ -8,6 +8,8 @@
 #define SENSOROFFSET_1 80
 #define SENSOROFFSET_2 140
 
+#include "observer.h"
+
 #include "charting.h"
 #include "global.h"
 #include "../../TSEA27-include/message.h"
@@ -108,23 +110,42 @@ void addToAdjecentNewSquares(uint8_t x, uint8_t y)
 
 void chart(uint8_t logical_direction, void (*charting_func)(uint8_t x, uint8_t y, uint8_t info))
 {
-	uint8_t sensorLength;
+	int16_t sensorLength;
+	int16_t posOffset;
 	uint8_t targetSensor = (logical_direction+(4-glob_logical_direction))%4;
+	
+	switch(logical_direction)
+	{
+		case LOGICAL_DIR_UP:
+			posOffset = int8to16(glob_y)>>1;
+			break;
+		case LOGICAL_DIR_RIGHT:
+			posOffset = int8to16(glob_x)>>1;
+			break;
+		case LOGICAL_DIR_DOWN:
+			posOffset = int8to16(-glob_y)>>1;
+			break;
+		default:
+			posOffset = int8to16(-glob_x)>>1;
+			break;
+	}
+	
 	switch(targetSensor)
 	{
 		case LOGICAL_DIR_UP:
-			sensorLength = getSensorLongForward();
+			sensorLength = getSensorLongForward()+(CHASSITOLONGFRONT>>1);
 			break;
 		case LOGICAL_DIR_RIGHT:
-			sensorLength = getSensorLongRight();
+			sensorLength = getSensorLongRight()+(CHASSITOLONGSIDE>>1);
 			break;
 		case LOGICAL_DIR_DOWN:
-			sensorLength = getSensorLongRear();
+			sensorLength = getSensorLongRear()+(CHASSITOLONGBACK>>1);
 			break;
 		default:
-			sensorLength = getSensorLongLeft();
+			sensorLength = getSensorLongLeft()+(CHASSITOLONGSIDE>>1);
 			break;
 	}
+	sensorLength = sensorLength+posOffset;
 	switch(logical_direction)
 	{
 		case(LOGICAL_DIR_UP):

@@ -9,6 +9,11 @@
 #ifndef OBSERVER_H_
 #define OBSERVER_H_
 
+#define CHASSITOSHORTSIDE 10 //halva cm
+#define CHASSITOLONGSIDE 16 //halva cm
+#define CHASSITOLONGBACK 22 //halva cm
+#define CHASSITOLONGFRONT 22 //halva cm
+
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 #include "calcAngle.h"

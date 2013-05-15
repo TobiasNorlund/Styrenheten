@@ -3,7 +3,6 @@
 #include "calcAngle.h"
 
 /**
- * TODO: Se TODO:er nedan.
  * Vad ska straffas när?
  * Hur gör vi med tiden? Behövs vid att räkna ut vinkel tillskott från omega, behövs
  * även för att kunna ta ut derivatan omega.
@@ -123,8 +122,9 @@ void setTheta(uint8_t LongFront, uint8_t LongRear, uint8_t LongLeft, uint8_t Lon
 	//int16_t namnare = irSensorK*(frontAngleK + middleAngleK + backAngleK + right36AngleK + right19FAngleK + left36AngleK + left19FAngleK); //+ omegaK;
 
 	//int16_t taljare = right36AngleDiff*right36AngleK + left36AngleDiff*left36AngleK;
-	int16_t taljare = calcSideSensors36(ShortLeftFront,ShortLeftRear,0)*left36AngleK + calcSideSensors36(ShortRightFront,ShortRightRear,1)*right36AngleK;
-	int16_t namnare = right36AngleK + left36AngleK;
+	int16_t thetaWeight = 10;
+	int16_t taljare = calcSideSensors36(ShortLeftFront,ShortLeftRear,0)*left36AngleK + calcSideSensors36(ShortRightFront,ShortRightRear,1)*right36AngleK+glob_theta*thetaWeight;
+	int16_t namnare = right36AngleK + left36AngleK+thetaWeight;
 	
 	//int16_t newAngleDiff = taljare/namnare;
 	//glob_theta = glob_theta+newAngleDiff;

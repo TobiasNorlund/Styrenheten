@@ -5,17 +5,22 @@
  *  Author: davmo049
  */ 
 
-#define MAXSPEED 200
-#define TURNSPEED 150
-#define STOPTURN90 88
+#define MAXSPEED 250
+#define TURNSPEED 180
+#define STOPTURN90 83
 #define STOPTURN45 43
 #define RIGHTWHEELDIFF 23
 #define LENGTH_OFFSET -51
+#define ROTMIN 80
 
 #include <avr/io.h>
+
 #include "global.h"
+#include "../../TSEA27-include/message.h"
 
 #include "StyrReglering.h"
+
+#include <util/delay.h>
 
 uint8_t startSquareX;
 uint8_t startSquareY;
@@ -197,38 +202,35 @@ void regulateStraight()
 	startSquareY = glob_mapY;
 	while(!((startSquareX != glob_mapX || startSquareY != glob_mapY)&&(LENGTH_OFFSET < getRelativeY())))
 	{
-		/*
-		uint8_t a = 0;
-		uint8_t l1 = 8 / (glob_v*2^a);
-		uint8_t l2 = 12>>a;
-		uint8_t l3 = 6>>a;
-		*/
-		//TODO: Ska inte använda glob_vLeft!!!!
-		
-		//testX = getRelativeX();
 		int16_t ur,ul;
 		int16_t xRelative = int8to16(getRelativeX());
 		int16_t xFactor = (glob_L1_straightX*xRelative)>>SHORTFACTOR;
 		int16_t thetaDeg = degToRad(glob_theta);
 		int16_t thetaFactor = (glob_L2_straightTheta*thetaDeg)>>(DIVISIONFACTOR-4);
 		int16_t omegaFactor = glob_L3_straightOmega*glob_omega;
-		glob_max = xFactor-thetaFactor;//+omegaFactor;
-		if(glob_max > 254)
+		glob_max = xFactor-thetaFactor;
+		cbWrite(&glob_debugMesssageBuffer, 17);
+		cbWrite(&glob_debugMesssageBuffer, glob_theta>>8);
+		cbWrite(&glob_debugMesssageBuffer, glob_theta);
+		cbWrite(&glob_debugMesssageBuffer, 19);
+		cbWrite(&glob_debugMesssageBuffer, xRelative>>8);
+		cbWrite(&glob_debugMesssageBuffer, xRelative);
+		if(glob_max > MAXSPEED)
 		{
-			glob_max = 254;
+			glob_max = MAXSPEED;
 		}
-		else if(glob_max < -254)
+		else if(glob_max < -MAXSPEED)
 		{
-			glob_max = -254;
+			glob_max = -MAXSPEED;
 		}
 		if(glob_max > 0 )
 		{
-			ur = 254;
+			ur = MAXSPEED;
 			ul = ur - glob_max;
 		}
 		else
 		{
-			ul = 254;
+			ul = MAXSPEED;
 			ur = glob_max + ul;
 		}
 		setSpeedLeft(ul);
@@ -238,7 +240,6 @@ void regulateStraight()
 	setSpeedRight(0);
 }
 
-
 void turnLeft90(){
 	setDirLeft(0);
 	setDirRight(1);
@@ -247,9 +248,7 @@ void turnLeft90(){
 	while(glob_theta < (int16_t)STOPTURN90)
 	{
 		
-	}
-	setSpeedRight(0);
-	setSpeedLeft(0); 
+	} 
 	glob_theta = glob_theta - (int16_t) 90;
 	switch(glob_logical_direction)
 	{
@@ -266,7 +265,9 @@ void turnLeft90(){
 			glob_logical_direction = LOGICAL_DIR_DOWN;
 			break;
 	}
+	cleanUpAngle();
 }
+
 void turnRight90(){
 	setDirLeft(1);
 	setDirRight(0);
@@ -275,8 +276,6 @@ void turnRight90(){
 	while(glob_theta > (int16_t)(-STOPTURN90))
 	{
 	}
-	setSpeedRight(0); 
-	setSpeedLeft(0); 
 	glob_theta = glob_theta + (int16_t) 90;
 	switch(glob_logical_direction)
 	{
@@ -292,7 +291,8 @@ void turnRight90(){
 		default:
 			glob_logical_direction = LOGICAL_DIR_UP;
 			break;
-	}
+		}
+	cleanUpAngle();
 }
 void turnLeft45(){
 	setDirLeft(0);
@@ -321,6 +321,97 @@ void turnRight45(){
 }
 #pragma GCC pop_options
 //end turn off optimization
+
+void cleanUpAngle()
+{
+	if(glob_logical_direction == LOGICAL_DIR_UP || glob_logical_direction == LOGICAL_DIR_DOWN)
+	{
+		if(glob_map[glob_mapY][glob_mapX+1] == OPEN && glob_map[glob_mapY][glob_mapX-1] == OPEN)
+		{
+			setSpeedRight(0);
+			setSpeedLeft(0);
+			return;
+		}
+	}
+	else
+	{
+		if(glob_map[glob_mapY+1][glob_mapX] == OPEN && glob_map[glob_mapY-1][glob_mapX] == OPEN)
+		{
+			setSpeedRight(0);
+			setSpeedLeft(0);
+			return;
+		}
+	}
+	glob_curComm = TURN_FINE;
+	uint8_t rotSpeed = TURNSPEED-50;
+	uint8_t prev_dir = 2;
+	while(!(glob_theta == 0 && rotSpeed == ROTMIN))
+	{
+		if(glob_theta > 0)
+		{
+			setDirLeft(1);
+			setDirRight(0);
+			setSpeedRight(rotSpeed);
+			setSpeedLeft(rotSpeed);
+			if(prev_dir == 2)
+			{
+				prev_dir = 1;
+			}
+			else if(prev_dir == 0)
+			{
+				prev_dir = 1;
+				rotSpeed = rotSpeed-50;
+				if(rotSpeed < ROTMIN)
+				{
+					rotSpeed = ROTMIN;
+				}
+				else
+				{
+					uint8_t theta_sav = glob_theta;
+					for(uint8_t i = 0; i < 5; ++i)
+					{
+						while(glob_theta == theta_sav)
+						{
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			setDirLeft(0);
+			setDirRight(1);
+			setSpeedRight(rotSpeed);
+			setSpeedLeft(rotSpeed);
+			if(prev_dir == 2)
+			{
+				prev_dir = 0;
+			}
+			else if(prev_dir == 1)
+			{
+				prev_dir = 0;
+				rotSpeed = rotSpeed-50;
+				if(rotSpeed < ROTMIN)
+				{
+					rotSpeed = ROTMIN;
+				}
+				else
+				{
+					uint8_t theta_sav = glob_theta;
+					for(uint8_t i = 0; i < 5; ++i)
+					{
+						while(glob_theta == theta_sav)
+						{
+						}	
+					}
+				} 
+			}
+		}
+	}
+	setSpeedRight(0);
+	setSpeedLeft(0);
+}
+
 void virtualTurn()
 {
 	if(glob_virtual_direction == DIRECTION_FORWARD)

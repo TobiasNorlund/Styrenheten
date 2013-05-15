@@ -21,6 +21,21 @@
 #include <avr/interrupt.h>
 
 
+void sendAllMapData()
+{
+	for(uint8_t i = 0; i < 16; ++i)
+	{
+		for(uint8_t j = 0; j < 16; ++j)
+		{
+			if(glob_map[j][i] != UNKNOWN)
+			{
+				cbWrite(&glob_mapDataToSend, i);
+				cbWrite(&glob_mapDataToSend, j);
+			}
+		}
+	}
+}
+
 
 void init(void)
 {
@@ -45,15 +60,21 @@ void init(void)
 void signal_done()
 {
 	PORTB |= 0b00000100;
+	while(1)
+	{
+		sendAllMapData();
+		_delay_ms(1000);
+		
+	}
 }
 
 
 void executeCommand(uint8_t command)
 {
 	glob_curComm = command;
+	glob_syncSpike = 255;
 	switch(command)
 	{
-		//implementera alla funktioner och se till att dessa är utan parametrar TODO
 		case FORWARD_COMMAND:
 			regulateStraight();
 			break;
@@ -73,13 +94,14 @@ void executeCommand(uint8_t command)
 			virtualTurn();
 			break;
 		case CUSTOM_STEERING_COMMAND:
+			sendAllMapData();
 			customSteering();
 			break;
 		default:
 			break;
 	}
-	_delay_ms(500);
 	glob_curComm = NULL_COMMAND;
+	_delay_ms(500);
 }
 
 void autoSteering()
@@ -125,15 +147,15 @@ void manualSteering()
 int main(void)
 {
 	init();
-	volatile uint8_t blaj = START_PIN;
-	while(!blaj)
+	volatile uint8_t start_pin = START_PIN;
+	while(!start_pin)
 	{
-		blaj = START_PIN;
+		start_pin = START_PIN;
 	}
 	if(MANUAL_AUTO_SWITCH_PIN) 
 	{
 		manualSteering();
-	}
+	}	
 	else
 	{
 		autoSteering();

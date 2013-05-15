@@ -16,7 +16,7 @@ volatile uint8_t overFlowInteruptTimer1=0;
 
 void clockedInterrupt_init()
 {
-	cbInit(&glob_mapDataToSend, 32);
+	cbInit(&glob_mapDataToSend, 255	);
 	cbInit(&glob_debugMesssageBuffer, 32);
 	glob_routeLength = 0;
 	//setup timers 1 och 3 16bit timers
@@ -57,7 +57,7 @@ ISR(TIMER1_COMPB_vect)
 		}
 	}
 	overFlowInteruptTimer1++;
-	if(overFlowInteruptTimer1==2)
+	if(overFlowInteruptTimer1==1)
 	{
 		timedInterupt();
 		overFlowInteruptTimer1=0;
@@ -94,20 +94,6 @@ void timedInterupt(void)
 		answerCounterSensor++;
 	}
 	SPI_set_sensor(END);
-
-	/*
-	//send debug data
-	uint8_t bytesToSend = 0;
-	while(cbBytesUsed(&glob_debugMesssageBuffer) != 0)
-	{
-		msgSend[bytesToSend] = cbRead(&glob_debugMesssageBuffer);
-		++bytesToSend;
-	}
-	if(bytesToSend != 0)
-	{
-		SPI_MASTER_write(msgSend, TYPE_DEBUG_DATA, bytesToSend);
-	}
-	//end send debug data*/
 	
 	if(answerCounterSensor == 255)
 		return;
@@ -182,9 +168,21 @@ void timedInterupt(void)
 	msgRecieve[len+4] = 14;
 	msgRecieve[len+5] = glob_theta;
 
+	glob_syncSpike = 0;
 	
 	SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, len+6);
-
+	//send debug data
+	uint8_t bytesToSend = 0;
+	while(cbBytesUsed(&glob_debugMesssageBuffer) != 0)
+	{
+		msgSend[bytesToSend] = cbRead(&glob_debugMesssageBuffer);
+		++bytesToSend;
+	}
+	if(bytesToSend != 0)
+	{
+		SPI_MASTER_write(msgSend, TYPE_DEBUG_DATA, bytesToSend);
+	}
+		//end send debug data
 	//uint8_t msg[4]={12, glob_x, 13, glob_y};
 	//SPI_MASTER_write(msg, TYPE_DEBUG_DATA, 4);
 	

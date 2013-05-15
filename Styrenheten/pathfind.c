@@ -191,7 +191,13 @@ void createRouteToNextMeta()
 
 	uint8_t currentSquaresBuffer[CURRENT_SQUARES_SIZE*2]; //X, Y
 	uint8_t directionCurrentSquaresBuffer[CURRENT_SQUARES_SIZE];
-	uint8_t currentSquaresLengthBuffer = 0; //anger hur många X,Y element som finns, inte hur många celler som är fyllda
+	uint8_t currentSquaresLengthBuffer;
+	TONEXTMETAROUTEPOINT:
+	if(glob_metaRouteLenght == 0)
+	{
+		return;
+	}
+	currentSquaresLengthBuffer = 0; //anger hur många X,Y element som finns, inte hur många celler som är fyllda
 	uint8_t i = 0;
 	while(i < 17)
 	{
@@ -409,6 +415,11 @@ void createRouteToNextMeta()
 	uint8_t rightCost = min(rightCostHoriz, rightCostVert);
 
 	uint8_t minAll =  min(min(overCost, underCost), min(leftCost, rightCost));
+	if(minAll == 128)
+	{
+		glob_metaRouteLenght = glob_metaRouteLenght-2;
+		goto TONEXTMETAROUTEPOINT;
+	}
 	if(min(overCost, underCost) == minAll)
 	{
 		if(overCost == minAll)

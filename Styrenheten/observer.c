@@ -5,12 +5,7 @@
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 
-#define CHASSITOSHORTSIDE 7 //halva cm 7 18 21
-#define CHASSITOLONGSIDE 21 //halva cm
-#define CHASSITOLONGBACK 36 //halva cm
-#define CHASSITOLONGFRONT 36 //halva cm
-
-#define TIMECONSTANT 100 // ms
+#define TIMECONSTANT 50 // ms
 #define INVERTTIMECONSTANT 20 //Dimension 1/s
 
 #define HALFSQUAREWIDTH 80 //halva cm
@@ -54,51 +49,6 @@ void setRelativeY(int8_t value) //Y som om roboten har riktning upp
 	return;
 }
 
-/*
-const uint8_t lookupShort[140] PROGMEM = {
-	0,3,6,10,13,16,19,22,25,29,32,35,38,41,44,47,50,53,56,59,62,65,68,71,74,77,79,82,85,88,90,93,96,98,101,104,106,109,111,114,116,119,121,123,126,128,130,133,135,137,139,141,143,145,147,150,151,153,155,157,159,161,163,165,167,168,170,172,173,175,177,178,180,182,183,185,186,188,189,191,192,193,195,196,198,199,200,202,203,204,205,207,208,209,210,211,213,214,215,216,217,218,219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,234,235,236,237,238,239,239,240,241,242,243,243,244,245,246,246,247,248,248,249,250,250
-	};
-*/
-
-
-/*
-void setThetaOmegaLeft(uint8_t shortLeftFront, uint8_t shortLeftRear)
-{
-	glob_thetaOld = glob_theta;
-	uint8_t diff;
-	if (shortLeftFront < shortLeftRear)
-	{
-		diff = shortLeftRear - shortLeftFront;
-		glob_theta = pgm_read_byte(&(lookupShort[diff]))>>2;
-	}
-	else
-	{
-		diff = shortLeftFront - shortLeftRear;
-		glob_theta = -(pgm_read_byte(&(lookupShort[diff]))>>2);	
-	}
-	glob_omega = (glob_theta - glob_thetaOld)>>TIME;
-	return;
-}
-	
-void setThetaOmegaRight(uint8_t shortRightFront, uint8_t shortRightRear)
-{
-	glob_thetaOld = glob_theta;
-	uint8_t diff;
-	if (shortLeftFront < shortLeftRear)
-	{
-		diff = shortLeftRear - shortLeftFront;
-		glob_theta = -(pgm_read_byte(&(lookupShort[diff]))>>2);
-	}
-	else
-	{
-		diff = shortLeftFront - shortLeftRear;
-		glob_theta = pgm_read_byte(&(lookupShort[diff]))>>2;
-	}
-	glob_omega = (glob_theta - glob_thetaOld)>>TIME;
-	return;
-}
-*/
-
 void setOmega()
 {
 	int16_t gyroValue = glob_gyro;
@@ -125,6 +75,10 @@ void observe()
 	{
 		turnObserver();
 	}
+	else if(glob_curComm == TURN_FINE)
+	{
+		turnFine();
+	}
 	else if(glob_curComm == VIRTUAL_REVERSE_COMMAND || glob_curComm == NULL_COMMAND)
 	{
 	}
@@ -148,11 +102,11 @@ uint8_t getSensorLongOverNoise(uint8_t value)
 
 uint16_t getSensorShortOverNoise(uint8_t value)
 {
-	if(value == 0)
+	if(value < 5)
 	{
 		return 0;
 	}
-	if(value == 150)
+	if(value > 150)
 	{
 		return 0;
 	}
@@ -177,9 +131,10 @@ int16_t max(int16_t a, int16_t b)
 int16_t getShiftedSensorX(int16_t sensorVal)
 {
 	int16_t iter = sensorVal-(HALFSQUAREWIDTH<<2);
+	int8_t relX = getRelativeX();
 	while(1)
 	{
-		if(max(iter-glob_x, glob_x-iter) <= HALFSQUAREWIDTH)
+		if(max(iter-relX, relX-iter) <= HALFSQUAREWIDTH)
 		{
 			return iter;
 		}
@@ -190,9 +145,10 @@ int16_t getShiftedSensorX(int16_t sensorVal)
 int16_t getShiftedSensorY(int16_t sensorVal)
 {
 	int16_t iter = sensorVal-(int8to16(HALFSQUAREWIDTH)<<2);
+	int8_t relY = getRelativeY();
 	while(1)
 	{
-		if(max(iter-glob_y, glob_y-iter) <= int8to16(HALFSQUAREWIDTH))
+		if(max(iter-relY, relY-iter) <= int8to16(HALFSQUAREWIDTH))
 		{
 			return iter;
 		}
@@ -246,8 +202,8 @@ int16_t getVelocity() //halva cm /s
 
 void straightObserver()
 {
-	int16_t LongFront=getSensorLongForward();	// Används ej
-	int16_t LongRear=getSensorLongRear();		// Används ej
+	int16_t LongFront=getSensorLongForward();
+	int16_t LongRear=getSensorLongRear();
 	int16_t LongLeft=getSensorLongLeft();
 	int16_t LongRight=getSensorLongRight();
 	
@@ -256,8 +212,8 @@ void straightObserver()
 	int16_t ShortRightFront=getSensorShortRightForward();
 	int16_t ShortRightRear=getSensorShortRightRear();
  	
-	int16_t overNoiseLongFront= 0; //getSensorLongOverNoise(LongFront);
-	int16_t overNoiseLongRear= 0; //getSensorLongOverNoise(LongRear);
+	int16_t overNoiseLongFront= getSensorLongOverNoise(LongFront);
+	int16_t overNoiseLongRear= getSensorLongOverNoise(LongRear);
 	int16_t overNoiseLongLeft=getSensorLongOverNoise(LongLeft);
 	int16_t overNoiseLongRight=getSensorLongOverNoise(LongRight);
 	
@@ -266,9 +222,7 @@ void straightObserver()
 	int16_t overNoiseShortRightFront = getSensorShortOverNoise(ShortRightFront);
 	int16_t overNoiseShortRightRear = getSensorShortOverNoise(ShortRightRear);
 	
-	
 	int16_t overXPosUncert = 10;
-	//ta fram x i korridor // du är här. blir problem då en sensor säger att man är på posY -80 och en annan säger att man är på +80 du har inte tänkt på att långa x sensorer kan se flera rutor
 	int16_t XShortLeftFront = getShiftedSensorX(ShortLeftFront+CHASSITOSHORTSIDE-HALFSQUAREWIDTH);
 	int16_t XShortLeftRear = getShiftedSensorX(ShortLeftRear+CHASSITOSHORTSIDE-HALFSQUAREWIDTH);
 	int16_t XShortRightFront = getShiftedSensorX(HALFSQUAREWIDTH-ShortRightFront-CHASSITOSHORTSIDE);
@@ -290,10 +244,11 @@ void straightObserver()
 	//ta fram y
 	int16_t YLongForward = getShiftedSensorY((HALFSQUAREWIDTH-CHASSITOLONGFRONT)-(LongFront<<1)); // du är här. blir problem då en sensor säger att man är på posY -80 och en annan säger att man är på +80
 	int16_t YLongBack = getShiftedSensorY((LongRear<<1)+CHASSITOLONGBACK-HALFSQUAREWIDTH);
-	int16_t overYPosUncert = 10; //inkluderar osäkerhet i y pga hast.
 	int16_t velocity = getVelocity();
+	int16_t relYnew = getRelativeY()+((TIMECONSTANT*velocity)>>10);
+	int16_t overYPosUncert = 10; //inkluderar osäkerhet i y pga hast.
 	
-	taljare = YLongForward*overNoiseLongFront+YLongBack*overNoiseLongRear+overYPosUncert*(getRelativeY()+((TIMECONSTANT*velocity)>>10)); //lägg till hastighet*TIMECONSTANT vid getRelativeY i beräkningarna TODO
+	taljare = YLongForward*overNoiseLongFront+YLongBack*overNoiseLongRear+overYPosUncert*relYnew;
 	namnare = overNoiseLongFront+overNoiseLongRear+overYPosUncert;
 	setRelativeY(taljare/namnare);
 	if(getRelativeY() > HALFSQUAREWIDTH)
@@ -332,6 +287,57 @@ void straightObserver()
 }
 #pragma GCC pop_options
 //end turn off optimization
+
+void turnFine()
+{
+	int16_t LongFront=getSensorLongForward();
+	int16_t LongRear=getSensorLongRear();
+	int16_t LongLeft=getSensorLongLeft();
+	int16_t LongRight=getSensorLongRight();
+	
+	int16_t ShortLeftFront=getSensorShortLeftForward();
+	int16_t ShortLeftRear=getSensorShortLeftRear();
+	int16_t ShortRightFront=getSensorShortRightForward();
+	int16_t ShortRightRear=getSensorShortRightRear();
+	
+	uint8_t right36AngleK=0;
+	int8_t right36AngleDiff=0;
+	if(OK_SENSOR_VALUE(ShortRightFront)&&OK_SENSOR_VALUE(ShortRightRear))
+	{
+		right36AngleK=calc36K(ShortRightFront, ShortRightRear);
+		right36AngleDiff=calcSideSensors36(ShortRightFront,ShortRightRear,1) - glob_theta;
+	}
+	//Vänsta sidan, endast korta
+	uint8_t left36AngleK=0;
+	int8_t left36AngleDiff=0;
+	if(OK_SENSOR_VALUE(ShortLeftFront)&&OK_SENSOR_VALUE(ShortLeftRear))
+	{
+		left36AngleK=calc36K(ShortLeftFront, ShortLeftRear);
+		left36AngleDiff=calcSideSensors36(ShortLeftFront,ShortLeftRear,0) - glob_theta;
+	}
+	glob_thetaOld = glob_theta;
+	int16_t thetaLeft = int8to16(calcSideSensors36(ShortLeftFront,ShortLeftRear,0))-90;
+	int16_t thetaRight = int8to16(calcSideSensors36(ShortRightFront,ShortRightRear,1))-90;
+	while(max(thetaLeft-glob_theta, glob_theta-thetaLeft) >= 45)
+	{
+		thetaLeft+= 90;
+	}
+	while(max(thetaRight-glob_theta, glob_theta-thetaRight) >= 45)
+	{
+		thetaRight+= 90;
+	}
+	if(left36AngleK == 0 && right36AngleK == 0)
+	{
+		int16_t tempTheta = (glob_gyro*TIMECONSTANT)>>10;
+		glob_theta = (glob_theta+tempTheta);
+	}
+	int16_t taljare = thetaLeft*left36AngleK + thetaRight*right36AngleK;
+	int16_t namnare = right36AngleK + left36AngleK;
+	
+	//int16_t newAngleDiff = taljare/namnare;
+	//glob_theta = glob_theta+newAngleDiff;
+	glob_theta = taljare/namnare;
+}
 
 void turnObserver()
 {
