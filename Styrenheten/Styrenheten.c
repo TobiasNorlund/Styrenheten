@@ -32,7 +32,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-#define DELAY 100
+#define DELAY 500
 void sendAllMapData()
 {
 	for(uint8_t i = 0; i < 16; ++i)
@@ -96,30 +96,33 @@ void executeCommand(uint8_t command)
 	switch(command)
 	{
 		case FORWARD_COMMAND:
-			//_delay_ms(DELAY);
+			_delay_ms(DELAY);
 			regulateStraight();
 			break;
 		case RIGHT_90_COMMAND:
 			_delay_ms(DELAY);
 			turnRight90();
+			_delay_ms(DELAY);
 			break;
 		case LEFT_90_COMMAND:
 			_delay_ms(DELAY);
 			turnLeft90();
+			_delay_ms(DELAY);
 			break;
 		case RIGHT_45_COMMAND:
 			_delay_ms(DELAY);
 			turnRight45();
+			_delay_ms(DELAY);
 			break;
 		case LEFT_45_COMMAND:
 			_delay_ms(DELAY);
 			turnLeft45();
+			_delay_ms(DELAY);
 			break;
 		case VIRTUAL_REVERSE_COMMAND:
 			virtualTurn();
 			break;
 		case CUSTOM_STEERING_COMMAND:
-			sendAllMapData();
 			customSteering();
 			break;
 		default:

@@ -16,19 +16,21 @@
 	
 #include <avr/io.h>
 #include "global.h"
-
+#include "../../TSEA27-include/message.h"
 #ifndef STYRREGLERING_H_
 #define STYRREGLERING_H_
 
 #define DIVISIONFACTOR  6 // DF = 4 -> 2^4 = 16
-#define MAXSPEED 254
-#define TURNSPEED 180
-#define STOPTURN90 83
+#define MAXSPEED 200
+#define TURNSPEED 150
+#define STOPTURN90LEFT 75
+#define STOPTURN90RIGHT 88
+#define RIGHT_90_ADJ 95
+#define LEFT_90_ADJ 90
 #define STOPTURN45 43
 #define RIGHTWHEELDIFF 23
-#define LENGTH_OFFSET -40
+#define LENGTH_OFFSET -10
 #define ROTMIN 100
-#define TURN_FINE 8
 
 /** 
  * Initierar regleringen:

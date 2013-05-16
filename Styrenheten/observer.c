@@ -82,7 +82,7 @@ uint8_t getSensorLongOverNoise(uint8_t value, uint8_t value_old)
 	{
 		return 0;
 	}
-	if(max(value-value_old, value_old-value) > 4)
+	if(max(value-value_old, value_old-value) > 25)
 	{
 		return 0;
 	}
@@ -217,8 +217,8 @@ void straightObserver()
 	int16_t overNoiseLongLeft=getSensorLongOverNoise(LongLeft, getSensorLongLeftOld());
 	int16_t overNoiseLongRight= getSensorLongOverNoise(LongRight, getSensorLongRightOld());
 	
-	int16_t overNoiseShortLeftFront = getSensorShortOverNoise(ShortLeftFront, getSensorShortLeftForwardOld());
-	int16_t overNoiseShortLeftRear = getSensorShortOverNoise(ShortLeftRear, getSensorShortLeftRearOld());
+	int16_t overNoiseShortLeftFront = 5*getSensorShortOverNoise(ShortLeftFront, getSensorShortLeftForwardOld());
+	int16_t overNoiseShortLeftRear = 5*getSensorShortOverNoise(ShortLeftRear, getSensorShortLeftRearOld());
 	int16_t overNoiseShortRightFront = getSensorShortOverNoise(ShortRightFront, getSensorShortRightForwardOld());
 	int16_t overNoiseShortRightRear = getSensorShortOverNoise(ShortRightRear, getSensorShortRightRearOld());
 	
@@ -246,7 +246,7 @@ void straightObserver()
 	int16_t YLongBack = getShiftedSensorY((LongRear<<1)+CHASSITOLONGBACK-HALFSQUAREWIDTH);
 	int16_t velocity = getVelocity();
 	int16_t relYnew = getRelativeY()+((TIMECONSTANT*velocity)>>10);
-	int16_t overYPosUncert = 10; //inkluderar osäkerhet i y pga hast.
+	int16_t overYPosUncert = 1; //inkluderar osäkerhet i y pga hast.
 	
 	numerator = YLongForward*overNoiseLongFront+YLongBack*overNoiseLongRear+overYPosUncert*(getRelativeY()+((TIMECONSTANT*velocity)>>10)); //lägg till hastighet*TIMECONSTANT vid getRelativeY i beräkningarna TODO
 	denominator = overNoiseLongFront+overNoiseLongRear+overYPosUncert;

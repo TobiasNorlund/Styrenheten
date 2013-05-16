@@ -243,11 +243,11 @@ void turnLeft90(){
 	setDirRight(1);
 	setSpeedRight(TURNSPEED);
 	setSpeedLeft(TURNSPEED);
-	while(glob_theta < (int16_t)STOPTURN90)
+	while(glob_theta < (int16_t)STOPTURN90LEFT)
 	{
 		
 	} 
-	glob_theta = glob_theta - (int16_t) 90;
+	glob_theta = glob_theta - (int16_t) LEFT_90_ADJ;
 	switch(glob_logical_direction)
 	{
 		case LOGICAL_DIR_UP:
@@ -271,10 +271,10 @@ void turnRight90(){
 	setDirRight(0);
 	setSpeedRight(TURNSPEED);
 	setSpeedLeft(TURNSPEED); 
-	while(glob_theta > (int16_t)(-STOPTURN90))
+	while(glob_theta > (int16_t)(-STOPTURN90RIGHT))
 	{
 	}
-	glob_theta = glob_theta + (int16_t) 90;
+	glob_theta = glob_theta + (int16_t) RIGHT_90_ADJ;
 	switch(glob_logical_direction)
 	{
 		case LOGICAL_DIR_UP:
