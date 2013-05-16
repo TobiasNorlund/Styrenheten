@@ -60,8 +60,10 @@ void setTheta(uint8_t ShortLeftFront, uint8_t ShortLeftRear, uint8_t ShortRightF
 	}
 
 	glob_thetaOld = glob_theta;
-	int16_t numerator = calcSideSensors36(ShortLeftFront,ShortLeftRear,0)*left36AngleK + calcSideSensors36(ShortRightFront,ShortRightRear,1)*right36AngleK;
-	int16_t denominator = right36AngleK + left36AngleK;
+	int16_t thetaWeight = 3;
+	int16_t thetaReg = int8to16(glob_theta);
+	int16_t numerator = calcSideSensors36(ShortLeftFront,ShortLeftRear,0)*left36AngleK + calcSideSensors36(ShortRightFront,ShortRightRear,1)*right36AngleK+thetaWeight*thetaReg;
+	int16_t denominator = right36AngleK + left36AngleK+thetaWeight;
 	
 	glob_theta = numerator/denominator;
 }

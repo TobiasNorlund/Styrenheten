@@ -187,6 +187,7 @@ void regulateStraight()
 
 	uint8_t startSquareX = glob_mapX;
 	uint8_t startSquareY = glob_mapY;
+	int16_t xSav;
 	while(!((startSquareX != glob_mapX || startSquareY != glob_mapY)&&(LENGTH_OFFSET < getRelativeY())))
 	{
 		/** 
@@ -201,13 +202,17 @@ void regulateStraight()
 		int16_t thetaDeg = degToRad(glob_theta);
 		int16_t thetaFactor = (glob_L2_straightTheta*thetaDeg)>>(DIVISIONFACTOR-4);
 		int16_t omegaFactor = glob_L3_straightOmega*glob_omega;
+		if(xRelative != xSav)
+		{
+			xSav = xRelative;
+			cbWrite(&glob_debugMesssageBuffer, 17);
+			cbWrite(&glob_debugMesssageBuffer, glob_theta>>8);
+			cbWrite(&glob_debugMesssageBuffer, glob_theta);
+			cbWrite(&glob_debugMesssageBuffer, 19);
+			cbWrite(&glob_debugMesssageBuffer, xRelative>>8);
+			cbWrite(&glob_debugMesssageBuffer, xRelative);
+		}			
 		glob_max = xFactor-thetaFactor;
-		cbWrite(&glob_debugMesssageBuffer, 17);
-		cbWrite(&glob_debugMesssageBuffer, glob_theta>>8);
-		cbWrite(&glob_debugMesssageBuffer, glob_theta);
-		cbWrite(&glob_debugMesssageBuffer, 19);
-		cbWrite(&glob_debugMesssageBuffer, xRelative>>8);
-		cbWrite(&glob_debugMesssageBuffer, xRelative);
 		if(glob_max > MAXSPEED)
 		{
 			glob_max = MAXSPEED;
@@ -336,7 +341,7 @@ void cleanUpAngle()
 		}
 	}
 	glob_curComm = TURN_FINE;
-	uint8_t rotSpeed = TURNSPEED-50;
+	uint8_t rotSpeed = TURNSPEED-30;
 	uint8_t prev_dir = 2;
 	while(!(glob_theta == 0 && rotSpeed == ROTMIN))
 	{
@@ -353,7 +358,7 @@ void cleanUpAngle()
 			else if(prev_dir == 0)
 			{
 				prev_dir = 1;
-				rotSpeed = rotSpeed-50;
+				rotSpeed = rotSpeed-30;
 				if(rotSpeed < ROTMIN)
 				{
 					rotSpeed = ROTMIN;
@@ -383,7 +388,7 @@ void cleanUpAngle()
 			else if(prev_dir == 1)
 			{
 				prev_dir = 0;
-				rotSpeed = rotSpeed-50;
+				rotSpeed = rotSpeed-30;
 				if(rotSpeed < ROTMIN)
 				{
 					rotSpeed = ROTMIN;

@@ -55,8 +55,8 @@ void init(void)
 {
 	glob_mapX = 8;
 	glob_mapY = 8;
-	glob_L1_straightX=4;
-	glob_L2_straightTheta=16;
+	glob_L1_straightX=10;
+	glob_L2_straightTheta=20;
 	glob_L3_straightOmega=4;
 	glob_L1_turnTheta=12;
 	glob_L2_turnOmega=4;
@@ -96,23 +96,24 @@ void executeCommand(uint8_t command)
 	switch(command)
 	{
 		case FORWARD_COMMAND:
+			_delay_ms(DELAY);
 			regulateStraight();
 			break;
 		case RIGHT_90_COMMAND:
-			turnRight90();
 			_delay_ms(DELAY);
+			turnRight90();
 			break;
 		case LEFT_90_COMMAND:
-			turnLeft90();
 			_delay_ms(DELAY);
+			turnLeft90();
 			break;
 		case RIGHT_45_COMMAND:
-			turnRight45();
 			_delay_ms(DELAY);
+			turnRight45();
 			break;
 		case LEFT_45_COMMAND:
-			turnLeft45();
 			_delay_ms(DELAY);
+			turnLeft45();
 			break;
 		case VIRTUAL_REVERSE_COMMAND:
 			virtualTurn();

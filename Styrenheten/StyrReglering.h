@@ -26,9 +26,9 @@
 #define STOPTURN90 83
 #define STOPTURN45 43
 #define RIGHTWHEELDIFF 23
-#define LENGTH_OFFSET -51
-#define ROTMIN 80
-#define TURN_FINE 0 //VAD VAR DETTA?
+#define LENGTH_OFFSET -40
+#define ROTMIN 100
+#define TURN_FINE 8
 
 /** 
  * Initierar regleringen:

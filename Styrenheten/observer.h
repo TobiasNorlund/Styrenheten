@@ -33,11 +33,7 @@
 #include "../../TSEA27-include/message.h"
 #include "../../TSEA27-include/utils.h"
 
-#define CHASSITOSHORTSIDE 7 //halva cm 7 18 21
-#define CHASSITOLONGSIDE 21 //halva cm
-#define CHASSITOLONGBACK 36 //halva cm
-#define CHASSITOLONGFRONT 36 //halva cm
-#define TIMECONSTANT 100 // ms
+#define TIMECONSTANT 50 // ms
 #define INVERTTIMECONSTANT 20 //Dimension 1/s
 #define HALFSQUAREWIDTH 80 //halva cm
 #define OK_SENSOR_VALUE(x) (((x) != 0)||((x) != 255))
