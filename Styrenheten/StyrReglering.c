@@ -15,15 +15,6 @@
 	 */	
 	
 
-#define MAXSPEED 250
-#define TURNSPEED 180
-#define STOPTURN90 83
-#define STOPTURN45 43
-#define RIGHTWHEELDIFF 23
-#define LENGTH_OFFSET -51
-#define ROTMIN 80
-#define TURN_FINE 0 //VAD VAR DETTA?
-
 #include "StyrReglering.h"
 
 void regulate_init()
@@ -186,11 +177,6 @@ void setDirRight(uint8_t dir){
 			
 }
 
-/************************************************************************/
-/*	max måste skalas på något sätt så att det blir mellan -254 och 254
-	Vet dock inte vad det kommer bli för värden på omega så vi måste 
-	testa det först.                                                    */
-/************************************************************************/
 //turn off optimization 
 #pragma GCC push_options
 #pragma GCC optimize ("O0")
@@ -203,6 +189,12 @@ void regulateStraight()
 	uint8_t startSquareY = glob_mapY;
 	while(!((startSquareX != glob_mapX || startSquareY != glob_mapY)&&(LENGTH_OFFSET < getRelativeY())))
 	{
+		/** 
+		 * xFactor och thetaFactor är reglerparamterar
+		 * glob_max beräknas med xFactor och thetaFactor och vikter
+		 * storleken på glob_max avgör hur mycket mindre en av motorerna ska gas jämfört med dess maxhastighet
+		 * tecknet på glob_max avgör vilken motor som ska köra långsammare
+		 */
 		int16_t ur,ul;
 		int16_t xRelative = int8to16(getRelativeX());
 		int16_t xFactor = (glob_L1_straightX*xRelative)>>SHORTFACTOR;
