@@ -17,6 +17,9 @@
 
 #include "pathfind.h"
 
+/*
+*	uppdaterar metarutten samt skapar en rutt (dvs en serie kommandon) som tar roboten till nästa oupptäckta ruta
+*/
 void pathfind()
 {
 	glob_shouldPathfind = 0;
@@ -37,6 +40,9 @@ void pathfind()
 	createRouteToNextMeta();
 }
 
+/*
+*	hittar det element i metarutten som är nyligen upptäckt och är sist, samt flyttar alla element i metarutten som är före detta element och lägger till dessa i glob_adjecentNewSquares
+*/
 void truncateMetaRoute()
 {
 	for(uint8_t i = 0; i < glob_metaRouteLenght; i=i+2)
@@ -60,6 +66,9 @@ void truncateMetaRoute()
 	}
 }
 
+/*
+*	tar bort alla element i glob_adjecentNewSquares som representerar en ruta som redan har blivit kartlagd
+*/
 void adjecentNewSquaresRemoveChartedSquares()
 {
 	uint8_t i = 0;
@@ -83,6 +92,9 @@ void adjecentNewSquaresRemoveChartedSquares()
 	}
 }
 
+/*
+*	skapar en metarutt om det inte finns en sådan.
+*/
 void initMetaRoute()
 {
 	//get square closest to robot
@@ -146,6 +158,9 @@ void initMetaRoute()
 	}
 }
 
+/*
+*	lägger till alla element i glob_adjecentNewSquares till metarutten
+*/
 void createNewMetaRoute()
 {
 	while(glob_adjecentNewSquaresLenght != 0)
@@ -179,11 +194,17 @@ void createNewMetaRoute()
 	}
 }
 
+/*
+*	returnerar avstånd från (x1, y1) till (x2, y2)
+*/
 uint16_t norm2pow2(int16_t fromX, int16_t fromY, int16_t toX, int16_t toY) //ska vara short för att undika overflow vid ^2 och underflow vid fromX-toX
 {
 	return (fromX-toX)*(fromX-toX)+(fromY-toY)*(fromY-toY); //går att optimera om det behövs
 }
 
+/*
+*	skapar en rutt till första elementet i metarutten.
+*/
 void createRouteToNextMeta()
 {
 	uint8_t mapCostRight[17][17];
@@ -642,6 +663,9 @@ void createRouteToNextMeta()
 	}
 }
 
+/*
+*	returnerar kostnaden att gå in på rutan (toX, toY)
+*/
 uint8_t getCostMove(uint8_t toX, uint8_t toY)
 {
 	{
@@ -665,6 +689,9 @@ uint8_t getCostMove(uint8_t toX, uint8_t toY)
 	}
 }
 
+/*
+*	lägger till en x, y koordinat i en buffer om denna koordinat ej redan finns
+*/
 void addCurSQ(uint8_t* buffer, uint8_t* dirBuffer, uint8_t* bufferLength, uint8_t X, uint8_t Y, uint8_t dir)
 {
 	for(uint8_t i = 0; i < *bufferLength; ++i)
@@ -680,6 +707,9 @@ void addCurSQ(uint8_t* buffer, uint8_t* dirBuffer, uint8_t* bufferLength, uint8_
 	*bufferLength = *bufferLength+1;
 }
 
+/*
+*	returnerar mininmum av a och b
+*/
 uint8_t min(uint8_t a, uint8_t b)
 {
 	if(a < b)
