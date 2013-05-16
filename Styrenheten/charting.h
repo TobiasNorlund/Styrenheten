@@ -25,10 +25,37 @@
 #define SENSOROFFSET_2 140
 #define TIME 10 //i ms
 
+/*
+* funktion som kartlägger åt alla håll för manuell styrning
+*/
 void updateMapManual();
+/*
+* funktion som kartlägger åt alla håll för auto styrning
+*/
 void updateMapAuto();
+/*
+* funktion som kartlägger i en riktning, givet en kartläggningsfunktion för att kartlägga en ruta
+*/
+void chart(uint8_t logical_direction, void (*charting_func)(uint8_t x, uint8_t y, uint8_t info));
+/*
+* initierar variabler relaterade till pathfinding
+*/
 void pathfind_init();
+/*
+* lägger till x och y i glob_adjecentNewSquares om denna inte redan finns
+*/
 void addToAdjecentNewSquares(uint8_t x, uint8_t y);
+/*
+* returnerar om en ruta redan finns i glob_adjecentNewSquares eller glob_metaRoute
+*/
 uint8_t foundInAdjOrMeta(uint8_t x, uint8_t y);
+/*
+* kartlägger en ruta för manuell styrning
+*/
+void manual_logical_chart(uint8_t x, uint8_t y, uint8_t info);
+/*
+* kartlägger en ruta för autostyrning
+*/
+void auto_logical_chart(uint8_t x, uint8_t y, uint8_t info);
 
 #endif /* CHARTING_H_ */
