@@ -5,7 +5,7 @@
 	 *
 	 * Modul:Styrenheten
 	 * Filnamn: observer.c
-	 * Skriven av: C. Karlsson, M. Karlsson, D. Molin
+	 * Skriven av: C. Karlsson Schmidt, M. Karlsson, D. Molin
 	 *			   
 	 * Datum: 2013-05-15
 	 * Version: 1.0

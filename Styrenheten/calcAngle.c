@@ -13,7 +13,6 @@
 	 *
 	 * Används för att beräkna vinkeln global_theta vid rakreglering.
 	 */	
-	
 
 #include "calcAngle.h"
 

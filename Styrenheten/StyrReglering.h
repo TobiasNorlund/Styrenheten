@@ -103,4 +103,9 @@ int8_t getRelativeX(void);
  */
 int8_t getRelativeY(void);
 
+/** 
+ * Rättar till vinkeln efter sväng, om möjligt.
+ */
+void cleanUpAngle();
+
 #endif /* STYRREGLERING_H_ */

@@ -15,7 +15,6 @@
 	 */	
 
 #include "observer.h"
-
 #include "charting.h"
 
 void pathfind_init()
