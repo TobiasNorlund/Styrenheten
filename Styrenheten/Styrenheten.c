@@ -32,7 +32,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-#define DELAY 500
+#define DELAY 100
 void sendAllMapData()
 {
 	for(uint8_t i = 0; i < 16; ++i)
@@ -96,7 +96,7 @@ void executeCommand(uint8_t command)
 	switch(command)
 	{
 		case FORWARD_COMMAND:
-			_delay_ms(DELAY);
+			//_delay_ms(DELAY);
 			regulateStraight();
 			break;
 		case RIGHT_90_COMMAND:

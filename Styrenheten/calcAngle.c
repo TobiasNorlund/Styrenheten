@@ -46,16 +46,17 @@ void setTheta(uint8_t ShortLeftFront, uint8_t ShortLeftRear, uint8_t ShortRightF
 {
 	//Högra sidan, endast korta
 	uint8_t right36AngleK=0;
-	if(OK_SENSOR_VALUE(ShortRightFront)&&OK_SENSOR_VALUE(ShortRightRear))
+	
+	if((getSensorShortOverNoise(ShortRightFront, getSensorShortRightForwardOld()) != 0)&&(getSensorShortOverNoise(ShortRightRear, getSensorShortRightRearOld()) != 0) && 40 > max(ShortRightRear-ShortRightFront, ShortRightFront-ShortRightRear))
 	{
-		right36AngleK = 1;
+		right36AngleK = 25;
 	}
 	
 	//Vänsta sidan, endast korta
 	uint8_t left36AngleK = 0;
-	if(OK_SENSOR_VALUE(ShortLeftFront)&&OK_SENSOR_VALUE(ShortLeftRear))
+	if((getSensorShortOverNoise(ShortLeftFront, getSensorShortLeftForwardOld()) != 0)&&(getSensorShortOverNoise(ShortLeftRear, getSensorShortLeftRearOld()) != 0) && 40 > max(ShortLeftRear-ShortLeftFront, ShortLeftRear-ShortLeftFront))
 	{
-		left36AngleK = 1;
+		left36AngleK = 25;
 	}
 
 	glob_thetaOld = glob_theta;

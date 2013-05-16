@@ -21,7 +21,7 @@
 #define STYRREGLERING_H_
 
 #define DIVISIONFACTOR  6 // DF = 4 -> 2^4 = 16
-#define MAXSPEED 250
+#define MAXSPEED 254
 #define TURNSPEED 180
 #define STOPTURN90 83
 #define STOPTURN45 43

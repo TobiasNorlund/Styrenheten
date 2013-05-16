@@ -70,12 +70,12 @@ void setRelativeY(int8_t val);
 /** 
  * Returnerar 1/standardavvikelsen för den långa sensorn
  */
-uint8_t getSensorLongOverNoise(uint8_t value);
+uint8_t getSensorLongOverNoise(uint8_t value, uint8_t value_old);
 
 /** 
  *Returnerar 1/standardavvikelsen för den korta sensorn
  */
-uint16_t getSensorShortOverNoise(uint8_t value);
+uint16_t getSensorShortOverNoise(uint8_t value, uint8_t value_old);
 
 /** 
  * Returnerar det största av två tal
