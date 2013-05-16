@@ -5,7 +5,7 @@
 	 *
 	 * Modul:Styrenheten
 	 * Filnamn: global.c
-	 * Skriven av: I. Junaeus, C. Karlsson, M. Karlsson, J. Källström, 
+	 * Skriven av: I. Junaeus, C. Karlsson Schmidt, M. Karlsson, J. Källström, 
 	 *			   D. Molin, T. Norlund		
 	 * Datum: 2013-05-15
 	 * Version: 1.0

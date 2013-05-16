@@ -112,7 +112,7 @@ int8_t getRelativeX(void);
 int8_t getRelativeY(void);
 
 /** 
- * Finjusterar vinkeln efter sväng
+ * Rättar till vinkeln efter sväng, om möjligt.
  */
 void cleanUpAngle();
 

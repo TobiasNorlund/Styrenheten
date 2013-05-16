@@ -5,7 +5,7 @@
 	 *
 	 * Modul:Styrenheten
 	 * Filnamn: global.h
-	 * Skriven av: I. Junaeus, C. Karlsson, M. Karlsson, J. Källström, 
+	 * Skriven av: I. Junaeus, C. Karlsson Schmidt, M. Karlsson, J. Källström, 
 	 *			   D. Molin, T. Norlund		
 	 * Datum: 2013-05-15
 	 * Version: 1.0
@@ -18,8 +18,6 @@
 #include <util/delay.h>
 #include <avr/io.h>
 #include "../../TSEA27-include/circularbuffer.h"
-
-//Divisionfaktorer för att få högre precision: 2^n
 
 #ifndef GLOBAL_H_
 #define GLOBAL_H_
@@ -50,18 +48,34 @@
 
 #define SHORTFACTOR 1 //Korta sensorn är i cm*2
 
-volatile uint8_t glob_mapX; //Xcoord för nuvarande ruta i kartindex initieras i init
-volatile uint8_t glob_mapY; //Xcoord för nuvarande ruta i kartindex initieras i init
-volatile int8_t glob_x; //offset från origo för x i nuvarande ruta mäts i 1/2 cm origo är i mitten av rutan, initieras i styrinit
-volatile int8_t glob_y; //offset från origo för x i nuvarande ruta mäts i 1/2 cm, initieras i styrinit
-volatile uint8_t glob_v; //hastighet i 1/2 cm/s, initieras i styrinit
-volatile int8_t glob_theta; // Vridning i grader
-int8_t glob_thetaOld; // Vridning i grader
-volatile int16_t glob_omega; //grader/sekund, initieras i styrinit
-uint8_t glob_virtual_direction; // initieras i regulate_init
-uint8_t glob_logical_direction; //ska initieras i pathfind_init
+/** 
+ * Robotens nuvarande ruta.
+ */
+volatile uint8_t glob_mapX; // Xcoord för nuvarande ruta i kartindex initieras i init
+volatile uint8_t glob_mapY; // Xcoord för nuvarande ruta i kartindex initieras i init
 
-//pathfind stuff
+/** 
+ * Observatör värden
+ */
+volatile int8_t glob_x; // Dimension [cm/2], offset från origo för x i nuvarande ruta,
+						// origo är i mitten av rutan, initieras i styrinit
+volatile int8_t glob_y; // Dimension [cm/2], offset från origo för x i nuvarande ruta,
+						// initieras i styrinit
+						
+volatile uint8_t glob_v; //Dimension [cm/2s], initieras i styrinit
+volatile int8_t glob_theta; // Dimension [grader], vridningen
+int8_t glob_thetaOld; // Dimension [cm/2], vridningen
+volatile int16_t glob_omega; //Dimension [grader/s], initieras i styrinit
+
+/** 
+ * Riktningsvariabler
+ */
+uint8_t glob_virtual_direction; // Har roboten gjort virtuelvändning eller ej
+uint8_t glob_logical_direction; // Robotens logiska riktning, vilket håll den åker i kartan
+
+/** 
+ * Pathfind variabler
+ */
 volatile uint8_t glob_route[ROUTELENGTH];
 volatile uint8_t glob_routeLength; //initieras i clockedInterupt_init
 	
@@ -78,11 +92,12 @@ uint8_t glob_adjecentNewSquaresLenght; //initieras i pathfind init
 
 uint8_t glob_map[16][16]; //initieras i pathfind_init
 
-volatile CircularBuffer glob_debugMesssageBuffer;
-volatile uint8_t glob_debugMesssageBufferLength;
-
 volatile uint8_t glob_curComm; //initieras i pathfind init
 
+/** 
+ * Circulbuffer variabler för sändning av data.
+ */
+volatile CircularBuffer glob_debugMesssageBuffer;
 volatile CircularBuffer glob_mapDataToSend; //initieras i clockedInterupt_init
 
 /** 
@@ -133,6 +148,7 @@ volatile uint8_t glob_L2_turnOmega;
  * bestämning av gaspådrag på motererna.
  */
 volatile int16_t glob_max;
+
 /**
  * DEBUG, SKA TAS BORT SENARE
  */
