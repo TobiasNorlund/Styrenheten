@@ -17,6 +17,9 @@
 #include "observer.h"
 #include "charting.h"
 
+/*
+* initierar variabler relaterade till pathfinding
+*/
 void pathfind_init()
 {
 	for(uint8_t i = 0; i < 16; ++i)
@@ -35,6 +38,9 @@ void pathfind_init()
 	glob_curComm = NULL_COMMAND;
 }
 
+/*
+* kartlägger en ruta för manuell styrning
+*/
 void manual_logical_chart(uint8_t x, uint8_t y, uint8_t info)
 {
 	if(glob_map[y][x] != info)
@@ -46,6 +52,9 @@ void manual_logical_chart(uint8_t x, uint8_t y, uint8_t info)
 	}
 }
 
+/*
+* kartlägger en ruta för autostyrning
+*/
 void auto_logical_chart(uint8_t x, uint8_t y, uint8_t info)
 {
 	if(glob_map[y][x] != info)
@@ -76,6 +85,9 @@ void auto_logical_chart(uint8_t x, uint8_t y, uint8_t info)
 	}
 }
 
+/*
+* returnerar om en ruta redan finns i glob_adjecentNewSquares eller glob_metaRoute
+*/
 uint8_t foundInAdjOrMeta(uint8_t x, uint8_t y)
 {
 	uint8_t i = 0;
@@ -99,6 +111,9 @@ uint8_t foundInAdjOrMeta(uint8_t x, uint8_t y)
 	return 0;
 }
 
+/*
+* lägger till x och y i glob_adjecentNewSquares om denna inte redan finns
+*/
 void addToAdjecentNewSquares(uint8_t x, uint8_t y)
 {
 	if(foundInAdjOrMeta(x, y) == 0 && glob_map[y][x] == UNKNOWN)
@@ -109,6 +124,9 @@ void addToAdjecentNewSquares(uint8_t x, uint8_t y)
 	}
 }
 
+/*
+* funktion som kartlägger i en riktning, givet en kartläggningsfunktion för att kartlägga en ruta
+*/
 void chart(uint8_t logical_direction, void (*charting_func)(uint8_t x, uint8_t y, uint8_t info))
 {
 	int16_t sensorLength;
@@ -219,6 +237,9 @@ void chart(uint8_t logical_direction, void (*charting_func)(uint8_t x, uint8_t y
 	return;
 }
 
+/*
+* funktion som kartlägger åt alla håll för manuell styrning
+*/
 void updateMapManual()
 {
 	chart(LOGICAL_DIR_UP, &manual_logical_chart);
@@ -227,6 +248,9 @@ void updateMapManual()
 	chart(LOGICAL_DIR_LEFT, &manual_logical_chart);
 }
 
+/*
+* funktion som kartlägger åt alla håll för auto styrning
+*/
 void updateMapAuto()
 {
 	chart(LOGICAL_DIR_UP, &auto_logical_chart);

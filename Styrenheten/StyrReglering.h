@@ -21,6 +21,14 @@
 #define STYRREGLERING_H_
 
 #define DIVISIONFACTOR  6 // DF = 4 -> 2^4 = 16
+#define MAXSPEED 250
+#define TURNSPEED 180
+#define STOPTURN90 83
+#define STOPTURN45 43
+#define RIGHTWHEELDIFF 23
+#define LENGTH_OFFSET -51
+#define ROTMIN 80
+#define TURN_FINE 0 //VAD VAR DETTA?
 
 /** 
  * Initierar regleringen:
