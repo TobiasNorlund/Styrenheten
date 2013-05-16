@@ -19,8 +19,6 @@
 #include <avr/io.h>
 #include "../../TSEA27-include/circularbuffer.h"
 
-//Divisionfaktorer för att få högre precision: 2^n
-
 #ifndef GLOBAL_H_
 #define GLOBAL_H_
 
