@@ -67,10 +67,15 @@ volatile int8_t glob_theta; // Dimension [grader], vridningen
 int8_t glob_thetaOld; // Dimension [cm/2], vridningen
 volatile int16_t glob_omega; //Dimension [grader/s], initieras i styrinit
 
-uint8_t glob_virtual_direction; 
-uint8_t glob_logical_direction; 
+/** 
+ * Riktningsvariabler
+ */
+uint8_t glob_virtual_direction; // Har roboten gjort virtuelvändning eller ej
+uint8_t glob_logical_direction; // Robotens logiska riktning, vilket håll den åker i kartan
 
-//pathfind stuff
+/** 
+ * Pathfind variabler
+ */
 volatile uint8_t glob_route[ROUTELENGTH];
 volatile uint8_t glob_routeLength; //initieras i clockedInterupt_init
 	
@@ -87,11 +92,12 @@ uint8_t glob_adjecentNewSquaresLenght; //initieras i pathfind init
 
 uint8_t glob_map[16][16]; //initieras i pathfind_init
 
-volatile CircularBuffer glob_debugMesssageBuffer;
-volatile uint8_t glob_debugMesssageBufferLength;
-
 volatile uint8_t glob_curComm; //initieras i pathfind init
 
+/** 
+ * Circulbuffer variabler för sändning av data.
+ */
+volatile CircularBuffer glob_debugMesssageBuffer;
 volatile CircularBuffer glob_mapDataToSend; //initieras i clockedInterupt_init
 
 /** 
