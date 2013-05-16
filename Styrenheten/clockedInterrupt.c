@@ -1,9 +1,18 @@
-﻿/*
- * clockedInterrupt.c
- *
- * Created: 4/12/2013 10:37:35 AM
- *  Author: davmo049
- */ 
+﻿/**
+	* TSEA27 Elektronikprojekt
+	*
+	* IDENTIFIERING
+	*
+	* Modul:Styrenheten
+	* Filnamn: clockedInterrupt.c
+	* Skriven av: J. Källström, D. Molin, T. Norlund	
+	* Datum: 2013-05-15
+	* Version: 1.0
+	*
+	* BESKRIVNING
+	*
+	* Klockat avbrott som hämtar in ny sensordata, skickar sensordatan till kommunikationsenheten och uppdaterar observatören
+	*/	
 #include "clockedInterrupt.h"
 #include <avr/interrupt.h>
 #include "observer.h"
@@ -33,10 +42,6 @@ void clockedInterrupt_init()
 	
 }
 
-void updateState(void)
-{
-	observe();
-}
 
 uint8_t temp = 0;
 ISR(TIMER1_COMPB_vect)
@@ -154,7 +159,7 @@ void timedInterupt(void)
 		}
 	
 		//uppdatera tillstånd
-		updateState();
+		observe();
 	}
 #endif
 #ifndef KOM_OFF
