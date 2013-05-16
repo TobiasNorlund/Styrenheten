@@ -98,6 +98,15 @@ void timedInterupt(void)
 	if(answerCounterSensor == 255)
 		return;
 	
+	glob_longFront_old = glob_longFront; // cm
+	glob_longRight_old = glob_longRight; // cm
+	glob_longRear_old = glob_longRear;// cm
+	glob_longLeft_old = glob_longLeft;// cm
+	glob_shortFrontRight_old = glob_shortFrontRight; // cm/2
+	glob_shortFrontLeft_old = glob_shortFrontLeft; // cm/2
+	glob_shortRearRight_old = glob_shortRearRight; // cm/2
+	glob_shortRearLeft_old = glob_shortRearLeft;
+		
 	//tolka/spara sensordata
 	if(type==TYPE_SENSOR_DATA && len!=0)
 	{

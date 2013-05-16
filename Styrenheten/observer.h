@@ -18,7 +18,6 @@
 #include <avr/pgmspace.h>
 #include "calcAngle.h"
 #include "global.h"
-#include "../../TSEA27-include/geometrics.h"
 #include "StyrReglering.h"
 
 #define OK_SENSOR_VALUE(x) (((x) != 0)||((x) != 255))

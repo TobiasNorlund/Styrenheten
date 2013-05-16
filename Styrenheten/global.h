@@ -90,6 +90,24 @@
 	volatile uint8_t glob_shortRearRight; // cm/2
 	volatile uint8_t glob_shortRearLeft; // cm/2
 	
+	volatile uint8_t glob_longFront_old; // cm
+	volatile uint8_t glob_longRight_old; // cm
+	volatile uint8_t glob_longRear_old; // cm
+	volatile uint8_t glob_longLeft_old; // cm
+	volatile uint8_t glob_shortFrontRight_old; // cm/2
+	volatile uint8_t glob_shortFrontLeft_old; // cm/2
+	volatile uint8_t glob_shortRearRight_old; // cm/2
+	volatile uint8_t glob_shortRearLeft_old; // cm/2
+	
+	uint8_t getSensorLongForwardOld();
+	uint8_t getSensorLongRearOld();
+	uint8_t getSensorLongLeftOld();
+	uint8_t getSensorLongRightOld();
+	uint8_t getSensorShortLeftForwardOld();
+	uint8_t getSensorShortLeftRearOld();
+	uint8_t getSensorShortRightForwardOld();
+	uint8_t getSensorShortRightRearOld();
+	
 	int16_t glob_gyro; // grader/s
 	
 	volatile uint8_t glob_vRight; // cm/s

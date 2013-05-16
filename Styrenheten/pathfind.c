@@ -215,7 +215,7 @@ void createRouteToNextMeta()
 	//init values
 	currentSquares[0] = glob_mapX;
 	currentSquares[1] = glob_mapY;
-	uint8_t currentSquaresLength = 1; //HÄR
+	uint8_t currentSquaresLength = 1;
 	if(glob_logical_direction == LOGICAL_DIR_UP) //beror på hur riktning skall vara kodad senare
 	{
 		directionCurrentSquares[0] = LOGICAL_DIR_UP;
@@ -418,6 +418,10 @@ void createRouteToNextMeta()
 	if(minAll == 128)
 	{
 		glob_metaRouteLenght = glob_metaRouteLenght-2;
+		if(glob_metaRouteLenght == 0)
+		{
+			return;
+		}
 		goto TONEXTMETAROUTEPOINT;
 	}
 	if(min(overCost, underCost) == minAll)

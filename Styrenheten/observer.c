@@ -49,22 +49,6 @@ void setRelativeY(int8_t value) //Y som om roboten har riktning upp
 	return;
 }
 
-void setOmega()
-{
-	int16_t gyroValue = glob_gyro;
-	if((gyroValue < 10) && (gyroValue > -10))
-	{
-		glob_omega = (glob_theta - glob_thetaOld)*INVERTTIMECONSTANT; //TODO
-	}
-	else
-	{
-		glob_omega = gyroValue;
-	}
-	return;
-}
-
-
-
 void observe()
 {
 	if(glob_curComm == FORWARD_COMMAND || glob_curComm == CUSTOM_STEERING_COMMAND)
@@ -269,9 +253,7 @@ void straightObserver()
 	}
 	*/
 	
-	setTheta(LongFront, LongRear, LongLeft, LongRight, ShortLeftFront, ShortLeftRear, ShortRightFront, ShortRightRear);
-	
-	setOmega();
+	setTheta(ShortLeftFront, ShortLeftRear, ShortRightFront, ShortRightRear);
 	
 	/*
 	if(OK_SENSOR_VALUE(ShortLeftFront)&&OK_SENSOR_VALUE(ShortLeftRear))
