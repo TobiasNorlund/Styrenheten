@@ -166,6 +166,14 @@ void setDirLeft(uint8_t dir){
 			PORTA = PORTA | (1 << PORTA3);
 		}
 	}
+	if(dir == 1)
+	{
+	 	glob_vLeftSign=1;
+	}
+	else
+	{
+	 	glob_vLeftSign=-1;
+	}
 }
 void setDirRight(uint8_t dir){
 	if(glob_virtual_direction == DIRECTION_FORWARD)
@@ -186,7 +194,14 @@ void setDirRight(uint8_t dir){
 			PORTA = PORTA | (1 << PORTA2);
 		}			
 	}
-			
+	if(dir == 1)
+	{
+	 	glob_vRightSign=1;
+	}
+	else
+	{
+	 	glob_vRightSign=-1;
+	}
 }
 
 /************************************************************************/
