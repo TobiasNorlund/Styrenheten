@@ -221,7 +221,8 @@ void regulateStraight()
 	setDirLeft(FORWARD);
 	startSquareX = glob_mapX;
 	startSquareY = glob_mapY;
-	glob_omegaWheelSum=glob_theta<<4;//init wheel sum 
+	glob_omegaWheelSum=glob_theta<<4;//init wheel sum
+	glob_sum_y=(getRelativeY()<<10)/TIMECONSTANT;
 	while(!((startSquareX != glob_mapX || startSquareY != glob_mapY)&&(LENGTH_OFFSET < getRelativeY())))
 	{
 		int16_t ur,ul;

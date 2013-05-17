@@ -252,13 +252,15 @@ void straightObserver()
 	//ta fram y
 	int16_t YLongForward = getShiftedSensorY((HALFSQUAREWIDTH-CHASSITOLONGFRONT)-(LongFront<<1)); // du är här. blir problem då en sensor säger att man är på posY -80 och en annan säger att man är på +80
 	int16_t YLongBack = getShiftedSensorY((LongRear<<1)+CHASSITOLONGBACK-HALFSQUAREWIDTH);
-	int16_t velocity = getVelocity();
-	int16_t relYnew = getRelativeY()+((TIMECONSTANT*velocity)>>10);
+	glob_sum_y += getVelocity();
+	int16_t relYnew = ((TIMECONSTANT*glob_sum_y)>>10);
 	int16_t overYPosUncert = 10; //inkluderar osäkerhet i y pga hast.
 	
 	taljare = YLongForward*overNoiseLongFront+YLongBack*overNoiseLongRear+overYPosUncert*relYnew;
 	namnare = overNoiseLongFront+overNoiseLongRear+overYPosUncert;
-	setRelativeY(taljare/namnare);
+	int16_t newY = taljare/namnare;
+	setRelativeY(newY);
+
 	if(getRelativeY() > HALFSQUAREWIDTH)
 	{
 		moveForwards();
