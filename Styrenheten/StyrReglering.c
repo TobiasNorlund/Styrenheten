@@ -13,6 +13,9 @@
 #define LENGTH_OFFSET -40
 #define ROTMIN 95
 
+#define FORWARD 1
+#define BACKWARD 0
+
 #include <avr/io.h>
 
 #include "global.h"
@@ -150,7 +153,7 @@ void setSpeedLeft(uint8_t speed){
 void setDirLeft(uint8_t dir){
 	if(glob_virtual_direction == DIRECTION_FORWARD)
 	{
-		if(dir == 1){
+		if(dir == FORWARD){
 			PORTA = PORTA | (1 << PORTA2);
 		}
 		else{
@@ -159,14 +162,14 @@ void setDirLeft(uint8_t dir){
 	}
 	else
 	{
-		if(dir == 1){
+		if(dir == FORWARD){
 			PORTA = PORTA & 0b11110111;
 		}
 		else{
 			PORTA = PORTA | (1 << PORTA3);
 		}
 	}
-	if(dir == 1)
+	if(dir == FORWARD)
 	{
 	 	glob_vLeftSign=1;
 	}
@@ -178,7 +181,7 @@ void setDirLeft(uint8_t dir){
 void setDirRight(uint8_t dir){
 	if(glob_virtual_direction == DIRECTION_FORWARD)
 	{
-		if(dir == 1){
+		if(dir == FORWARD){
 			PORTA = PORTA | (1 << PORTA3);
 		}
 		else{
@@ -187,14 +190,14 @@ void setDirRight(uint8_t dir){
 	}	
 	else
 	{
-		if(dir == 1){
+		if(dir == FORWARD){
 			PORTA = PORTA & 0b11111011;
 		}
 		else{
 			PORTA = PORTA | (1 << PORTA2);
 		}			
 	}
-	if(dir == 1)
+	if(dir == FORWARD)
 	{
 	 	glob_vRightSign=1;
 	}
@@ -214,10 +217,11 @@ void setDirRight(uint8_t dir){
 #pragma GCC optimize ("O0")
 void regulateStraight()
 {
-	setDirRight(1);
-	setDirLeft(1);
+	setDirRight(FORWARD);
+	setDirLeft(FORWARD);
 	startSquareX = glob_mapX;
 	startSquareY = glob_mapY;
+	glob_omegaWheelSum=glob_theta<<4;//init wheel sum 
 	while(!((startSquareX != glob_mapX || startSquareY != glob_mapY)&&(LENGTH_OFFSET < getRelativeY())))
 	{
 		int16_t ur,ul;
@@ -260,8 +264,8 @@ void regulateStraight()
 
 void turnLeft90(){
 	glob_SumTheta = glob_theta<<8;
-	setDirLeft(0);
-	setDirRight(1);
+	setDirLeft(BACKWARD);
+	setDirRight(FORWARD);
 	setSpeedRight(TURNSPEED);
 	setSpeedLeft(TURNSPEED);
 	while(glob_theta < (int16_t)STOPTURN90)
@@ -291,8 +295,8 @@ void turnLeft90(){
 
 void turnRight90(){
 	glob_SumTheta = glob_theta<<8;
-	setDirLeft(1);
-	setDirRight(0);
+	setDirLeft(FORWARD);
+	setDirRight(BACKWARD);
 	setSpeedRight(TURNSPEED);
 	setSpeedLeft(TURNSPEED); 
 	while(glob_theta > (int16_t)(-STOPTURN90))
@@ -319,8 +323,8 @@ void turnRight90(){
 }
 void turnLeft45(){
 	glob_SumTheta = glob_theta<<8;
-	setDirLeft(0);
-	setDirRight(1);
+	setDirLeft(BACKWARD);
+	setDirRight(FORWARD);
 	setSpeedRight(TURNSPEED);
 	setSpeedLeft(TURNSPEED); 
 	while(glob_theta < STOPTURN45)
@@ -335,8 +339,8 @@ void turnLeft45(){
 	
 void turnRight45(){
 	glob_SumTheta = glob_theta<<8;
-	setDirLeft(1);
-	setDirRight(0);
+	setDirLeft(FORWARD);
+	setDirRight(BACKWARD);
 	setSpeedRight(TURNSPEED); 
 	setSpeedLeft(TURNSPEED); 
 	while(glob_theta > -STOPTURN45)
@@ -377,8 +381,8 @@ void cleanUpAngle()
 	{
 		if(glob_theta > 0)
 		{
-			setDirLeft(1);
-			setDirRight(0);
+			setDirLeft(FORWARD);
+			setDirRight(BACKWARD);
 			setSpeedRight(rotSpeed);
 			setSpeedLeft(rotSpeed);
 			if(prev_dir == 2)
@@ -408,8 +412,8 @@ void cleanUpAngle()
 		}
 		else
 		{
-			setDirLeft(0);
-			setDirRight(1);
+			setDirLeft(BACKWARD);
+			setDirRight(FORWARD);
 			setSpeedRight(rotSpeed);
 			setSpeedLeft(rotSpeed);
 			if(prev_dir == 2)
@@ -471,8 +475,8 @@ void virtualTurn()
 
 void customSteering()
 {
-	setDirLeft(1);
-	setDirRight(1);
+	setDirLeft(FORWARD);
+	setDirRight(FORWARD);
 	setSpeedRight(glob_paramCustomRight);
 	setSpeedLeft(glob_paramCustomLeft);
 }
