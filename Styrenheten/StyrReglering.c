@@ -241,6 +241,7 @@ void regulateStraight()
 }
 
 void turnLeft90(){
+	glob_SumTheta = glob_theta<<8;
 	setDirLeft(0);
 	setDirRight(1);
 	setSpeedRight(TURNSPEED);
@@ -248,8 +249,10 @@ void turnLeft90(){
 	while(glob_theta < (int16_t)STOPTURN90)
 	{
 		
-	} 
+	}
+	glob_SumTheta -= 90<<8;
 	glob_theta = glob_theta - (int16_t) 90;
+	
 	switch(glob_logical_direction)
 	{
 		case LOGICAL_DIR_UP:
@@ -269,6 +272,7 @@ void turnLeft90(){
 }
 
 void turnRight90(){
+	glob_SumTheta = glob_theta<<8;
 	setDirLeft(1);
 	setDirRight(0);
 	setSpeedRight(TURNSPEED);
@@ -276,6 +280,7 @@ void turnRight90(){
 	while(glob_theta > (int16_t)(-STOPTURN90))
 	{
 	}
+	glob_SumTheta += 90<<8;
 	glob_theta = glob_theta + (int16_t) 90;
 	switch(glob_logical_direction)
 	{
@@ -295,6 +300,7 @@ void turnRight90(){
 	cleanUpAngle();
 }
 void turnLeft45(){
+	glob_SumTheta = glob_theta<<8;
 	setDirLeft(0);
 	setDirRight(1);
 	setSpeedRight(TURNSPEED);
@@ -303,11 +309,14 @@ void turnLeft45(){
 	{
 	}
 	setSpeedRight(0); 
-	setSpeedLeft(0); 
+	setSpeedLeft(0);
+	glob_SumTheta -= 45<<8;
 	glob_theta = glob_theta - (int16_t) 45;
+	
 }
 	
 void turnRight45(){
+	glob_SumTheta = glob_theta<<8;
 	setDirLeft(1);
 	setDirRight(0);
 	setSpeedRight(TURNSPEED); 
@@ -316,7 +325,8 @@ void turnRight45(){
 	{
 	}
 	setSpeedRight(0); 
-	setSpeedLeft(0); 
+	setSpeedLeft(0);
+	glob_SumTheta += 45<<8;
 	glob_theta = glob_theta + (int16_t) 45;
 }
 #pragma GCC pop_options

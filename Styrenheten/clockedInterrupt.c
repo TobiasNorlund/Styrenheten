@@ -18,7 +18,7 @@ uint8_t sendcounter;
 void clockedInterrupt_init()
 {
 	cbInit(&glob_mapDataToSend, 255	);
-	cbInit(&glob_debugMesssageBuffer, 32);
+	cbInit(&glob_debugMesssageBuffer, 50);
 	glob_routeLength = 0;
 	//setup timers 1 och 3 16bit timers
 	//start clock and set clock devider.
@@ -169,7 +169,7 @@ void timedInterupt(void)
 #endif
 #ifndef KOM_OFF
 	sendcounter++;
-	if(sendcounter==4)
+	if(sendcounter==16)
 	{
 		sendcounter=0;
 		//skicka vidare till PC
@@ -185,6 +185,9 @@ void timedInterupt(void)
 		glob_syncSpike = 0;
 	
 		SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, len+6);
+		int8_t vinkelHastHjul = (glob_vRight-glob_vLeft)>>4; // 17 ca 16
+		cbWrite(&glob_debugMesssageBuffer, 21);
+		cbWrite(&glob_debugMesssageBuffer, vinkelHastHjul);
 		//send debug data
 		uint8_t bytesToSend = 0;
 		while(cbBytesUsed(&glob_debugMesssageBuffer) != 0)

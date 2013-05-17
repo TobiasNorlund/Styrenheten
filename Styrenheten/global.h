@@ -51,6 +51,7 @@
 	volatile int8_t glob_y; //offset från origo för x i nuvarande ruta mäts i 1/2 cm, initieras i styrinit
 	volatile uint8_t glob_v; //hastighet i 1/2 cm/s, initieras i styrinit
 	volatile int8_t glob_theta; // Vridning i grader
+	volatile int16_t glob_SumTheta; // Vridning i grader
 	int8_t glob_thetaOld; // Vridning i grader
 	volatile int16_t glob_omega; //grader/sekund, initieras i styrinit
 	uint8_t glob_virtual_direction; // initieras i reglering_init
@@ -99,15 +100,6 @@
 	volatile uint8_t glob_shortRearRight_old; // cm/2
 	volatile uint8_t glob_shortRearLeft_old; // cm/2
 	
-	uint8_t getSensorLongForwardOld();
-	uint8_t getSensorLongRearOld();
-	uint8_t getSensorLongLeftOld();
-	uint8_t getSensorLongRightOld();
-	uint8_t getSensorShortLeftForwardOld();
-	uint8_t getSensorShortLeftRearOld();
-	uint8_t getSensorShortRightForwardOld();
-	uint8_t getSensorShortRightRearOld();
-	
 	int16_t glob_gyro; // grader/s
 	
 	volatile uint8_t glob_vRight; // cm/s
@@ -137,5 +129,14 @@ uint8_t getSensorShortLeftForward();
 uint8_t getSensorShortLeftRear();
 uint8_t getSensorShortRightForward();
 uint8_t getSensorShortRightRear();
+
+uint8_t getSensorLongForwardOld();
+uint8_t getSensorLongRearOld();
+uint8_t getSensorLongLeftOld();
+uint8_t getSensorLongRightOld();
+uint8_t getSensorShortLeftForwardOld();
+uint8_t getSensorShortLeftRearOld();
+uint8_t getSensorShortRightForwardOld();
+uint8_t getSensorShortRightRearOld();
 
 #endif /* GLOBAL_H_ */

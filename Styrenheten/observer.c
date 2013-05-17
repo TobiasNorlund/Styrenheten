@@ -5,8 +5,8 @@
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 
-#define TIMECONSTANT 13 // ms
-#define INVERTTIMECONSTANT 80 //Dimension 1/s
+#define TIMECONSTANT 12 // ms
+#define INVERTTIMECONSTANT 83 //Dimension 1/s
 
 #define HALFSQUAREWIDTH 80 //halva cm
 
@@ -347,6 +347,11 @@ void turnFine()
 
 void turnObserver()
 {
-	int16_t tempTheta = (glob_gyro*TIMECONSTANT)>>10;
-	glob_theta = glob_theta + tempTheta;
+	if(glob_gyro < 4 && glob_gyro > -4)
+	{
+		return;
+	}
+	int16_t tempTheta = (glob_gyro*TIMECONSTANT)>>2;
+	glob_SumTheta += tempTheta;
+	glob_theta = glob_SumTheta>>8;
 }
