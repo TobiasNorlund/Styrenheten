@@ -5,8 +5,8 @@
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 
-#define TIMECONSTANT 50 // ms
-#define INVERTTIMECONSTANT 20 //Dimension 1/s
+#define TIMECONSTANT 13 // ms
+#define INVERTTIMECONSTANT 80 //Dimension 1/s
 
 #define HALFSQUAREWIDTH 80 //halva cm
 

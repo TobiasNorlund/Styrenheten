@@ -7,11 +7,11 @@
 
 #define MAXSPEED 250
 #define TURNSPEED 180
-#define STOPTURN90 83
+#define STOPTURN90 78
 #define STOPTURN45 43
 #define RIGHTWHEELDIFF 23
-#define LENGTH_OFFSET -51
-#define ROTMIN 80
+#define LENGTH_OFFSET -40
+#define ROTMIN 95
 
 #include <avr/io.h>
 
@@ -372,6 +372,7 @@ void cleanUpAngle()
 					{
 						while(glob_theta == theta_sav)
 						{
+							
 						}
 					}
 				}
