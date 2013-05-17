@@ -68,7 +68,7 @@ void observe()
 	}
 }
 
-uint8_t getSensorLongOverNoise(uint8_t value)
+uint8_t getSensorLongOverNoiseForw(uint8_t value, uint8_t value_old)
 {
 	if(value < 20)
 	{
@@ -84,9 +84,33 @@ uint8_t getSensorLongOverNoise(uint8_t value)
 	}
 }
 
-uint16_t getSensorShortOverNoise(uint8_t value)
+uint8_t getSensorLongOverNoiseHoriz(uint8_t value, uint8_t value_old)
+{
+	if(value < 20)
+	{
+		return 0;
+	}
+	if(max(value-value_old, value_old-value) > 40)
+	{
+		return 0;
+	}
+	if(value == 255)
+	{
+		return 0;
+	}
+	else
+	{
+		return 1;
+	}
+}
+
+uint8_t getSensorShortOverNoise(uint8_t value, uint8_t value_old)
 {
 	if(value < 5)
+	{
+		return 0;
+	}
+	if(max(value-value_old, value_old-value) > 20)
 	{
 		return 0;
 	}
@@ -196,15 +220,15 @@ void straightObserver()
 	int16_t ShortRightFront=getSensorShortRightForward();
 	int16_t ShortRightRear=getSensorShortRightRear();
  	
-	int16_t overNoiseLongFront= getSensorLongOverNoise(LongFront);
-	int16_t overNoiseLongRear= getSensorLongOverNoise(LongRear);
-	int16_t overNoiseLongLeft=getSensorLongOverNoise(LongLeft);
-	int16_t overNoiseLongRight=getSensorLongOverNoise(LongRight);
+	int16_t overNoiseLongFront= getSensorLongOverNoiseForw(LongFront, getSensorLongForwardOld());
+	int16_t overNoiseLongRear= getSensorLongOverNoiseForw(LongRear, getSensorLongRearOld());
+	int16_t overNoiseLongLeft=getSensorLongOverNoiseHoriz(LongLeft, getSensorLongLeftOld());
+	int16_t overNoiseLongRight=getSensorLongOverNoiseHoriz(LongRight, getSensorLongRightOld());
 	
-	int16_t overNoiseShortLeftFront = getSensorShortOverNoise(ShortLeftFront);
-	int16_t overNoiseShortLeftRear = getSensorShortOverNoise(ShortLeftRear);
-	int16_t overNoiseShortRightFront = getSensorShortOverNoise(ShortRightFront);
-	int16_t overNoiseShortRightRear = getSensorShortOverNoise(ShortRightRear);
+	int16_t overNoiseShortLeftFront = getSensorShortOverNoise(ShortLeftFront, getSensorShortLeftForwardOld());
+	int16_t overNoiseShortLeftRear = getSensorShortOverNoise(ShortLeftRear, getSensorShortLeftRearOld());
+	int16_t overNoiseShortRightFront = getSensorShortOverNoise(ShortRightFront, getSensorShortRightForwardOld());
+	int16_t overNoiseShortRightRear = getSensorShortOverNoise(ShortRightRear, getSensorShortRightRearOld());
 	
 	int16_t overXPosUncert = 10;
 	int16_t XShortLeftFront = getShiftedSensorX(ShortLeftFront+CHASSITOSHORTSIDE-HALFSQUAREWIDTH);

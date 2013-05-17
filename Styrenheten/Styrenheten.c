@@ -77,12 +77,17 @@ void executeCommand(uint8_t command)
 	{
 		case FORWARD_COMMAND:
 			regulateStraight();
+			_delay_ms(500);
 			break;
 		case RIGHT_90_COMMAND:
+			_delay_ms(200);
 			turnRight90();
+			_delay_ms(200);
 			break;
 		case LEFT_90_COMMAND:
+			_delay_ms(200);
 			turnLeft90();
+			_delay_ms(200);
 			break;
 		case RIGHT_45_COMMAND:
 			turnRight45();
@@ -101,7 +106,6 @@ void executeCommand(uint8_t command)
 			break;
 	}
 	glob_curComm = NULL_COMMAND;
-	_delay_ms(500);
 }
 
 void autoSteering()
