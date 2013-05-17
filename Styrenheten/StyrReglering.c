@@ -34,6 +34,9 @@ void reglering_init()
 	glob_v = 0;
 	glob_theta = 0;
 	glob_omega = 0;
+	glob_SumTheta=0;
+	glob_omegaWheelSum=0;
+	glob_thetaOld=0;
 	/*
 	*	Initierar registrerna för PWM
 	*

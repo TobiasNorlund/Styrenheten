@@ -26,7 +26,6 @@
 void setXV(uint8_t shortForward, uint8_t shortRear, uint8_t side);
 //void setThetaOmegaLeft(uint8_t shortLeftForward, uint8_t shortLeftRear);
 //void setThetaOmegaRight(uint8_t shortRightForward, uint8_t shortRightRear);
-void setOmega();
 void straightObserver();
 void rotateObserver();
 void observe();

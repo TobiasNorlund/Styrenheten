@@ -105,6 +105,8 @@
 	volatile uint8_t glob_vRight; // cm/s
 	volatile uint8_t glob_vLeft; // cm/s
 
+	int16_t glob_omegaWheelSum;// grader / ca 16 egentligen 17 mellan hjulen
+
 	//parametrar
 	volatile uint8_t glob_paramCustomLeft;
 	volatile uint8_t glob_paramCustomRight;

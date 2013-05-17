@@ -36,12 +36,16 @@ const uint8_t lookup19[130] PROGMEM = {
 
 void setTheta(uint8_t ShortLeftFront, uint8_t ShortLeftRear, uint8_t ShortRightFront, uint8_t ShortRightRear)
 {
+	calcThetaWheels();//update wheel sum
+	int16_t thetaWheels = glob_omegaWheelSum>>4;// delar med 16, hjulbasen är 17 cm
+	int16_t thetaWeightWheels = 1;//TODO tune vs thetaWeight tröghet för gamla värden
 	//Högra sidan, endast korta
 	uint8_t right36AngleK=0;
 	
 	if((getSensorShortOverNoise(ShortRightFront, getSensorShortRightForwardOld()) != 0)&&(getSensorShortOverNoise(ShortRightRear, getSensorShortRightRearOld()) != 0) && 40 > max(ShortRightRear-ShortRightFront, ShortRightFront-ShortRightRear))
 	{
 		right36AngleK = 25;
+		thetaWeightWheels = 0;//reglera inte efter hjulen om vi har ok värden från sensorerna
 	}
 	
 	//Vänsta sidan, endast korta
@@ -49,16 +53,32 @@ void setTheta(uint8_t ShortLeftFront, uint8_t ShortLeftRear, uint8_t ShortRightF
 	if((getSensorShortOverNoise(ShortLeftFront, getSensorShortLeftForwardOld()) != 0)&&(getSensorShortOverNoise(ShortLeftRear, getSensorShortLeftRearOld()) != 0) && 40 > max(ShortLeftRear-ShortLeftFront, ShortLeftRear-ShortLeftFront))
 	{
 		left36AngleK = 25;
+		thetaWeightWheels = 0;//reglera inte efter hjulen om vi har ok värden från sensorerna
 	}
 
 	glob_thetaOld = glob_theta;
-	int16_t thetaWeight = 3;
+	int16_t thetaWeight = 3;// tröghet för gamla värden
 	int16_t thetaReg = int8to16(glob_theta);
-	int16_t numerator = calcSideSensors36(ShortLeftFront,ShortLeftRear,0)*left36AngleK + calcSideSensors36(ShortRightFront,ShortRightRear,1)*right36AngleK+thetaWeight*thetaReg;
-	int16_t denominator = right36AngleK + left36AngleK+thetaWeight;
+
+	
+	int16_t numerator = calcSideSensors36(ShortLeftFront,ShortLeftRear,0)*left36AngleK + calcSideSensors36(ShortRightFront,ShortRightRear,1)*right36AngleK+thetaWeight*thetaReg+thetaWheels*thetaWeightWheels;
+	int16_t denominator = right36AngleK + left36AngleK+thetaWeight+thetaWeightWheels;
 	
 	glob_theta = numerator/denominator;
+	if(thetaWeightWheels==0)//uppdatera summan om vi har en bättre skattning från andra sensorer.
+	{
+		glob_omegaWheelSum=glob_theta<<4;
+	}
 }
+//turn off optimization
+#pragma GCC push_options
+#pragma GCC optimize ("O0")
+void calcThetaWheels()
+{
+	glob_omegaWheelSum+=((int16_t)glob_vRight-(int16_t)glob_vLeft);//TODO fix if +-90*16 grader
+}
+#pragma GCC pop_options
+//end turn off optimization
 
 //Värde mellan 0 och 25
 uint8_t calcOppositeShortK(uint8_t leftShortSensor, uint8_t rightShortSensor)

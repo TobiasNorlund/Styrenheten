@@ -291,6 +291,8 @@ void straightObserver()
 	*/	
 	return;
 }
+
+
 #pragma GCC pop_options
 //end turn off optimization
 
