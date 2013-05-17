@@ -49,6 +49,7 @@
 	volatile uint8_t glob_mapY; //Xcoord för nuvarande ruta i kartindex initieras i init
 	volatile int8_t glob_x; //offset från origo för x i nuvarande ruta mäts i 1/2 cm origo är i mitten av rutan, initieras i styrinit
 	volatile int8_t glob_y; //offset från origo för x i nuvarande ruta mäts i 1/2 cm, initieras i styrinit
+	volatile int16_t glob_sum_y; // summera y från hastighet ((TIMECONSTANT*velocity)>>10); 12/1024
 	volatile uint8_t glob_v; //hastighet i 1/2 cm/s, initieras i styrinit
 	volatile int8_t glob_theta; // Vridning i grader
 	volatile int16_t glob_SumTheta; // Vridning i grader
