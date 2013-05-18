@@ -169,7 +169,7 @@ void timedInterupt(void)
 #endif
 #ifndef KOM_OFF
 	sendcounter++;
-	if(sendcounter==8)
+	if(sendcounter==12)
 	{
 		sendcounter=0;
 		//skicka vidare till PC
@@ -182,16 +182,14 @@ void timedInterupt(void)
 		msgRecieve[len+4] = 14;
 		msgRecieve[len+5] = glob_theta;
 
-		glob_syncSpike = 0;
 	
 		SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, len+6);
 		
-		//TAR DU BORT DENNA KOMMENTAR, ÖKA SENDCOUNTER TILL 16
-		/*
+		
 		int8_t vinkelHastHjul = (glob_vRight-glob_vLeft)>>4; // 17 ca 16
 		cbWrite(&glob_debugMesssageBuffer, 21);
 		cbWrite(&glob_debugMesssageBuffer, vinkelHastHjul);
-		*/
+		
 		
 		//send debug data
 		uint8_t bytesToSend = 0;

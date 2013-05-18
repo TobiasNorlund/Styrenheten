@@ -351,6 +351,7 @@ void turnFine()
 
 void turnObserver()
 {
+	
 	if(glob_gyro < 4 && glob_gyro > -4)
 	{
 		return;
@@ -358,4 +359,7 @@ void turnObserver()
 	int16_t tempTheta = (glob_gyro*TIMECONSTANT)>>2;
 	glob_SumTheta += tempTheta;
 	glob_theta = glob_SumTheta>>8;
+	
+	//glob_theta = glob_theta +  (glob_gyro*TIMECONSTANT)>>10;
+	//glob_syncSpike = 1;
 }

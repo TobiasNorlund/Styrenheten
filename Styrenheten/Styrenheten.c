@@ -72,7 +72,6 @@ void signal_done()
 void executeCommand(uint8_t command)
 {
 	glob_curComm = command;
-	glob_syncSpike = 255;
 	switch(command)
 	{
 		case FORWARD_COMMAND:
