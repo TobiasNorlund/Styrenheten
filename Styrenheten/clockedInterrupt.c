@@ -187,8 +187,9 @@ void timedInterupt(void)
 		/*int8_t vinkelHastHjul = (glob_vRight-glob_vLeft)>>4; // 17 ca 16
 		cbWrite(&glob_debugMesssageBuffer, 21);
 		cbWrite(&glob_debugMesssageBuffer, vinkelHastHjul);*/
-		
-		
+		cbWrite(&glob_debugMesssageBuffer, 25);
+		cbWrite(&glob_debugMesssageBuffer, (glob_sum_y&0xFF00)>>8);
+		cbWrite(&glob_debugMesssageBuffer, (glob_sum_y&0x00FF));
 		//send debug data
 		uint8_t bytesToSend = 0;
 		while(cbBytesUsed(&glob_debugMesssageBuffer) != 0)

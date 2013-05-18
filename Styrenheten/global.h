@@ -42,6 +42,8 @@
 #define TIMECONSTANT 12 // ms
 #define INVERTTIMECONSTANT 83 //Dimension 1/s
 
+#define HALFSQUARESUMY 6827//2*(HALFSQUAREWIDTH<<10)/TIMECONSTANT;
+
 #include <util/delay.h>
 
 #include <avr/io.h>
