@@ -232,12 +232,14 @@ void regulateStraight()
 		int16_t thetaFactor = (glob_L2_straightTheta*thetaDeg)>>(DIVISIONFACTOR-4);
 		int16_t omegaFactor = glob_L3_straightOmega*glob_omega;
 		glob_max = xFactor-thetaFactor;
+		/*
 		cbWrite(&glob_debugMesssageBuffer, 17);
 		cbWrite(&glob_debugMesssageBuffer, glob_theta>>8);
 		cbWrite(&glob_debugMesssageBuffer, glob_theta);
 		cbWrite(&glob_debugMesssageBuffer, 19);
 		cbWrite(&glob_debugMesssageBuffer, xRelative>>8);
 		cbWrite(&glob_debugMesssageBuffer, xRelative);
+		*/
 		if(glob_max > MAXSPEED)
 		{
 			glob_max = MAXSPEED;

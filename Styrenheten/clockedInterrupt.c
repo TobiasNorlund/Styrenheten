@@ -30,7 +30,7 @@ void clockedInterrupt_init()
 	//enable overflow interupt
 	//TIMSK1=(1<<TOIE1);//overflow interupt
 	//TCNT1=0;//init value for counter 1
-	TCCR1B = (1<<CS12)|(0<<CS11)|(0<<CS10);// Clock/1024, 0.000128 seconds per tick
+	TCCR1B = (1<<CS12)|(0<<CS11)|(0<<CS10);// Clock/256, 0.000128 seconds per tick
 	sendcounter=0;
 }
 
@@ -169,7 +169,7 @@ void timedInterupt(void)
 #endif
 #ifndef KOM_OFF
 	sendcounter++;
-	if(sendcounter==16)
+	if(sendcounter==8)
 	{
 		sendcounter=0;
 		//skicka vidare till PC
@@ -185,9 +185,14 @@ void timedInterupt(void)
 		glob_syncSpike = 0;
 	
 		SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, len+6);
+		
+		//TAR DU BORT DENNA KOMMENTAR, ÖKA SENDCOUNTER TILL 16
+		/*
 		int8_t vinkelHastHjul = (glob_vRight-glob_vLeft)>>4; // 17 ca 16
 		cbWrite(&glob_debugMesssageBuffer, 21);
 		cbWrite(&glob_debugMesssageBuffer, vinkelHastHjul);
+		*/
+		
 		//send debug data
 		uint8_t bytesToSend = 0;
 		while(cbBytesUsed(&glob_debugMesssageBuffer) != 0)

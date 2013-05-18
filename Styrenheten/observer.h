@@ -20,7 +20,7 @@
 #include "global.h"
 #include "StyrReglering.h"
 
-#define OK_SENSOR_VALUE(x) (((x) != 0)||((x) != 255))
+#define OK_SENSOR_VALUE(x) (((x) != 0)&&((x) != 255))
 #define TIME 4 //i ms, ange i 2^n = t (TIME = 4 -> 16ms)
 
 void setXV(uint8_t shortForward, uint8_t shortRear, uint8_t side);
