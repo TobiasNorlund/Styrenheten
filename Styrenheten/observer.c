@@ -81,17 +81,17 @@ uint8_t getSensorLongOverNoiseForw(uint8_t value, uint8_t value_old)
 	}
 }
 
-uint8_t getSensorLongOverNoiseHoriz(uint8_t value, uint8_t value_old)
+uint8_t getSensorLongOverNoiseHoriz(uint8_t value_new, uint8_t value_old)
 {
-	if(value < 20)
+	if(value_new < 20)
 	{
 		return 0;
 	}
-	if(max(value-value_old, value_old-value) > 40)
+	if(max(value_new-value_old, value_old-value_new) > 30)
 	{
 		return 0;
 	}
-	if(value == 255)
+	if(value_new == 255)
 	{
 		return 0;
 	}
@@ -101,17 +101,17 @@ uint8_t getSensorLongOverNoiseHoriz(uint8_t value, uint8_t value_old)
 	}
 }
 
-uint8_t getSensorShortOverNoise(uint8_t value, uint8_t value_old)
+uint8_t getSensorShortOverNoise(uint8_t value_new, uint8_t value_old)
 {
-	if(value < 5)
+	if(value_new < 5)
 	{
 		return 0;
 	}
-	if(max(value-value_old, value_old-value) > 20)
+	if(max(value_new-value_old, value_old-value_new) > 15)
 	{
 		return 0;
 	}
-	if(value > 150)
+	if(value_new > 150)
 	{
 		return 0;
 	}
