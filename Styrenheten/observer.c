@@ -5,9 +5,6 @@
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 
-#define TIMECONSTANT 12 // ms
-#define INVERTTIMECONSTANT 83 //Dimension 1/s
-
 #define HALFSQUAREWIDTH 80 //halva cm
 
 void setRelativeX(int8_t val) //x som om roboten har riktning up

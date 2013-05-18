@@ -14,8 +14,6 @@
 #include "global.h"
 #include "../../TSEA27-include/message.h"
 
-#define TIME 10 //i ms
-
 void pathfind_init()
 {
 	for(uint8_t i = 0; i < 16; ++i)

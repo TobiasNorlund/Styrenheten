@@ -21,7 +21,6 @@
 #include "StyrReglering.h"
 
 #define OK_SENSOR_VALUE(x) (((x) != 0)&&((x) != 255))
-#define TIME 4 //i ms, ange i 2^n = t (TIME = 4 -> 16ms)
 
 void setXV(uint8_t shortForward, uint8_t shortRear, uint8_t side);
 //void setThetaOmegaLeft(uint8_t shortLeftForward, uint8_t shortLeftRear);
@@ -32,5 +31,8 @@ void observe();
 void setRelativeX(int8_t val);
 void setRelativeY(int8_t val);
 void turnObserver();
+void turnFine();
+int16_t max(int16_t a, int16_t b);
+uint8_t getSensorShortOverNoise(uint8_t value, uint8_t value_old);
 
 #endif /* OBSERVER_H_ */

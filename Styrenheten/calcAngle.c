@@ -75,7 +75,7 @@ void setTheta(uint8_t ShortLeftFront, uint8_t ShortLeftRear, uint8_t ShortRightF
 #pragma GCC optimize ("O0")
 void calcThetaWheels()
 {
-	if(OK_SENSOR_VALUE(glob_vLeft))&&OK_SENSOR_VALUE(glob_vRight))&&(glob_vRight > 60)&&(glob_vLeft > 60))
+	if(OK_SENSOR_VALUE(glob_vLeft)&&OK_SENSOR_VALUE(glob_vRight)&&(glob_vRight > 60)&&(glob_vLeft > 60))
 	{	
 		glob_omegaWheelSum+=(glob_vRightSign*(int16_t)glob_vRight-glob_vLeftSign*(int16_t)glob_vLeft);//TODO fix if +-90*16 grader
 	}

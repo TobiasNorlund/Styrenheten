@@ -11,6 +11,7 @@
 
 #include <avr/pgmspace.h>
 #include "global.h"
+#include "../../TSEA27-include/utils.h"
 #include "observer.h"
 
 void setTheta(uint8_t ShortLeftFront, uint8_t ShortLeftRear, uint8_t ShortRightFront, uint8_t ShortRightRear);

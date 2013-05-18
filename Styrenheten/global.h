@@ -39,6 +39,9 @@
 
 #define ROUTELENGTH 64
 
+#define TIMECONSTANT 12 // ms
+#define INVERTTIMECONSTANT 83 //Dimension 1/s
+
 #include <util/delay.h>
 
 #include <avr/io.h>
