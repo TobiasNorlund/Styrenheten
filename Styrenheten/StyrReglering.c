@@ -20,6 +20,7 @@
 
 #include "global.h"
 #include "../../TSEA27-include/message.h"
+#include "../../TSEA27-include/utils.h"
 
 #include "StyrReglering.h"
 
@@ -117,26 +118,24 @@ int8_t getRelativeY() //Y som om roboten har riktning upp
 void setSpeedRight(uint8_t speed){
 	if(glob_virtual_direction == DIRECTION_FORWARD)
 	{
+		OCR2B = speed;	//Höger hjulpar
+	}
+	else
+	{
 		if(speed < LEFTWHEELDIFF)
 		{
 			OCR2A = 0;
 		}
 		else
 		{
-			OCR2A = speed-LEFTWHEELDIFF;//Vänster hjulpar	
+
+			OCR2A = speed-LEFTWHEELDIFF;//Vänster hjulpar
 		}
 	}
-	else
-	{
-		OCR2B = speed;	//Höger hjulpar
-	}
 }
+
 void setSpeedLeft(uint8_t speed){
 	if(glob_virtual_direction == DIRECTION_FORWARD)
-	{
-		OCR2B = speed; //Höger hjulpar
-	}
-	else
 	{
 		if (speed < LEFTWHEELDIFF)
 		{
@@ -144,10 +143,14 @@ void setSpeedLeft(uint8_t speed){
 		}
 		else
 		{
-			OCR2A = speed-LEFTWHEELDIFF; //vänster hjulpar
-		}		
+			OCR2A = speed-LEFTWHEELDIFF; //Vänster hjulpar	
+		}
+		
 	}
-	
+	else
+	{
+			OCR2B = speed; //Höger hjulpar	
+	}
 }
 
 void setDirLeft(uint8_t dir){
