@@ -9,7 +9,7 @@
 #define TURNSPEED 180
 #define STOPTURN90 90
 #define STOPTURN45 43
-#define RIGHTWHEELDIFF 2
+#define LEFTWHEELDIFF 2
 #define LENGTH_OFFSET -40
 #define ROTMIN 95
 
@@ -297,7 +297,7 @@ void turnLeft90(){
 			glob_logical_direction = LOGICAL_DIR_DOWN;
 			break;
 	}
-	cleanUpAngle();
+	//cleanUpAngle();
 }
 
 void turnRight90(){
@@ -326,7 +326,7 @@ void turnRight90(){
 			glob_logical_direction = LOGICAL_DIR_UP;
 			break;
 		}
-	cleanUpAngle();
+	//cleanUpAngle();
 }
 void turnLeft45(){
 	glob_SumTheta = glob_theta<<8;
