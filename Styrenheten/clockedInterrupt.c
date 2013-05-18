@@ -185,6 +185,12 @@ void timedInterupt(void)
 	glob_syncSpike = 0;
 	
 	SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, len+6);
+	
+	//testar med att räkna ut vinkelhastigheten från hjulen
+	int8_t vinkelHastHjul = (glob_vRight-glob_vLeft)>>4;// 17 bred ca 16
+	cbWrite(&glob_debugMesssageBuffer, 20);
+	cbWrite(&glob_debugMesssageBuffer, vinkelHastHjul);
+	
 	//send debug data
 	uint8_t bytesToSend = 0;
 	while(cbBytesUsed(&glob_debugMesssageBuffer) != 0)
