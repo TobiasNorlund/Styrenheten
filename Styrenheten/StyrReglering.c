@@ -275,13 +275,13 @@ void turnLeft90(){
 	setDirRight(FORWARD);
 	setSpeedRight(TURNSPEED);
 	setSpeedLeft(TURNSPEED);
-	while(glob_theta < (int16_t)STOPTURN90)
+	while(glob_theta < STOPTURN90)
 	{
 		
 	}
 	glob_SumTheta -= 90<<8;
 	glob_theta = glob_theta - (int16_t) 90;
-	
+
 	switch(glob_logical_direction)
 	{
 		case LOGICAL_DIR_UP:
@@ -297,6 +297,8 @@ void turnLeft90(){
 			glob_logical_direction = LOGICAL_DIR_DOWN;
 			break;
 	}
+	setSpeedRight(0);
+	setSpeedLeft(0);
 	//cleanUpAngle();
 }
 
@@ -306,9 +308,10 @@ void turnRight90(){
 	setDirRight(BACKWARD);
 	setSpeedRight(TURNSPEED);
 	setSpeedLeft(TURNSPEED); 
-	while(glob_theta > (int16_t)(-STOPTURN90))
+	while(glob_theta > (-STOPTURN90))
 	{
 	}
+
 	glob_SumTheta += 90<<8;
 	glob_theta = glob_theta + (int16_t) 90;
 	switch(glob_logical_direction)
@@ -326,6 +329,8 @@ void turnRight90(){
 			glob_logical_direction = LOGICAL_DIR_UP;
 			break;
 		}
+	setSpeedRight(0);
+	setSpeedLeft(0);
 	//cleanUpAngle();
 }
 void turnLeft45(){
