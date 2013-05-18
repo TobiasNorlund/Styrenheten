@@ -252,6 +252,11 @@ void straightObserver()
 	glob_sum_y += getVelocity();
 	if(glob_sum_y>HALFSQUARESUMY)//if(glob_sum_y > (HALFSQUAREWIDTH<<10)/TIMECONSTANT)
 	{
+		moveForwards();
+		cbWrite(&glob_debugMesssageBuffer, 23);
+		cbWrite(&glob_debugMesssageBuffer, glob_mapX);
+		cbWrite(&glob_debugMesssageBuffer, 24);
+		cbWrite(&glob_debugMesssageBuffer, glob_mapY);
 		glob_sum_y-=2*HALFSQUARESUMY;//2*(HALFSQUAREWIDTH<<10)/TIMECONSTANT;
 	}
 	else if(glob_sum_y<-HALFSQUARESUMY)//if(glob_sum_y < -(HALFSQUAREWIDTH<<10)/TIMECONSTANT)
@@ -267,14 +272,14 @@ void straightObserver()
 	//int16_t newY = taljare/namnare;
 	setRelativeY(relYnew);
 
-	if(getRelativeY() > HALFSQUAREWIDTH)
+	/*if(getRelativeY() > HALFSQUAREWIDTH)
 	{
 		moveForwards();
 		cbWrite(&glob_debugMesssageBuffer, 23);
 		cbWrite(&glob_debugMesssageBuffer, glob_mapX);
 		cbWrite(&glob_debugMesssageBuffer, 24);
 		cbWrite(&glob_debugMesssageBuffer, glob_mapY);
-	}
+	}*/
 	
 	/*
 	if((shortLeftFront + shortLeftRear) < (shortRightFront + shortRightRear))
