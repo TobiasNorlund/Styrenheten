@@ -7,9 +7,9 @@
 
 #define MAXSPEED 250
 #define TURNSPEED 180
-#define STOPTURN90 78
+#define STOPTURN90 90
 #define STOPTURN45 43
-#define RIGHTWHEELDIFF 23
+#define RIGHTWHEELDIFF 2
 #define LENGTH_OFFSET -40
 #define ROTMIN 95
 
@@ -117,34 +117,34 @@ int8_t getRelativeY() //Y som om roboten har riktning upp
 void setSpeedRight(uint8_t speed){
 	if(glob_virtual_direction == DIRECTION_FORWARD)
 	{
-		if(speed < RIGHTWHEELDIFF)
+		if(speed < LEFTWHEELDIFF)
 		{
-			OCR2B = 0;
+			OCR2A = 0;
 		}
 		else
 		{
-			OCR2B = speed-RIGHTWHEELDIFF;//Höger hjulpar	
+			OCR2A = speed-LEFTWHEELDIFF;//Vänster hjulpar	
 		}
 	}
 	else
 	{
-		OCR2A = speed;	//Vänster hjulpar
+		OCR2B = speed;	//Höger hjulpar
 	}
 }
 void setSpeedLeft(uint8_t speed){
 	if(glob_virtual_direction == DIRECTION_FORWARD)
 	{
-		OCR2A = speed; //Vänster hjulpar
+		OCR2B = speed; //Höger hjulpar
 	}
 	else
 	{
-		if (speed < RIGHTWHEELDIFF)
+		if (speed < LEFTWHEELDIFF)
 		{
-			OCR2B = 0;
+			OCR2A = 0;
 		}
 		else
 		{
-			OCR2B = speed-RIGHTWHEELDIFF; //Höger hjulpar
+			OCR2A = speed-LEFTWHEELDIFF; //vänster hjulpar
 		}		
 	}
 	
