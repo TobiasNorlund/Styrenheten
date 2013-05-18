@@ -169,7 +169,7 @@ void timedInterupt(void)
 #endif
 #ifndef KOM_OFF
 	sendcounter++;
-	if(sendcounter==12)
+	if(sendcounter==8)
 	{
 		sendcounter=0;
 		//skicka vidare till PC
@@ -181,14 +181,12 @@ void timedInterupt(void)
 		msgRecieve[len+3] = glob_y;
 		msgRecieve[len+4] = 14;
 		msgRecieve[len+5] = glob_theta;
-
-	
 		SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, len+6);
 		
 		
-		int8_t vinkelHastHjul = (glob_vRight-glob_vLeft)>>4; // 17 ca 16
+		/*int8_t vinkelHastHjul = (glob_vRight-glob_vLeft)>>4; // 17 ca 16
 		cbWrite(&glob_debugMesssageBuffer, 21);
-		cbWrite(&glob_debugMesssageBuffer, vinkelHastHjul);
+		cbWrite(&glob_debugMesssageBuffer, vinkelHastHjul);*/
 		
 		
 		//send debug data
