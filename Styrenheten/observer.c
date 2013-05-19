@@ -65,13 +65,17 @@ void observe()
 	}
 }
 
-uint8_t getSensorLongOverNoiseForw(uint8_t value, uint8_t value_old)
+uint8_t getSensorLongOverNoiseForw(uint8_t value_new, uint8_t value_old)//20-150 cm 
 {
-	if(value < 20)
+	if(value_new < 25)
 	{
 		return 0;
 	}
-	if(value == 255)
+	if(value_new > 130)//80 + 40 - 8 = 112 cm två rutor bort
+	{
+		return 0;
+	}
+	if(value_new == 255)
 	{
 		return 0;	
 	}
@@ -80,14 +84,18 @@ uint8_t getSensorLongOverNoiseForw(uint8_t value, uint8_t value_old)
 		return 1;
 	}
 }
-
-uint8_t getSensorLongOverNoiseHoriz(uint8_t value_new, uint8_t value_old)
+//TODO är kanske denna som fångar upp brus, denna borde se väggen endå om den är två rutor bort
+uint8_t getSensorLongOverNoiseHoriz(uint8_t value_new, uint8_t value_old)//20-150 cm 
 {
-	if(value_new < 20)
+	if(value_new < 25)
 	{
 		return 0;
 	}
-	if(max(value_new-value_old, value_old-value_new) > 30)
+	if(value_new > 130)//80 + 40 - 8 = 112 cm två rutor bort
+	{
+		return 0;
+	}
+	if(max(value_new-value_old, value_old-value_new) > 30)//OBS. Filterar bara spikar. ej om det kommer längre avikelser
 	{
 		return 0;
 	}
@@ -100,24 +108,24 @@ uint8_t getSensorLongOverNoiseHoriz(uint8_t value_new, uint8_t value_old)
 		return 1;
 	}
 }
-
-uint8_t getSensorShortOverNoise(uint8_t value_new, uint8_t value_old)
+//TODO är troligen denna som fångar upp brus
+uint8_t getSensorShortOverNoise(uint8_t value_new, uint8_t value_old)//10-80 cm
 {
-	if(value_new < 5)
+	if(value_new < 20)//10 cm då 20/2 pga halva centimeter
 	{
 		return 0;
 	}
-	if(max(value_new-value_old, value_old-value_new) > 15)
+	if(max(value_new-value_old, value_old-value_new) > 15)//OBS. Filterar bara spikar. ej om det kommer längre avikelser
 	{
 		return 0;
 	}
-	if(value_new > 150)
+	if(value_new > 120)//halva cm. 40 - 5 = 35 cm 
 	{
 		return 0;
 	}
 	else
 	{
-		return 10;
+		return 10;//mycket vikt bör justeras efter vart vi kör, om vi har öppna ytor på sidorna lite, så fort vi kan komma nära en vägg öka.
 	}
 }
 
@@ -242,17 +250,34 @@ void straightObserver()
 	int16_t sum5 = XShortRightFront*overNoiseShortRightFront;
 	int16_t sum6 = XShortRightRear*overNoiseShortRightRear;
 	int16_t sum7 = overXPosUncert*int8to16(getRelativeX());
+	
+	//om vi är långt från vägg minska vikten på de korta sensorerna.
+	if(LongLeft > 60)
+	{
+		sum3=(sum3>>1);//halvera vikten
+		sum4=(sum3>>1);
+		overNoiseShortLeftFront=(overNoiseShortLeftFront>>1);
+		overNoiseShortLeftRear=(overNoiseShortLeftRear>>1);
+	}
+	if(LongRight > 60)
+	{
+		sum5=(sum5>>1);//halvera vikten
+		sum6=(sum6>>1);
+		overNoiseShortRightFront=(overNoiseShortRightFront>>1);
+		overNoiseShortRightRear=(overNoiseShortRightRear>>1);
+	}
+	
 	int16_t taljare = sum1+sum2+sum3+sum4+sum5+sum6+sum7;
 	int16_t namnare = overNoiseLongLeft+overNoiseLongRight+overNoiseShortLeftFront+overNoiseShortLeftRear+overNoiseShortRightFront+overNoiseShortRightRear+overXPosUncert;
 	int16_t divAns=taljare/namnare;
 	setRelativeX(divAns);
 	//ta fram y
-	int16_t YLongForward = getShiftedSensorY((HALFSQUAREWIDTH-CHASSITOLONGFRONT)-(LongFront<<1)); // du �r h�r. blir problem d� en sensor s�ger att man �r p� posY -80 och en annan s�ger att man �r p� +80
+	int16_t YLongForward = getShiftedSensorY((HALFSQUAREWIDTH-CHASSITOLONGFRONT)-(LongFront<<1)); // du �r h�r. blir problem d� en sensor s�ger att man �r p� posY -80 och en annan s�ger att man �r p� +80
 	int16_t YLongBack = getShiftedSensorY((LongRear<<1)+CHASSITOLONGBACK-HALFSQUAREWIDTH);
 	glob_sum_y += getVelocity();
 
 	int16_t relYnew = TIMECONSTANT*(glob_sum_y>>10);
-	int16_t overYPosUncert = 10; //inkluderar os�kerhet i y pga hast.
+	int16_t overYPosUncert = 10; //inkluderar os�kerhet i y pga hast.
 	
 	taljare = YLongForward*overNoiseLongFront+YLongBack*overNoiseLongRear+overYPosUncert*relYnew;
 	namnare = overNoiseLongFront+overNoiseLongRear+overYPosUncert;
@@ -261,7 +286,7 @@ void straightObserver()
 	setRelativeY(newY);
 	if(glob_sum_y>HALFSQUARESUMY)//if(glob_sum_y > (HALFSQUAREWIDTH<<10)/TIMECONSTANT)
 	{
-		moveForwards();
+		//moveForwards();//TODO kolla varför denna var o kommenterad. Fungerade med den okomenterad fast en till nedanför
 		/*cbWrite(&glob_debugMesssageBuffer, 23);
 		cbWrite(&glob_debugMesssageBuffer, glob_mapX);
 		cbWrite(&glob_debugMesssageBuffer, 24);
@@ -274,38 +299,16 @@ void straightObserver()
 	}
 	if(getRelativeY() > HALFSQUAREWIDTH)
 	{
-		moveForwards();
+		moveForwards();//TODO check olla varför INTEdenna var o kommenterad. Fungerade med den okomenterad fast en till nedanför
 		cbWrite(&glob_debugMesssageBuffer, 23);
 		cbWrite(&glob_debugMesssageBuffer, glob_mapX);
 		cbWrite(&glob_debugMesssageBuffer, 24);
 		cbWrite(&glob_debugMesssageBuffer, glob_mapY);
 	}
 	
-	/*
-	if((shortLeftFront + shortLeftRear) < (shortRightFront + shortRightRear))
-	{
-		setThetaOmegaLeft(shortLeftFront, shortLeftRear);
-		setXV(shortLeftFront,shortRightRear);
-	}
-	else
-	{
-		setThetaOmegaRight(shortRightFront, shortRightRear);
-		setXV(shortRightFront, shortRightRear);
-	}
-	*/
-	
+	//räkna ut täta.
 	setTheta(ShortLeftFront, ShortLeftRear, ShortRightFront, ShortRightRear);
-	
-	/*
-	if(OK_SENSOR_VALUE(ShortLeftFront)&&OK_SENSOR_VALUE(ShortLeftRear))
-	{
-		setRelativeX(ShortLeftFront, ShortLeftRear);
-	}
-	else if(OK_SENSOR_VALUE(ShortRightFront)&&OK_SENSOR_VALUE(ShortRightRear))
-	{
-		setRelativeX(ShortRightFront, ShortRightRear);
-	}
-	*/	
+		
 	return;
 }
 
@@ -332,7 +335,7 @@ void turnFine()
 		right36AngleK=calc36K(ShortRightFront, ShortRightRear);
 		right36AngleDiff=calcSideSensors36(ShortRightFront,ShortRightRear,1) - glob_theta;
 	}
-	//V�nsta sidan, endast korta
+	//V�nsta sidan, endast korta
 	uint8_t left36AngleK=0;
 	int8_t left36AngleDiff=0;
 	if(OK_SENSOR_VALUE(ShortLeftFront)&&OK_SENSOR_VALUE(ShortLeftRear))
