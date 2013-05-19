@@ -51,9 +51,19 @@ void setTheta(uint8_t ShortLeftFront, uint8_t ShortLeftRear, uint8_t ShortRightF
 		left36AngleK = 10;
 		thetaWeightWheels = 0;//reglera inte efter hjulen om vi har ok värden från sensorerna
 	}
+	
+	//om vi är långt från vägg minska vikten på de korta sensorerna.
+	if(getSensorLongLeft() > 60)
+	{
+		left36AngleK=0;
+	}
+	if(getSensorLongRight() > 60)
+	{
+		right36AngleK=0;
+	}
 
 	glob_thetaOld = glob_theta;
-	int16_t thetaWeight = 2;// tröghet för gamla värden
+	int16_t thetaWeight = 40;// tröghet för gamla värden
 	int16_t thetaReg = int8to16(glob_theta)<<2;
 
 	int16_t leftSide36 = calcSideSensors36(ShortLeftFront,ShortLeftRear,LEFT_SIDE);
