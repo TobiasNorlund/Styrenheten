@@ -199,13 +199,13 @@ int16_t getVelocity() //halva cm /s
 	{
 		return 0;
 	}
-	else if(glob_vLeft == 255)
-	{
-		return glob_vRight<<1;
-	}
-	else if(glob_vRight == 255)
+	else if(OK_SENSOR_VALUE(glob_vLeft))
 	{
 		return glob_vLeft<<1;
+	}
+	else if(OK_SENSOR_VALUE(glob_vRight))
+	{
+		return glob_vRight<<1;
 	}
 	else
 	{
@@ -217,7 +217,7 @@ void straightObserver()
 {
 	int16_t LongFront=getSensorLongForward();
 	int16_t LongRear=getSensorLongRear();
-	int16_t LongLeft=getSensorLongLeft();
+	int16_t LongLeft=getSensorLongLeft();	
 	int16_t LongRight=getSensorLongRight();
 	
 	int16_t ShortLeftFront=getSensorShortLeftForward();
@@ -274,9 +274,11 @@ void straightObserver()
 	//ta fram y
 	int16_t YLongForward = getShiftedSensorY((HALFSQUAREWIDTH-CHASSITOLONGFRONT)-(LongFront<<1)); // du �r h�r. blir problem d� en sensor s�ger att man �r p� posY -80 och en annan s�ger att man �r p� +80
 	int16_t YLongBack = getShiftedSensorY((LongRear<<1)+CHASSITOLONGBACK-HALFSQUAREWIDTH);
+	//int16_t velocity = getVelocity();
+	
 	glob_sum_y += getVelocity();
-
-	int16_t relYnew = TIMECONSTANT*(glob_sum_y>>10);
+	int16_t relYnew = TIMECONSTANT*(glob_sum_y>>10);//int16_t relYnew = getRelativeY()+((TIMECONSTANT*velocity)>>10);
+	
 	int16_t overYPosUncert = 10; //inkluderar os�kerhet i y pga hast.
 	
 	taljare = YLongForward*overNoiseLongFront+YLongBack*overNoiseLongRear+overYPosUncert*relYnew;
@@ -290,7 +292,7 @@ void straightObserver()
 		/*cbWrite(&glob_debugMesssageBuffer, 23);
 		cbWrite(&glob_debugMesssageBuffer, glob_mapX);
 		cbWrite(&glob_debugMesssageBuffer, 24);
-		cbWrite(&glob_debugMesssageBuffer, glob_mapY);*/
+		cbWrite(&glob_debugMesssageBuffer, glob_mapY);
 		glob_sum_y-=2*HALFSQUARESUMY;//2*(HALFSQUAREWIDTH<<10)/TIMECONSTANT;
 	}
 	else if(glob_sum_y<-HALFSQUARESUMY)//if(glob_sum_y < -(HALFSQUAREWIDTH<<10)/TIMECONSTANT)
