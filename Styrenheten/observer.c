@@ -290,7 +290,7 @@ void straightObserver()
 		/*cbWrite(&glob_debugMesssageBuffer, 23);
 		cbWrite(&glob_debugMesssageBuffer, glob_mapX);
 		cbWrite(&glob_debugMesssageBuffer, 24);
-		cbWrite(&glob_debugMesssageBuffer, glob_mapY);*/
+		cbWrite(&glob_debugMesssageBuffer, glob_mapY);
 		glob_sum_y-=2*HALFSQUARESUMY;//2*(HALFSQUAREWIDTH<<10)/TIMECONSTANT;
 	}
 	else if(glob_sum_y<-HALFSQUARESUMY)//if(glob_sum_y < -(HALFSQUAREWIDTH<<10)/TIMECONSTANT)

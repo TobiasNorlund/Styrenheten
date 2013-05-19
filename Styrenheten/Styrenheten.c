@@ -41,8 +41,8 @@ void init(void)
 {
 	glob_mapX = 8;
 	glob_mapY = 8;
-	glob_L1_straightX=4;
-	glob_L2_straightTheta=16;
+	glob_L1_straightX=10;
+	glob_L2_straightTheta=20;
 	glob_L3_straightOmega=4;
 	glob_L1_turnTheta=12;
 	glob_L2_turnOmega=4;
