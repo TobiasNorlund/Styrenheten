@@ -10,7 +10,7 @@
 #define STOPTURN90 75
 #define STOPTURN45 43
 #define LEFTWHEELDIFF 2
-#define LENGTH_OFFSET -40
+#define LENGTH_OFFSET -55
 #define ROTMIN 95
 
 #define FORWARD 1
@@ -226,7 +226,7 @@ void regulateStraight()
 	startSquareY = glob_mapY;
 	glob_omegaWheelSum=glob_theta<<4;//init wheel sum
 	int16_t t = getRelativeY();
-	glob_sum_y=(t<<10)/TIMECONSTANT;
+	glob_sum_y=0;//(t<<10)/TIMECONSTANT;
 	while(!((startSquareX != glob_mapX || startSquareY != glob_mapY)&&(LENGTH_OFFSET < getRelativeY())))
 	{
 		int16_t ur,ul;

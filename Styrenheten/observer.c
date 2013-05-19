@@ -207,10 +207,10 @@ int16_t getVelocity() //halva cm /s
 	{
 		return glob_vRight<<1;
 	}
-	else
+	/*else
 	{
 		return glob_vRight+glob_vLeft;
-	}
+	}*/
 }
 
 void straightObserver()
@@ -266,9 +266,9 @@ void straightObserver()
 		overNoiseShortRightFront=(overNoiseShortRightFront>>1);
 		overNoiseShortRightRear=(overNoiseShortRightRear>>1);
 	}
-	
-	int16_t taljare = sum1+sum2+sum3+sum4+sum5+sum6+sum7;
-	int16_t namnare = overNoiseLongLeft+overNoiseLongRight+overNoiseShortLeftFront+overNoiseShortLeftRear+overNoiseShortRightFront+overNoiseShortRightRear+overXPosUncert;
+	int16_t X_inertia = 40;
+	int16_t taljare = sum1+sum2+sum3+sum4+sum5+sum6+sum7+getRelativeX()*X_inertia;
+	int16_t namnare = overNoiseLongLeft+overNoiseLongRight+overNoiseShortLeftFront+overNoiseShortLeftRear+overNoiseShortRightFront+overNoiseShortRightRear+overXPosUncert+X_inertia;
 	int16_t divAns=taljare/namnare;
 	setRelativeX(divAns);
 	//ta fram y
@@ -279,7 +279,7 @@ void straightObserver()
 	glob_sum_y += getVelocity();
 	int16_t relYnew = TIMECONSTANT*(glob_sum_y>>10);//int16_t relYnew = getRelativeY()+((TIMECONSTANT*velocity)>>10);
 	
-	int16_t overYPosUncert = 10; //inkluderar os�kerhet i y pga hast.
+	int16_t overYPosUncert = 5; //inkluderar os�kerhet i y pga hast.
 	
 	taljare = YLongForward*overNoiseLongFront+YLongBack*overNoiseLongRear+overYPosUncert*relYnew;
 	namnare = overNoiseLongFront+overNoiseLongRear+overYPosUncert;
