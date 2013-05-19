@@ -60,8 +60,8 @@ void setTheta(uint8_t ShortLeftFront, uint8_t ShortLeftRear, uint8_t ShortRightF
 	int16_t rightSide36 = calcSideSensors36(ShortRightFront,ShortRightRear,RIGHT_SIDE);
 
 	//i 1/4 grader
-	int16_t numerator = leftSide36*left36AngleK + rightSide36*right36AngleK + thetaWeight*thetaReg + thetaWheels*thetaWeightWheels;
-	int16_t denominator = right36AngleK + left36AngleK + thetaWeight + thetaWeightWheels;
+	int16_t numerator = leftSide36*left36AngleK + rightSide36*right36AngleK + thetaWeight*thetaReg;// + thetaWheels*thetaWeightWheels;
+	int16_t denominator = right36AngleK + left36AngleK + thetaWeight;// + thetaWeightWheels;
 	
 
 	int16_t newTheta = numerator/denominator;
