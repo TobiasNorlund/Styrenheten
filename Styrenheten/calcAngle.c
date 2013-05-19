@@ -4,7 +4,8 @@
 
 #define RIGHT_SIDE 1
 #define LEFT_SIDE 0
-
+#define FRONT_SIDE 1
+#define REAR_SIDE -1
 /**
  * Används vid reglering med frontsensorer 
  * Tar in ett värde dimension 0.5cm och ger ut ett värde i dimension 0.25 grader.
@@ -32,12 +33,16 @@ const uint8_t lookup19[130] PROGMEM = {
 
 void setTheta(uint8_t ShortLeftFront, uint8_t ShortLeftRear, uint8_t ShortRightFront, uint8_t ShortRightRear)
 {
+	#define THETA_INERTIA 5 //tröghet för att minska brus
 	calcThetaWheels();//update wheel sum
-	int16_t thetaWheels = glob_omegaWheelSum>>2;// delar med 16, hjulbasen är 17 cm dock vill vi ha i 1/4 grader så delar bara med 4:a
+	int16_t thetaWheels = thetaReg-(glob_omegaWheelSum>>2);// delar med 16, hjulbasen är 17 cm dock vill vi ha i 1/4 grader så delar bara med 4:a
 	int16_t thetaWeightWheels = 1;//TODO tune vs thetaWeight tröghet för gamla värden
+
+	uint8_t sensorLongLeft=getSensorLongLeft();
+	uint8_t sensorLongRight=getSensorLongRight();
+
 	//Högra sidan, endast korta
 	uint8_t right36AngleK=0;
-	
 	if((getSensorShortOverNoise(ShortRightFront, getSensorShortRightForwardOld()) != 0)&&(getSensorShortOverNoise(ShortRightRear, getSensorShortRightRearOld()) != 0) && 40 > max(ShortRightRear-ShortRightFront, ShortRightFront-ShortRightRear))
 	{
 		right36AngleK = 10;
@@ -54,21 +59,33 @@ void setTheta(uint8_t ShortLeftFront, uint8_t ShortLeftRear, uint8_t ShortRightF
 
 	glob_thetaOld = glob_theta;
 	int16_t thetaWeight = 2;// tröghet för gamla värden
-	int16_t thetaReg = int8to16(glob_theta)<<2;
+	int16_t thetaReg = (int8to16(glob_theta)<<2);
 
-	int16_t leftSide36 = calcSideSensors36(ShortLeftFront,ShortLeftRear,LEFT_SIDE);
-	int16_t rightSide36 = calcSideSensors36(ShortRightFront,ShortRightRear,RIGHT_SIDE);
+	int16_t leftSide36 = thetaReg-calcSideSensors36(ShortLeftFront,ShortLeftRear,LEFT_SIDE);
+	int16_t rightSide36 = thetaReg-calcSideSensors36(ShortRightFront,ShortRightRear,RIGHT_SIDE);
 
-	//i 1/4 grader
-	int16_t numerator = leftSide36*left36AngleK + rightSide36*right36AngleK + thetaWeight*thetaReg;// + thetaWheels*thetaWeightWheels;
-	int16_t denominator = right36AngleK + left36AngleK + thetaWeight;// + thetaWeightWheels;
-	
+	int16_t leftSide19Front = thetaReg-(calcSideSensors19(ShortLeftFront, sensorLongLeft, LEFT_SIDE, FRONT_SIDE)<<1);
+	int8_t  leftSide19FrontK = thetaReg-calc19K(ShortLeftFront, getSensorShortLeftForwardOld(), sensorLongLeft, getSensorLongLeftOld());
+
+	int16_t leftSide19Rear = thetaReg-(calcSideSensors19(ShortLeftRear, sensorLongLeft, LEFT_SIDE, REAR_SIDE)<<1);
+	int8_t  leftSide19RearK = thetaReg-calc19K(ShortLeftRear, getSensorShortLeftRearOld(), sensorLongLeft, getSensorLongLeftOld());
+
+	int16_t rightSide19Front = thetaReg-(calcSideSensors19(ShortRightFront, sensorLongRight, RIGHT_SIDE, FRONT_SIDE)<<1);
+	int8_t  rightSide19FrontK = thetaReg-calc19K(ShortRightFront, getSensorShortRightForwardOld(), sensorLongRight, getSensorLongRightOld());
+
+	int16_t rightSide19Rear = thetaReg-(calcSideSensors19(ShortRightRear, sensorLongRight, RIGHT_SIDE, REAR_SIDE)<<1);
+	int8_t  rightSide19RearK = calc19K(ShortRightRear, getSensorShortRightRearOld(), sensorLongRight, getSensorLongRightOld());
+
+	//i 1/4 grader och diff från förra täta för att slippa overflow
+	int16_t numerator = leftSide36*left36AngleK + rightSide36*right36AngleK + leftSide19Front*leftSide19FrontK + leftSide19Rear*leftSide19RearK + rightSide19Front*rightSide19FrontK + rightSide19Rear*rightSide19RearK;// + thetaWheels*thetaWeightWheels;
+	int16_t denominator = right36AngleK + left36AngleK + leftSide19FrontK + leftSide19RearK + rightSide19FrontK + rightSide19RearK + THETA_INERTIA;// + thetaWeightWheels;
+
 
 	int16_t newTheta = numerator/denominator;
-	glob_theta = newTheta>>2;
+	glob_theta = ((thetaReg-newTheta)>>2);//TODO kolla så det blir rätt tecken på differansen
 	if(thetaWeightWheels==0)//uppdatera summan om vi har en bättre skattning från andra sensorer.
 	{
-		glob_omegaWheelSum=newTheta<<2;
+		glob_omegaWheelSum=((thetaReg-newTheta)<<2);//TODO kolla så det blir rätt tecken på differansen
 	}
 }
 //turn off optimization
@@ -131,9 +148,13 @@ uint8_t calc36K(uint8_t shortFront, uint8_t shortRear)
 }
 
 // När ska denna straffas?
-uint8_t calc19K(uint8_t shortSensor, uint8_t longSensor)
+uint8_t calc19K(uint8_t shortSensor, uint8_t shortSensorOld, uint8_t longSensor, uint8_t longSensorOld)
 {
-	return 10; //TODO Ordentligare
+	if(absThreshold8(shortSensor>>1, longSensor)>15)
+	{
+		return 0;
+	}
+	return	getSensorShortOverNoise(shortSensor, shortSensorOld)*getSensorLongOverNoiseHoriz(longSensor, longSensorOld);
 }
 
 
@@ -215,37 +236,49 @@ int8_t calcSideSensors36(uint8_t frontDistance,uint8_t rearDistance, int8_t side
 /*
  * return [grader] 0.5 Pga dimensionen är 0.5 grade
  */
-int8_t calcSideSensors19(uint8_t frontDistance,uint8_t longDistance, int8_t side)
+int8_t calcSideSensors19(uint8_t frontDistance,uint8_t longDistance, int8_t side, int8_t pos)
 {
-	uint8_t realFrontDistance = frontDistance>>SHORTFACTOR-3; //Ändrar dimensionen till hela cm -3 pga att korta sitter längre in på chassit.
+	uint8_t realFrontDistance = frontDistance>>SHORTFACTOR-3; //Ändrar dimensionen till hela cm och -3 pga att korta sitter längre in på chassit.
 	uint8_t diff; //Dimension 1cm
+	uint8_t front;
+	uint8_t back;
+	if(pos==FRONT_SIDE)
+	{
+		front=realFrontDistance;
+		back=longDistance;
+	}
+	else
+	{
+		front=longDistance;
+		back=realFrontDistance;
+	}
 	//Reglerar mot vänster sida
 	if(side == 0)
 	{
-		if (realFrontDistance < longDistance)
+		if (front < back)
 		{
-			diff = longDistance - realFrontDistance;
+			diff = (back - front);
 			return pgm_read_byte(&(lookup19[diff])); // >>1 = *0.5 Pga dimensionen är 0.5 grader
 		}
 		else
 		{
-			diff = realFrontDistance - longDistance;
+			diff = front - back;
 			return -(pgm_read_byte(&(lookup19[diff]))); // >>1 = *0.5 Pga dimensionen är 0.5 grade
 		}
 	}
 	//Reglerar mot höger sida
 	else
 	{
-				if (realFrontDistance < longDistance)
-				{
-					diff = longDistance - realFrontDistance;
-					return -(pgm_read_byte(&(lookup19[diff]))); // >>1 = *0.5 Pga dimensionen är 0.5 grader
-				}
-				else
-				{
-					diff = realFrontDistance - longDistance;
-					return pgm_read_byte(&(lookup19[diff])); // >>1 = *0.5 Pga dimensionen är 0.5 grade
-				}
+		if (front < back)
+		{
+			diff = back - front;
+			return -(pgm_read_byte(&(lookup19[diff]))); // >>1 = *0.5 Pga dimensionen är 0.5 grader
+		}
+		else
+		{
+			diff = front - back;
+			return pgm_read_byte(&(lookup19[diff])); // >>1 = *0.5 Pga dimensionen är 0.5 grade
+		}
 	}
 	return 0;
 }

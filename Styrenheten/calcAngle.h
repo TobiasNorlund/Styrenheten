@@ -24,6 +24,6 @@ uint8_t calcKOmega(uint16_t omega);
 uint8_t calcKirSensorK(uint8_t angle);
 int8_t calcOppositeSensors(uint8_t rightFrontSensor,uint8_t leftFrontSensor);
 int8_t calcSideSensors36(uint8_t frontDistance,uint8_t rearDistance, int8_t side);
-int8_t calcSideSensors19(uint8_t frontDistance,uint8_t longDistance, int8_t side);
+int8_t calcSideSensors19(uint8_t frontDistance,uint8_t longDistance, int8_t side, int8_t pos);
 void calcThetaWheels();
 #endif /* CALCANGLE_H_ */
