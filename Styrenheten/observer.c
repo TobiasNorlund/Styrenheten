@@ -284,7 +284,7 @@ void straightObserver()
 	
 	int16_t newY = taljare/namnare;
 	setRelativeY(newY);
-	if(glob_sum_y>HALFSQUARESUMY)//if(glob_sum_y > (HALFSQUAREWIDTH<<10)/TIMECONSTANT)
+/*	if(glob_sum_y>HALFSQUARESUMY)//if(glob_sum_y > (HALFSQUAREWIDTH<<10)/TIMECONSTANT)
 	{
 		//moveForwards();//TODO kolla varför denna var o kommenterad. Fungerade med den okomenterad fast en till nedanför
 		/*cbWrite(&glob_debugMesssageBuffer, 23);
@@ -297,8 +297,10 @@ void straightObserver()
 	{
 		glob_sum_y+=2*HALFSQUARESUMY;//2*(HALFSQUAREWIDTH<<10)/TIMECONSTANT;
 	}
+*/
 	if(getRelativeY() > HALFSQUAREWIDTH)
 	{
+		glob_sum_y=-HALFSQUARESUMY;
 		moveForwards();//TODO check olla varför INTEdenna var o kommenterad. Fungerade med den okomenterad fast en till nedanför
 		cbWrite(&glob_debugMesssageBuffer, 23);
 		cbWrite(&glob_debugMesssageBuffer, glob_mapX);
