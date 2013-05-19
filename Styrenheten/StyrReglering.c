@@ -1,23 +1,36 @@
-﻿	/**
-	 * TSEA27 Elektronikprojekt
-	 *
-	 * IDENTIFIERING
-	 *
-	 * Modul: Styrenheten
-	 * Filnamn: StyrReglering.c
-	 * Skriven av: C. Karlsson Schmidt, M. Karlsson, D. Molin			   
-	 * Datum: 2013-05-15
-	 * Version: 1.0
-	 *
-	 * BESKRIVNING
-	 *
-	 * Reglerar gaspådraget på robotens hjul givet kommandon.
-	 */	
-	
+﻿/*
+ * StyrReglering.c
+ *
+ * Created: 4/16/2013 11:32:16 AM
+ *  Author: davmo049
+ */ 
+
+#define MAXSPEED 250
+#define TURNSPEED 180
+#define STOPTURN90 90
+#define STOPTURN45 43
+#define LEFTWHEELDIFF 2
+#define LENGTH_OFFSET -40
+#define ROTMIN 95
+
+#define FORWARD 1
+#define BACKWARD 0
+
+#include <avr/io.h>
+
+#include "global.h"
+#include "../../TSEA27-include/message.h"
+#include "../../TSEA27-include/utils.h"
 
 #include "StyrReglering.h"
 
-void regulate_init()
+#include <util/delay.h>
+
+uint8_t startSquareX;
+uint8_t startSquareY;
+
+
+void reglering_init()
 {
 	glob_virtual_direction = DIRECTION_FORWARD;
 	glob_x = 0;
@@ -25,6 +38,9 @@ void regulate_init()
 	glob_v = 0;
 	glob_theta = 0;
 	glob_omega = 0;
+	glob_SumTheta=0;
+	glob_omegaWheelSum=0;
+	glob_thetaOld=0;
 	/*
 	*	Initierar registrerna för PWM
 	*
@@ -102,43 +118,45 @@ int8_t getRelativeY() //Y som om roboten har riktning upp
 void setSpeedRight(uint8_t speed){
 	if(glob_virtual_direction == DIRECTION_FORWARD)
 	{
-		if(speed < RIGHTWHEELDIFF)
-		{
-			OCR2B = 0;
-		}
-		else
-		{
-			OCR2B = speed-RIGHTWHEELDIFF;//Höger hjulpar	
-		}
+		OCR2B = speed;	//Höger hjulpar
 	}
 	else
 	{
-		OCR2A = speed;	//Vänster hjulpar
+		if(speed < LEFTWHEELDIFF)
+		{
+			OCR2A = 0;
+		}
+		else
+		{
+
+			OCR2A = speed-LEFTWHEELDIFF;//Vänster hjulpar
+		}
 	}
 }
+
 void setSpeedLeft(uint8_t speed){
 	if(glob_virtual_direction == DIRECTION_FORWARD)
 	{
-		OCR2A = speed; //Vänster hjulpar
-	}
-	else
-	{
-		if (speed < RIGHTWHEELDIFF)
+		if (speed < LEFTWHEELDIFF)
 		{
-			OCR2B = 0;
+			OCR2A = 0;
 		}
 		else
 		{
-			OCR2B = speed-RIGHTWHEELDIFF; //Höger hjulpar
-		}		
+			OCR2A = speed-LEFTWHEELDIFF; //Vänster hjulpar	
+		}
+		
 	}
-	
+	else
+	{
+			OCR2B = speed; //Höger hjulpar	
+	}
 }
 
 void setDirLeft(uint8_t dir){
 	if(glob_virtual_direction == DIRECTION_FORWARD)
 	{
-		if(dir == 1){
+		if(dir == FORWARD){
 			PORTA = PORTA | (1 << PORTA2);
 		}
 		else{
@@ -147,18 +165,26 @@ void setDirLeft(uint8_t dir){
 	}
 	else
 	{
-		if(dir == 1){
+		if(dir == FORWARD){
 			PORTA = PORTA & 0b11110111;
 		}
 		else{
 			PORTA = PORTA | (1 << PORTA3);
 		}
 	}
+	if(dir == FORWARD)
+	{
+	 	glob_vLeftSign=1;
+	}
+	else
+	{
+	 	glob_vLeftSign=-1;
+	}
 }
 void setDirRight(uint8_t dir){
 	if(glob_virtual_direction == DIRECTION_FORWARD)
 	{
-		if(dir == 1){
+		if(dir == FORWARD){
 			PORTA = PORTA | (1 << PORTA3);
 		}
 		else{
@@ -167,52 +193,57 @@ void setDirRight(uint8_t dir){
 	}	
 	else
 	{
-		if(dir == 1){
+		if(dir == FORWARD){
 			PORTA = PORTA & 0b11111011;
 		}
 		else{
 			PORTA = PORTA | (1 << PORTA2);
 		}			
 	}
-			
+	if(dir == FORWARD)
+	{
+	 	glob_vRightSign=1;
+	}
+	else
+	{
+	 	glob_vRightSign=-1;
+	}
 }
 
+/************************************************************************/
+/*	max måste skalas på något sätt så att det blir mellan -254 och 254
+	Vet dock inte vad det kommer bli för värden på omega så vi måste 
+	testa det först.                                                    */
+/************************************************************************/
 //turn off optimization 
 #pragma GCC push_options
 #pragma GCC optimize ("O0")
 void regulateStraight()
 {
-	setDirRight(1);
-	setDirLeft(1);
-
-	uint8_t startSquareX = glob_mapX;
-	uint8_t startSquareY = glob_mapY;
-	int16_t xSav;
+	setDirRight(FORWARD);
+	setDirLeft(FORWARD);
+	startSquareX = glob_mapX;
+	startSquareY = glob_mapY;
+	glob_omegaWheelSum=glob_theta<<4;//init wheel sum
+	int16_t t = getRelativeY();
+	glob_sum_y=(t<<10)/TIMECONSTANT;
 	while(!((startSquareX != glob_mapX || startSquareY != glob_mapY)&&(LENGTH_OFFSET < getRelativeY())))
 	{
-		/** 
-		 * xFactor och thetaFactor är reglerparamterar
-		 * glob_max beräknas med xFactor och thetaFactor och vikter
-		 * storleken på glob_max avgör hur mycket mindre en av motorerna ska gas jämfört med dess maxhastighet
-		 * tecknet på glob_max avgör vilken motor som ska köra långsammare
-		 */
 		int16_t ur,ul;
 		int16_t xRelative = int8to16(getRelativeX());
 		int16_t xFactor = (glob_L1_straightX*xRelative)>>SHORTFACTOR;
 		int16_t thetaDeg = degToRad(glob_theta);
 		int16_t thetaFactor = (glob_L2_straightTheta*thetaDeg)>>(DIVISIONFACTOR-4);
 		int16_t omegaFactor = glob_L3_straightOmega*glob_omega;
-		if(xRelative != xSav)
-		{
-			xSav = xRelative;
-			cbWrite(&glob_debugMesssageBuffer, 17);
-			cbWrite(&glob_debugMesssageBuffer, glob_theta>>8);
-			cbWrite(&glob_debugMesssageBuffer, glob_theta);
-			cbWrite(&glob_debugMesssageBuffer, 19);
-			cbWrite(&glob_debugMesssageBuffer, xRelative>>8);
-			cbWrite(&glob_debugMesssageBuffer, xRelative);
-		}			
 		glob_max = xFactor-thetaFactor;
+		/*
+		cbWrite(&glob_debugMesssageBuffer, 17);
+		cbWrite(&glob_debugMesssageBuffer, glob_theta>>8);
+		cbWrite(&glob_debugMesssageBuffer, glob_theta);
+		cbWrite(&glob_debugMesssageBuffer, 19);
+		cbWrite(&glob_debugMesssageBuffer, xRelative>>8);
+		cbWrite(&glob_debugMesssageBuffer, xRelative);
+		*/
 		if(glob_max > MAXSPEED)
 		{
 			glob_max = MAXSPEED;
@@ -239,15 +270,18 @@ void regulateStraight()
 }
 
 void turnLeft90(){
-	setDirLeft(0);
-	setDirRight(1);
+	glob_SumTheta = glob_theta<<8;
+	setDirLeft(BACKWARD);
+	setDirRight(FORWARD);
 	setSpeedRight(TURNSPEED);
 	setSpeedLeft(TURNSPEED);
-	while(glob_theta < (int16_t)STOPTURN90LEFT)
+	while(glob_theta < STOPTURN90)
 	{
 		
-	} 
-	glob_theta = glob_theta - (int16_t) LEFT_90_ADJ;
+	}
+	glob_SumTheta -= 90<<8;
+	glob_theta = glob_theta - (int16_t) 90;
+
 	switch(glob_logical_direction)
 	{
 		case LOGICAL_DIR_UP:
@@ -263,18 +297,23 @@ void turnLeft90(){
 			glob_logical_direction = LOGICAL_DIR_DOWN;
 			break;
 	}
-	cleanUpAngle();
+	setSpeedRight(0);
+	setSpeedLeft(0);
+	//cleanUpAngle();
 }
 
 void turnRight90(){
-	setDirLeft(1);
-	setDirRight(0);
+	glob_SumTheta = glob_theta<<8;
+	setDirLeft(FORWARD);
+	setDirRight(BACKWARD);
 	setSpeedRight(TURNSPEED);
 	setSpeedLeft(TURNSPEED); 
-	while(glob_theta > (int16_t)(-STOPTURN90RIGHT))
+	while(glob_theta > (-STOPTURN90))
 	{
 	}
-	glob_theta = glob_theta + (int16_t) RIGHT_90_ADJ;
+
+	glob_SumTheta += 90<<8;
+	glob_theta = glob_theta + (int16_t) 90;
 	switch(glob_logical_direction)
 	{
 		case LOGICAL_DIR_UP:
@@ -290,31 +329,38 @@ void turnRight90(){
 			glob_logical_direction = LOGICAL_DIR_UP;
 			break;
 		}
-	cleanUpAngle();
+	setSpeedRight(0);
+	setSpeedLeft(0);
+	//cleanUpAngle();
 }
 void turnLeft45(){
-	setDirLeft(0);
-	setDirRight(1);
+	glob_SumTheta = glob_theta<<8;
+	setDirLeft(BACKWARD);
+	setDirRight(FORWARD);
 	setSpeedRight(TURNSPEED);
 	setSpeedLeft(TURNSPEED); 
 	while(glob_theta < STOPTURN45)
 	{
 	}
 	setSpeedRight(0); 
-	setSpeedLeft(0); 
+	setSpeedLeft(0);
+	glob_SumTheta -= 45<<8;
 	glob_theta = glob_theta - (int16_t) 45;
+	
 }
 	
 void turnRight45(){
-	setDirLeft(1);
-	setDirRight(0);
+	glob_SumTheta = glob_theta<<8;
+	setDirLeft(FORWARD);
+	setDirRight(BACKWARD);
 	setSpeedRight(TURNSPEED); 
 	setSpeedLeft(TURNSPEED); 
 	while(glob_theta > -STOPTURN45)
 	{
 	}
 	setSpeedRight(0); 
-	setSpeedLeft(0); 
+	setSpeedLeft(0);
+	glob_SumTheta += 45<<8;
 	glob_theta = glob_theta + (int16_t) 45;
 }
 #pragma GCC pop_options
@@ -341,14 +387,14 @@ void cleanUpAngle()
 		}
 	}
 	glob_curComm = TURN_FINE;
-	uint8_t rotSpeed = TURNSPEED-30;
+	uint8_t rotSpeed = TURNSPEED-50;
 	uint8_t prev_dir = 2;
 	while(!(glob_theta == 0 && rotSpeed == ROTMIN))
 	{
 		if(glob_theta > 0)
 		{
-			setDirLeft(1);
-			setDirRight(0);
+			setDirLeft(FORWARD);
+			setDirRight(BACKWARD);
 			setSpeedRight(rotSpeed);
 			setSpeedLeft(rotSpeed);
 			if(prev_dir == 2)
@@ -358,7 +404,7 @@ void cleanUpAngle()
 			else if(prev_dir == 0)
 			{
 				prev_dir = 1;
-				rotSpeed = rotSpeed-30;
+				rotSpeed = rotSpeed-50;
 				if(rotSpeed < ROTMIN)
 				{
 					rotSpeed = ROTMIN;
@@ -370,6 +416,7 @@ void cleanUpAngle()
 					{
 						while(glob_theta == theta_sav)
 						{
+							
 						}
 					}
 				}
@@ -377,8 +424,8 @@ void cleanUpAngle()
 		}
 		else
 		{
-			setDirLeft(0);
-			setDirRight(1);
+			setDirLeft(BACKWARD);
+			setDirRight(FORWARD);
 			setSpeedRight(rotSpeed);
 			setSpeedLeft(rotSpeed);
 			if(prev_dir == 2)
@@ -388,7 +435,7 @@ void cleanUpAngle()
 			else if(prev_dir == 1)
 			{
 				prev_dir = 0;
-				rotSpeed = rotSpeed-30;
+				rotSpeed = rotSpeed-50;
 				if(rotSpeed < ROTMIN)
 				{
 					rotSpeed = ROTMIN;
@@ -440,8 +487,8 @@ void virtualTurn()
 
 void customSteering()
 {
-	setDirLeft(1);
-	setDirRight(1);
+	setDirLeft(FORWARD);
+	setDirRight(FORWARD);
 	setSpeedRight(glob_paramCustomRight);
 	setSpeedLeft(glob_paramCustomLeft);
 }

@@ -1,25 +1,13 @@
-﻿	/**
-	 * TSEA27 Elektronikprojekt
-	 *
-	 * IDENTIFIERING
-	 *
-	 * Modul:Styrenheten
-	 * Filnamn: global.c
-	 * Skriven av: I. Junaeus, C. Karlsson Schmidt, M. Karlsson, J. Källström, 
-	 *			   D. Molin, T. Norlund		
-	 * Datum: 2013-05-15
-	 * Version: 1.0
-	 *
-	 * BESKRIVNING
-	 *
-	 * Definierar alla de globala variabler som styrenheten använder sig av.
-	 */	
-	
+﻿/*
+ * global.c
+ *
+ * Created: 4/17/2013 9:45:13 AM
+ *  Author: davmo049
+ */ 
+
 #include "global.h"
 
-/*
-*	returnerar vad sensorn fram har för värde givet om roboten har kört en virtuell vändning
-*/
+
 uint8_t getSensorLongForward()
 {
 	if(glob_virtual_direction == DIRECTION_FORWARD)
@@ -32,9 +20,6 @@ uint8_t getSensorLongForward()
 	}
 }
 
-/*
-*	returnerar vad sensorn bak har för värde givet om roboten har kört en virtuell vändning
-*/
 uint8_t getSensorLongRear()
 {
 	if(glob_virtual_direction == DIRECTION_FORWARD)
@@ -47,9 +32,6 @@ uint8_t getSensorLongRear()
 	}
 }
 
-/*
-*	returnerar vad den långa sensorn vänster har för värde givet om roboten har kört en virtuell vändning
-*/
 uint8_t getSensorLongLeft()
 {
 	if(glob_virtual_direction == DIRECTION_FORWARD)
@@ -62,9 +44,6 @@ uint8_t getSensorLongLeft()
 	}
 }
 
-/*
-*	returnerar vad den långa sensorn höger har för värde givet om roboten har kört en virtuell vändning
-*/
 uint8_t getSensorLongRight()
 {
 	if(glob_virtual_direction == DIRECTION_FORWARD)
@@ -77,9 +56,6 @@ uint8_t getSensorLongRight()
 	}
 }
 
-/*
-*	returnerar vad den korta främre sensorn till vänster har för värde givet om roboten har kört en virtuell vändning
-*/
 uint8_t getSensorShortLeftForward()
 {
 	if(glob_virtual_direction == DIRECTION_FORWARD)
@@ -92,9 +68,6 @@ uint8_t getSensorShortLeftForward()
 	}
 }
 
-/*
-*	returnerar vad den korta bakre sensorn till vänster har för värde givet om roboten har kört en virtuell vändning
-*/
 uint8_t getSensorShortLeftRear()
 {
 	if(glob_virtual_direction == DIRECTION_FORWARD)
@@ -107,9 +80,6 @@ uint8_t getSensorShortLeftRear()
 	}
 }
 
-/*
-*	returnerar vad den korta främre sensorn till höger har för värde givet om roboten har kört en virtuell vändning
-*/
 uint8_t getSensorShortRightForward()
 {
 	if(glob_virtual_direction == DIRECTION_FORWARD)
@@ -122,9 +92,6 @@ uint8_t getSensorShortRightForward()
 	}
 }
 
-/*
-*	returnerar vad den korta bakre sensorn till höger har för värde givet om roboten har kört en virtuell vändning
-*/
 uint8_t getSensorShortRightRear()
 {
 	if(glob_virtual_direction == DIRECTION_FORWARD)
@@ -138,9 +105,6 @@ uint8_t getSensorShortRightRear()
 	}
 }
 
-/*
-*	returnerar vad sensorn fram har för värde givet om roboten har kört en virtuell vändning
-*/
 uint8_t getSensorLongForwardOld()
 {
 	if(glob_virtual_direction == DIRECTION_FORWARD)

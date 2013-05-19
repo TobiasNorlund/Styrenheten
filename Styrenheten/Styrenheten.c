@@ -1,38 +1,26 @@
-﻿	/**
-	 * TSEA27 Elektronikprojekt
-	 *
-	 * IDENTIFIERING
-	 *
-	 * Modul: Styrenheten
-	 * Filnamn: Styrenheten.c
-	 * Skriven av: C. Karlsson Schmidt, D. Molin			   
-	 * Datum: 2013-05-15
-	 * Version: 1.0
-	 *
-	 * BESKRIVNING
-	 *
-	 * Main-fil för styrenheten.
-	 */	
-	
+﻿/*
+ * Styrenheten.c
+ *
+ * Created: 4/5/2013 11:22:36 AM
+ *  Author: carka684 
+ */
+
 // in "Makefile" 
 //#define F_CPU 20000000UL // 20mhz
-
 #include <util/delay.h>
-#include <avr/io.h>
-#include <avr/interrupt.h>
+
 #include "global.h"
 #include "clockedInterrupt.h"
 #include "charting.h"
 #include "StyrReglering.h"
-#include "pathfind.h"
 #include "../../TSEA27-include/message.h"
 #include "../../TSEA27-include/SPI/spi_master.h"
-
+#include "pathfind.h"
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-#define DELAY 500
+
 void sendAllMapData()
 {
 	for(uint8_t i = 0; i < 16; ++i)
@@ -48,21 +36,19 @@ void sendAllMapData()
 	}
 }
 
-/** 
- * Initierar styrenheten.
- */
+
 void init(void)
 {
 	glob_mapX = 8;
 	glob_mapY = 8;
-	glob_L1_straightX=10;
-	glob_L2_straightTheta=20;
+	glob_L1_straightX=4;
+	glob_L2_straightTheta=16;
 	glob_L3_straightOmega=4;
 	glob_L1_turnTheta=12;
 	glob_L2_turnOmega=4;
 	
 	clockedInterrupt_init();
-	regulate_init();
+	reglering_init();
 	pathfind_init();
 	_delay_ms(500); //ge tid innan styr börjar
 	SPI_MASTER_init();
@@ -71,10 +57,6 @@ void init(void)
 	DDRB |= 0b00000101;
 }
 
-/** 
- * Tänder en lampa på roboten och skickar kartdata
- * kontinuerligt tills reset. 
- */
 void signal_done()
 {
 	PORTB |= 0b00000100;
@@ -86,43 +68,38 @@ void signal_done()
 	}
 }
 
-/** 
- * Anropar nuvarande kommando i kön
- */
+
 void executeCommand(uint8_t command)
 {
 	glob_curComm = command;
-	glob_syncSpike = 255;
 	switch(command)
 	{
 		case FORWARD_COMMAND:
-			_delay_ms(DELAY);
 			regulateStraight();
+			if(!(glob_routeLength != 1 && glob_route[glob_routeLength-2] == FORWARD_COMMAND))
+			{
+				_delay_ms(500);	
+			}
 			break;
 		case RIGHT_90_COMMAND:
-			_delay_ms(DELAY);
 			turnRight90();
-			_delay_ms(DELAY);
+			_delay_ms(300);
 			break;
 		case LEFT_90_COMMAND:
-			_delay_ms(DELAY);
 			turnLeft90();
-			_delay_ms(DELAY);
+			_delay_ms(300);
 			break;
 		case RIGHT_45_COMMAND:
-			_delay_ms(DELAY);
 			turnRight45();
-			_delay_ms(DELAY);
 			break;
 		case LEFT_45_COMMAND:
-			_delay_ms(DELAY);
 			turnLeft45();
-			_delay_ms(DELAY);
 			break;
 		case VIRTUAL_REVERSE_COMMAND:
 			virtualTurn();
 			break;
 		case CUSTOM_STEERING_COMMAND:
+			sendAllMapData();
 			customSteering();
 			break;
 		default:
@@ -131,9 +108,6 @@ void executeCommand(uint8_t command)
 	glob_curComm = NULL_COMMAND;
 }
 
-/** 
- * Kör autonomt
- */
 void autoSteering()
 {
 	while(1)
@@ -156,10 +130,6 @@ void autoSteering()
 	}
 	return;
 }
-
-/** 
- * Kör manuellt
- */
 #pragma GCC push_options
 #pragma GCC optimize ("O0")
 void manualSteering()

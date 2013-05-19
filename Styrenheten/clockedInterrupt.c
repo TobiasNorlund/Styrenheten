@@ -1,18 +1,9 @@
-﻿/**
-	* TSEA27 Elektronikprojekt
-	*
-	* IDENTIFIERING
-	*
-	* Modul:Styrenheten
-	* Filnamn: clockedInterrupt.c
-	* Skriven av: J. Källström, D. Molin, T. Norlund	
-	* Datum: 2013-05-15
-	* Version: 1.0
-	*
-	* BESKRIVNING
-	*
-	* Klockat avbrott som hämtar in ny sensordata, skickar sensordatan till kommunikationsenheten och uppdaterar observatören
-	*/	
+﻿/*
+ * clockedInterrupt.c
+ *
+ * Created: 4/12/2013 10:37:35 AM
+ *  Author: davmo049
+ */ 
 #include "clockedInterrupt.h"
 #include <avr/interrupt.h>
 #include "observer.h"
@@ -22,26 +13,31 @@
 #include <util/delay.h>
 
 volatile uint8_t overFlowInteruptTimer1=0;
+uint8_t sendcounter;
 
 void clockedInterrupt_init()
 {
 	cbInit(&glob_mapDataToSend, 255	);
-	cbInit(&glob_debugMesssageBuffer, 32);
+	cbInit(&glob_debugMesssageBuffer, 50);
 	glob_routeLength = 0;
 	//setup timers 1 och 3 16bit timers
 	//start clock and set clock devider.
 	
 	//timed interupt init
-	OCR1A = (uint16_t)65000;// Ger en interrupt var 50ms, vid 20MHz //6400000;//0xFF; //(1/10)*20000000/1024; // 10 gånger i sek ifall 20mhz
+	OCR1A = (uint16_t)8000;// Ger en interrupt var 50ms, vid 20MHz //6400000;//0xFF; //(1/10)*20000000/1024; // 10 gånger i sek ifall 20mhz
 	TIMSK1 = (1<<OCIE1B);// Enable Interrupt TimerCounter1 Compare Match A (SIG_OUTPUT_COMPARE0A)
 	TCCR1A = (1<<WGM11); // Mode = CTC, clear on compare, dvs reseta räknaren
 	//enable overflow interupt
 	//TIMSK1=(1<<TOIE1);//overflow interupt
 	//TCNT1=0;//init value for counter 1
-	TCCR1B = (1<<CS12)|(0<<CS11)|(1<<CS10);// Clock/1024, 0.000128 seconds per tick
-	
+	TCCR1B = (1<<CS12)|(0<<CS11)|(0<<CS10);// Clock/256, 0.000128 seconds per tick
+	sendcounter=0;
 }
 
+void updateState(void)
+{
+	observe();
+}
 
 uint8_t temp = 0;
 ISR(TIMER1_COMPB_vect)
@@ -111,7 +107,7 @@ void timedInterupt(void)
 	glob_shortFrontLeft_old = glob_shortFrontLeft; // cm/2
 	glob_shortRearRight_old = glob_shortRearRight; // cm/2
 	glob_shortRearLeft_old = glob_shortRearLeft;
-	
+		
 	//tolka/spara sensordata
 	if(type==TYPE_SENSOR_DATA && len!=0)
 	{
@@ -168,119 +164,123 @@ void timedInterupt(void)
 		}
 	
 		//uppdatera tillstånd
-		observe();
+		updateState();
 	}
 #endif
 #ifndef KOM_OFF
-	//skicka vidare till PC
-	SPI_set_kom(START);
-	//väldigt ful kod gör om, gör rätt
-	msgRecieve[len] = 12;
-	msgRecieve[len+1] = glob_x;
-	msgRecieve[len+2] = 13;
-	msgRecieve[len+3] = glob_y;
-	msgRecieve[len+4] = 14;
-	msgRecieve[len+5] = glob_theta;
-
-	glob_syncSpike = 0;
-	
-	SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, len+6);
-	
-	//testar med att räkna ut vinkelhastigheten från hjulen
-	int8_t vinkelHastHjul = (glob_vRight-glob_vLeft)>>4;// 17 bred ca 16
-	cbWrite(&glob_debugMesssageBuffer, 20);
-	cbWrite(&glob_debugMesssageBuffer, vinkelHastHjul);
-	
-	//send debug data
-	uint8_t bytesToSend = 0;
-	while(cbBytesUsed(&glob_debugMesssageBuffer) != 0)
+	sendcounter++;
+	if(sendcounter==8)
 	{
-		msgSend[bytesToSend] = cbRead(&glob_debugMesssageBuffer);
-		++bytesToSend;
-	}
-	if(bytesToSend != 0)
-	{
-		SPI_MASTER_write(msgSend, TYPE_DEBUG_DATA, bytesToSend);
-	}
-		//end send debug data
-	//uint8_t msg[4]={12, glob_x, 13, glob_y};
-	//SPI_MASTER_write(msg, TYPE_DEBUG_DATA, 4);
+		sendcounter=0;
+		//skicka vidare till PC
+		SPI_set_kom(START);
+		//väldigt ful kod gör om, gör rätt
+		msgRecieve[len] = 12;
+		msgRecieve[len+1] = glob_x;
+		msgRecieve[len+2] = 13;
+		msgRecieve[len+3] = glob_y;
+		msgRecieve[len+4] = 14;
+		msgRecieve[len+5] = glob_theta;
+		SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, len+6);
+		
+		
+		/*int8_t vinkelHastHjul = (glob_vRight-glob_vLeft)>>4; // 17 ca 16
+		cbWrite(&glob_debugMesssageBuffer, 21);
+		cbWrite(&glob_debugMesssageBuffer, vinkelHastHjul);*/
+		cbWrite(&glob_debugMesssageBuffer, 25);
+		cbWrite(&glob_debugMesssageBuffer, (glob_sum_y&0xFF00)>>8);
+		cbWrite(&glob_debugMesssageBuffer, (glob_sum_y&0x00FF));
+		//send debug data
+		uint8_t bytesToSend = 0;
+		while(cbBytesUsed(&glob_debugMesssageBuffer) != 0)
+		{
+			msgSend[bytesToSend] = cbRead(&glob_debugMesssageBuffer);
+			++bytesToSend;
+		}
+		if(bytesToSend != 0)
+		{
+			SPI_MASTER_write(msgSend, TYPE_DEBUG_DATA, bytesToSend);
+		}
+			//end send debug data
+		//uint8_t msg[4]={12, glob_x, 13, glob_y};
+		//SPI_MASTER_write(msg, TYPE_DEBUG_DATA, 4);
 	
-	volatile uint8_t answer = 0;
-	uint8_t answerCounter=0;
-	do
-	{
-		SPI_MASTER_write(msgSend, TYPE_REQUEST_PC_MESSAGE, 0);
+		volatile uint8_t answer = 0;
+		uint8_t answerCounter=0;
+		do
+		{
+			SPI_MASTER_write(msgSend, TYPE_REQUEST_PC_MESSAGE, 0);
 
 		
-		answer = 0;
-		answerCounter=0;
-		while((!answer)&&(answerCounter<254))//räknare så vi inte fastnar här om vi hamnar aout of sync med kom.
-		{
-			answer = SPI_MASTER_read(msgRecieve, &type, &len);
-			answerCounter++;
-		}
+			answer = 0;
+			answerCounter=0;
+			while((!answer)&&(answerCounter<254))//räknare så vi inte fastnar här om vi hamnar aout of sync med kom.
+			{
+				answer = SPI_MASTER_read(msgRecieve, &type, &len);
+				answerCounter++;
+			}
 				
 
-		if(type == TYPE_MANUAL_COMMAND)
-		{
-			//lägg till msg[0] först i route
-			for(uint8_t i = glob_routeLength; i > 0; --i)
+			if(type == TYPE_MANUAL_COMMAND)
 			{
-				glob_route[glob_routeLength] = glob_route[glob_routeLength-1];
+				//lägg till msg[0] först i route
+				for(uint8_t i = glob_routeLength; i > 0; --i)
+				{
+					glob_route[glob_routeLength] = glob_route[glob_routeLength-1];
+				}
+				glob_route[0] = msgRecieve[0];
+				glob_routeLength = glob_routeLength+1;
+				break;
 			}
-			glob_route[0] = msgRecieve[0];
-			glob_routeLength = glob_routeLength+1;
-			break;
-		}
-		else if(type == TYPE_CHANGE_PARM)
-		{
-			uint8_t ID = msgRecieve[0];
-			uint8_t val = msgRecieve[1];
+			else if(type == TYPE_CHANGE_PARM)
+			{
+				uint8_t ID = msgRecieve[0];
+				uint8_t val = msgRecieve[1];
 				
-			if (ID==PARAMLEFTCUSTOM)
-			{
-				glob_paramCustomLeft = val;
-			}
-			else if (ID==PARAMRIGHTCUSTOM)
-			{
-				glob_paramCustomRight = val;
-			}
-			else if (ID==L1_STRAIGHTX)
-			{
-				glob_L1_straightX = val;
-			}
-			else if (ID==L2_STRAIGHTTHETA)
-			{
-				glob_L2_straightTheta = val;
-			}
-			else if (ID==L3_STRAIGHTOMEGA)
-			{
-				glob_L3_straightOmega = val;
-			}
-			else if (ID==L1_TURNTHETA)
-			{
-				glob_L1_turnTheta = val;
-			}
-			else if (ID==L2_TURNOMEGA)
-			{
-				glob_L2_turnOmega = val;
-			}
+				if (ID==PARAMLEFTCUSTOM)
+				{
+					glob_paramCustomLeft = val;
+				}
+				else if (ID==PARAMRIGHTCUSTOM)
+				{
+					glob_paramCustomRight = val;
+				}
+				else if (ID==L1_STRAIGHTX)
+				{
+					glob_L1_straightX = val;
+				}
+				else if (ID==L2_STRAIGHTTHETA)
+				{
+					glob_L2_straightTheta = val;
+				}
+				else if (ID==L3_STRAIGHTOMEGA)
+				{
+					glob_L3_straightOmega = val;
+				}
+				else if (ID==L1_TURNTHETA)
+				{
+					glob_L1_turnTheta = val;
+				}
+				else if (ID==L2_TURNOMEGA)
+				{
+					glob_L2_turnOmega = val;
+				}
 
-		}		
-	}while((type != TYPE_NO_PC_MESSAGES) && (type != TYPE_REQUEST_PC_MESSAGE) && (answerCounter<254));//type != TYPE_REQUEST_PC_MESSAGE betyder att vi ej laggt in ny data i kom. dvs ej handskakat.
+			}		
+		}while((type != TYPE_NO_PC_MESSAGES) && (type != TYPE_REQUEST_PC_MESSAGE) && (answerCounter<254));//type != TYPE_REQUEST_PC_MESSAGE betyder att vi ej laggt in ny data i kom. dvs ej handskakat.
 
 
-	//skicka all kartdata till komm
-	while(cbBytesUsed(&glob_mapDataToSend) > 1)
-	{
-		uint8_t x = cbRead(&glob_mapDataToSend);
-		uint8_t y = cbRead(&glob_mapDataToSend);
-		msgSend[0] = x;
-		msgSend[1] = y;
-		msgSend[2] = glob_map[y][x];
-		SPI_MASTER_write(msgSend, TYPE_MAP_DATA, 3);
-	}
-	SPI_set_kom(END);
+		//skicka all kartdata till komm
+		while(cbBytesUsed(&glob_mapDataToSend) > 1)
+		{
+			uint8_t x = cbRead(&glob_mapDataToSend);
+			uint8_t y = cbRead(&glob_mapDataToSend);
+			msgSend[0] = x;
+			msgSend[1] = y;
+			msgSend[2] = glob_map[y][x];
+			SPI_MASTER_write(msgSend, TYPE_MAP_DATA, 3);
+		}
+		SPI_set_kom(END);
+	}	
 #endif
 }

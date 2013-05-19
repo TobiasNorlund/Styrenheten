@@ -437,6 +437,10 @@ void createRouteToNextMeta()
 	if(minAll == 128)
 	{
 		glob_metaRouteLenght = glob_metaRouteLenght-2;
+		if(glob_metaRouteLenght == 0)
+		{
+			return;
+		}
 		goto TONEXTMETAROUTEPOINT;
 	}
 	if(min(overCost, underCost) == minAll)
@@ -661,7 +665,11 @@ uint8_t getCostMove(uint8_t toX, uint8_t toY)
 	{
 		if(glob_map[toY][toX] == OPEN)
 		{
-			return 1; //kostnad att åka genom en vanlig ruta kommer nog att ändras
+			if(glob_map[toY+1][toX] == WALL || glob_map[toY-1][toX] == WALL || glob_map[toY][toX+1] == WALL || glob_map[toY][toX-1] == WALL)
+			{
+				return 1; //kostnad att åka genom en vanlig ruta kommer nog att ändras	
+			}
+			return 1;
 		}
 
 		else if(toY == 15 || toY == 0 || toX == 15 || toX == 0)
