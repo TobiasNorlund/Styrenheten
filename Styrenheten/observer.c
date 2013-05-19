@@ -87,6 +87,8 @@ uint8_t getSensorLongOverNoiseForw(uint8_t value_new, uint8_t value_old)//20-150
 //TODO är kanske denna som fångar upp brus, denna borde se väggen endå om den är två rutor bort
 uint8_t getSensorLongOverNoiseHoriz(uint8_t value_new, uint8_t value_old)//20-150 cm 
 {
+	int16_t value_new_16 = int8to16(value_new);
+	int16_t value_old_16 = int8to16(value_old);
 	if(value_new < 25)
 	{
 		return 0;
@@ -95,11 +97,7 @@ uint8_t getSensorLongOverNoiseHoriz(uint8_t value_new, uint8_t value_old)//20-15
 	{
 		return 0;
 	}
-	if(max(value_new-value_old, value_old-value_new) > 30)//OBS. Filterar bara spikar. ej om det kommer längre avikelser
-	{
-		return 0;
-	}
-	if(value_new == 255)
+	if(max(value_new_16-value_old_16, value_new_16-value_old_16) > 30)//OBS. Filterar bara spikar. ej om det kommer längre avikelser
 	{
 		return 0;
 	}
@@ -111,11 +109,13 @@ uint8_t getSensorLongOverNoiseHoriz(uint8_t value_new, uint8_t value_old)//20-15
 //TODO är troligen denna som fångar upp brus
 uint8_t getSensorShortOverNoise(uint8_t value_new, uint8_t value_old)//10-80 cm
 {
+	int16_t value_new_16 = int8to16(value_new);
+	int16_t value_old_16 = int8to16(value_old);
 	if(value_new < 20)//10 cm då 20/2 pga halva centimeter
 	{
 		return 0;
 	}
-	if(max(value_new-value_old, value_old-value_new) > 15)//OBS. Filterar bara spikar. ej om det kommer längre avikelser
+	if(max(value_new_16-value_old_16, value_old_16-value_new_16) > 15)//OBS. Filterar bara spikar. ej om det kommer längre avikelser
 	{
 		return 0;
 	}
@@ -276,7 +276,7 @@ void straightObserver()
 	int16_t YLongBack = getShiftedSensorY((LongRear<<1)+CHASSITOLONGBACK-HALFSQUAREWIDTH);
 	glob_sum_y += getVelocity(); //ignorerar detta
 
-	int16_t relYnew = getRelativeY()+(TIMECONSTANT*((int16_t)getVelocity()))>>10; //TIMECONSTANT*(glob_sum_y>>10);
+	int16_t relYnew = getRelativeY()+((TIMECONSTANT*((int16_t)getVelocity()))>>10); //TIMECONSTANT*(glob_sum_y>>10);
 	int16_t overYPosUncert = 10;
 	
 	taljare = YLongForward*overNoiseLongFront+YLongBack*overNoiseLongRear+overYPosUncert*relYnew;
