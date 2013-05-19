@@ -202,7 +202,7 @@ int8_t calcSideSensors36(uint8_t frontDistance,uint8_t rearDistance, int8_t side
 	int8_t diff; //Dimension 0.5 cm
 	
 	//Reglerar mot vänster sida
-	if(side == 0)	
+	if(side == LEFT_SIDE)	
 	{
 		if (frontDistance < rearDistance)
 		{
@@ -238,7 +238,7 @@ int8_t calcSideSensors36(uint8_t frontDistance,uint8_t rearDistance, int8_t side
  */
 int8_t calcSideSensors19(uint8_t frontDistance,uint8_t longDistance, int8_t side, int8_t pos)
 {
-	uint8_t realFrontDistance = frontDistance>>SHORTFACTOR-3; //Ändrar dimensionen till hela cm och -3 pga att korta sitter längre in på chassit.
+	uint8_t realFrontDistance = (frontDistance>>SHORTFACTOR)-3; //Ändrar dimensionen till hela cm och -3 pga att korta sitter längre in på chassit.
 	uint8_t diff; //Dimension 1cm
 	uint8_t front;
 	uint8_t back;
@@ -253,7 +253,7 @@ int8_t calcSideSensors19(uint8_t frontDistance,uint8_t longDistance, int8_t side
 		back=realFrontDistance;
 	}
 	//Reglerar mot vänster sida
-	if(side == 0)
+	if(side == LEFT_SIDE)
 	{
 		if (front < back)
 		{
