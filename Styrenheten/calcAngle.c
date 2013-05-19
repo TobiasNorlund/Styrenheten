@@ -38,7 +38,7 @@ void setTheta(uint8_t ShortLeftFront, uint8_t ShortLeftRear, uint8_t ShortRightF
 	//Högra sidan, endast korta
 	uint8_t right36AngleK=0;
 	
-	if((getSensorShortOverNoise(ShortRightFront, getSensorShortRightForwardOld()) != 0)&&(getSensorShortOverNoise(ShortRightRear, getSensorShortRightRearOld()) != 0) && 40 > max(ShortRightRear-ShortRightFront, ShortRightFront-ShortRightRear))
+	if((getSensorShortOverNoise(ShortRightFront, getSensorShortRightForwardOld()) != 0)&&(getSensorShortOverNoise(ShortRightRear, getSensorShortRightRearOld()) != 0) && (40 > max(ShortRightRear-ShortRightFront, ShortRightFront-ShortRightRear)))
 	{
 		right36AngleK = 10;
 		thetaWeightWheels = 0;//reglera inte efter hjulen om vi har ok värden från sensorerna
@@ -46,7 +46,7 @@ void setTheta(uint8_t ShortLeftFront, uint8_t ShortLeftRear, uint8_t ShortRightF
 	
 	//Vänsta sidan, endast korta
 	uint8_t left36AngleK = 0;
-	if((getSensorShortOverNoise(ShortLeftFront, getSensorShortLeftForwardOld()) != 0)&&(getSensorShortOverNoise(ShortLeftRear, getSensorShortLeftRearOld()) != 0) && 40 > max(ShortLeftRear-ShortLeftFront, ShortLeftRear-ShortLeftFront))
+	if((getSensorShortOverNoise(ShortLeftFront, getSensorShortLeftForwardOld()) != 0)&&(getSensorShortOverNoise(ShortLeftRear, getSensorShortLeftRearOld()) != 0) && (40 > max(ShortLeftRear-ShortLeftFront, ShortLeftRear-ShortLeftFront)))
 	{
 		left36AngleK = 10;
 		thetaWeightWheels = 0;//reglera inte efter hjulen om vi har ok värden från sensorerna

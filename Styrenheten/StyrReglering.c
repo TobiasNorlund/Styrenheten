@@ -7,7 +7,7 @@
 
 #define MAXSPEED 250
 #define TURNSPEED 180
-#define STOPTURN90 80
+#define STOPTURN90 85
 #define STOPTURN45 43
 #define LEFTWHEELDIFF 2
 #define LENGTH_OFFSET -40
