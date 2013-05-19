@@ -117,10 +117,10 @@ volatile uint16_t glob_weightYOpen;
 volatile uint16_t glob_averageXOpen;
 volatile uint16_t glob_averageYOpen;
 volatile uint16_t glob_chartedOpen;
-volatile uint8_t glob_minXOpen = 8;
-volatile uint8_t glob_minYOpen = 8;
-volatile uint8_t glob_maxXOpen = 8;
-volatile uint8_t glob_maxYOpen = 8;
+volatile uint8_t glob_minXOpen;
+volatile uint8_t glob_minYOpen;
+volatile uint8_t glob_maxXOpen;
+volatile uint8_t glob_maxYOpen;
 
 volatile uint8_t glob_longFront_old; // cm
 volatile uint8_t glob_longRight_old; // cm
