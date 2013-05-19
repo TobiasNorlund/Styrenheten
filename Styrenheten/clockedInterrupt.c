@@ -103,6 +103,15 @@ void timedInterupt(void)
 	if(answerCounterSensor == 255)
 		return;
 	
+	glob_longFront_old = glob_longFront; // cm
+	glob_longRight_old = glob_longRight; // cm
+	glob_longRear_old = glob_longRear;// cm
+	glob_longLeft_old = glob_longLeft;// cm
+	glob_shortFrontRight_old = glob_shortFrontRight; // cm/2
+	glob_shortFrontLeft_old = glob_shortFrontLeft; // cm/2
+	glob_shortRearRight_old = glob_shortRearRight; // cm/2
+	glob_shortRearLeft_old = glob_shortRearLeft;
+	
 	//tolka/spara sensordata
 	if(type==TYPE_SENSOR_DATA && len!=0)
 	{
@@ -176,6 +185,12 @@ void timedInterupt(void)
 	glob_syncSpike = 0;
 	
 	SPI_MASTER_write(msgRecieve, TYPE_DEBUG_DATA, len+6);
+	
+	//testar med att räkna ut vinkelhastigheten från hjulen
+	int8_t vinkelHastHjul = (glob_vRight-glob_vLeft)>>4;// 17 bred ca 16
+	cbWrite(&glob_debugMesssageBuffer, 20);
+	cbWrite(&glob_debugMesssageBuffer, vinkelHastHjul);
+	
 	//send debug data
 	uint8_t bytesToSend = 0;
 	while(cbBytesUsed(&glob_debugMesssageBuffer) != 0)

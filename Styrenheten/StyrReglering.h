@@ -16,19 +16,21 @@
 	
 #include <avr/io.h>
 #include "global.h"
-
+#include "../../TSEA27-include/message.h"
 #ifndef STYRREGLERING_H_
 #define STYRREGLERING_H_
 
 #define DIVISIONFACTOR  6 // DF = 4 -> 2^4 = 16
-#define MAXSPEED 250
-#define TURNSPEED 180
-#define STOPTURN90 83
+#define MAXSPEED 200
+#define TURNSPEED 150
+#define STOPTURN90LEFT 75
+#define STOPTURN90RIGHT 88
+#define RIGHT_90_ADJ 95
+#define LEFT_90_ADJ 90
 #define STOPTURN45 43
 #define RIGHTWHEELDIFF 23
-#define LENGTH_OFFSET -51
-#define ROTMIN 80
-#define TURN_FINE 0 //VAD VAR DETTA?
+#define LENGTH_OFFSET -10
+#define ROTMIN 100
 
 /** 
  * Initierar regleringen:
@@ -112,7 +114,7 @@ int8_t getRelativeX(void);
 int8_t getRelativeY(void);
 
 /** 
- * Finjusterar vinkeln efter sväng
+ * Rättar till vinkeln efter sväng, om möjligt.
  */
 void cleanUpAngle();
 

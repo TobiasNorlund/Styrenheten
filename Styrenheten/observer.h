@@ -5,8 +5,8 @@
 	 *
 	 * Modul:Styrenheten
 	 * Filnamn: observer.h
-	 * Skriven av: C. Karlsson, M. Karlsson, D. Molin
-	 *			   
+	 * Skriven av: C. Karlsson Schmidt, M. Karlsson, D. Molin
+	 *			  
 	 * Datum: 2013-05-15
 	 * Version: 1.0
 	 *
@@ -33,11 +33,7 @@
 #include "../../TSEA27-include/message.h"
 #include "../../TSEA27-include/utils.h"
 
-#define CHASSITOSHORTSIDE 7 //halva cm 7 18 21
-#define CHASSITOLONGSIDE 21 //halva cm
-#define CHASSITOLONGBACK 36 //halva cm
-#define CHASSITOLONGFRONT 36 //halva cm
-#define TIMECONSTANT 100 // ms
+#define TIMECONSTANT 50 // ms
 #define INVERTTIMECONSTANT 20 //Dimension 1/s
 #define HALFSQUAREWIDTH 80 //halva cm
 #define OK_SENSOR_VALUE(x) (((x) != 0)||((x) != 255))
@@ -74,12 +70,12 @@ void setRelativeY(int8_t val);
 /** 
  * Returnerar 1/standardavvikelsen för den långa sensorn
  */
-uint8_t getSensorLongOverNoise(uint8_t value);
+uint8_t getSensorLongOverNoise(uint8_t value, uint8_t value_old);
 
 /** 
  *Returnerar 1/standardavvikelsen för den korta sensorn
  */
-uint16_t getSensorShortOverNoise(uint8_t value);
+uint16_t getSensorShortOverNoise(uint8_t value, uint8_t value_old);
 
 /** 
  * Returnerar det största av två tal
