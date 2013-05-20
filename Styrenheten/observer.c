@@ -193,25 +193,27 @@ void moveForwards()
 #pragma GCC push_options
 #pragma GCC optimize ("O0")
 
+
 int16_t getVelocity() //halva cm /s
-{
-	if(glob_vLeft == 255 && glob_vRight == 255)
-	{
-		return 0;
-	}
-	else if(OK_SENSOR_VALUE(glob_vLeft))
-	{
-		return glob_vLeft<<1;
-	}
-	else if(OK_SENSOR_VALUE(glob_vRight))
-	{
+ {
+	 	if(!OK_SENSOR_VALUE(glob_vLeft) && !OK_SENSOR_VALUE(glob_vRight))
+ 	{
+ 		return 0;
+ 	}
+	else if(!OK_SENSOR_VALUE(glob_vLeft))
+ 	{
 		return glob_vRight<<1;
+ 	}
+	else if(!OK_SENSOR_VALUE(glob_vRight))
+ 	{
+		return glob_vLeft<<1;
+ 	}
+
+	else
+ 	{
+ 		return glob_vRight+glob_vLeft;
 	}
-	/*else
-	{
-		return glob_vRight+glob_vLeft;
-	}*/
-}
+ }
 
 void straightObserver()
 {
@@ -274,11 +276,11 @@ void straightObserver()
 	//ta fram y
 	int16_t YLongForward = getShiftedSensorY((HALFSQUAREWIDTH-CHASSITOLONGFRONT)-(LongFront<<1)); // du �r h�r. blir problem d� en sensor s�ger att man �r p� posY -80 och en annan s�ger att man �r p� +80
 	int16_t YLongBack = getShiftedSensorY((LongRear<<1)+CHASSITOLONGBACK-HALFSQUAREWIDTH);
-	//int16_t velocity = getVelocity();
+	int16_t velocity = getVelocity();
 	
 	glob_sum_y += getVelocity();
-	int16_t relYnew = TIMECONSTANT*(glob_sum_y>>10);//int16_t relYnew = getRelativeY()+((TIMECONSTANT*velocity)>>10);
-	
+	int16_t relYnew = TIMECONSTANT*(glob_sum_y>>10);
+	//int16_t relYnew = getRelativeY()+((TIMECONSTANT*velocity)>>10);
 	int16_t overYPosUncert = 5; //inkluderar os�kerhet i y pga hast.
 	
 	taljare = YLongForward*overNoiseLongFront+YLongBack*overNoiseLongRear+overYPosUncert*relYnew;
