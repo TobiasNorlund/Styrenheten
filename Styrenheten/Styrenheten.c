@@ -76,10 +76,10 @@ void executeCommand(uint8_t command)
 	{
 		case FORWARD_COMMAND:
 			regulateStraight();
-			if(!(glob_routeLength != 1 && glob_route[glob_routeLength-2] == FORWARD_COMMAND))
-			{
+			//if(!(glob_routeLength != 1 && glob_route[glob_routeLength-2] == FORWARD_COMMAND))
+			//{
 				_delay_ms(500);	
-			}
+			//}
 			break;
 		case RIGHT_90_COMMAND:
 			turnRight90();

@@ -1,4 +1,4 @@
-
+﻿
 #include <avr/pgmspace.h>
 #include "calcAngle.h"
 
@@ -38,7 +38,7 @@ void setTheta(uint8_t ShortLeftFront, uint8_t ShortLeftRear, uint8_t ShortRightF
 	//Högra sidan, endast korta
 	uint8_t right36AngleK=0;
 	
-	if((getSensorShortOverNoise(ShortRightFront, getSensorShortRightForwardOld()) != 0)&&(getSensorShortOverNoise(ShortRightRear, getSensorShortRightRearOld()) != 0) && 25 > max(ShortRightFront-ShortRightRear, ShortRightFront-ShortRightRear))
+	if((getSensorShortOverNoise(ShortRightFront, getSensorShortRightForwardOld()) != 0)&&(getSensorShortOverNoise(ShortRightRear, getSensorShortRightRearOld()) != 0) && 35 > max(ShortRightFront-ShortRightRear, ShortRightFront-ShortRightRear))
 	{
 		right36AngleK = 10;
 		thetaWeightWheels = 0;//reglera inte efter hjulen om vi har ok värden från sensorerna
@@ -46,7 +46,7 @@ void setTheta(uint8_t ShortLeftFront, uint8_t ShortLeftRear, uint8_t ShortRightF
 	
 	//Vänsta sidan, endast korta
 	uint8_t left36AngleK = 0;
-	if((getSensorShortOverNoise(ShortLeftFront, getSensorShortLeftForwardOld()) != 0)&&(getSensorShortOverNoise(ShortLeftRear, getSensorShortLeftRearOld()) != 0) && 25 > max(ShortLeftFront-ShortLeftRear, ShortLeftRear-ShortLeftFront))
+	if((getSensorShortOverNoise(ShortLeftFront, getSensorShortLeftForwardOld()) != 0)&&(getSensorShortOverNoise(ShortLeftRear, getSensorShortLeftRearOld()) != 0) && 35 > max(ShortLeftFront-ShortLeftRear, ShortLeftRear-ShortLeftFront))
 	{
 		left36AngleK = 10;
 		thetaWeightWheels = 0;//reglera inte efter hjulen om vi har ok värden från sensorerna
@@ -63,14 +63,15 @@ void setTheta(uint8_t ShortLeftFront, uint8_t ShortLeftRear, uint8_t ShortRightF
 	}
 	
 	//om vi långa är kortare än båda korta betyder det att vi har ett hörn.
-	if(getSensorLongLeft() < (ShortLeftFront>>1) && getSensorLongLeft() < (ShortLeftRear>>1))
+	if(((getSensorLongLeft()+4)< (ShortLeftFront>>1)) && ((getSensorLongLeft()+4)< (ShortLeftRear>>1))&&OK_SENSOR_VALUE(getSensorLongLeft()))
 	{
 		left36AngleK=0;
 	}
-	if(((getSensorLongRight()+2) < (ShortRightFront>>1))&&((getSensorLongRight()+2) < (ShortRightRear)))
+	if(((getSensorLongRight()+4) < (ShortRightFront>>1))&&((getSensorLongRight()+4) < (ShortRightRear))&&OK_SENSOR_VALUE(getSensorLongRight()))
 	{
 		right36AngleK=0;
 	}
+
 
 	glob_thetaOld = glob_theta;
 	int16_t thetaWeight = 20;// tröghet för gamla värden
