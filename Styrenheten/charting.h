@@ -13,13 +13,14 @@
 	 *
 	 * Sköter kartläggningen av banan i styrenheten.
 	 */	
-
+#ifndef CHARTING_H_
+#define CHARTING_H
 #include <avr/io.h>
 #include "global.h"
 #include "../../TSEA27-include/message.h"
 
-#ifndef CHARTING_H_
-#define CHARTING_H
+
+
 
 #define SENSOROFFSET_1 80
 #define SENSOROFFSET_2 140

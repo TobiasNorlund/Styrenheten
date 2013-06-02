@@ -15,7 +15,10 @@
 	 */	
 
 #include "observer.h"
+
 #include "charting.h"
+#include "global.h"
+#include "../../TSEA27-include/message.h"
 
 /*
  * Initierar variabler relaterade till pathfinding
@@ -84,7 +87,11 @@ void auto_logical_chart(uint8_t x, uint8_t y, uint8_t info)
 {
 	if(glob_map[y][x] != info)
 	{
-		if(glob_map[y][x] == OPEN && info == WALL)
+		glob_map[y][x] = info;
+		//send data to PC
+		cbWrite(&glob_mapDataToSend, x);
+		cbWrite(&glob_mapDataToSend, y);
+		if(info == 0)
 		{
 			//ignore
 		}

@@ -16,6 +16,11 @@
 	 */	
 
 #include "pathfind.h"
+#include "../../TSEA27-include/message.h"
+#include "global.h"
+#include "charting.h"
+#include <string.h>
+
 
 void pathfind()
 {
@@ -83,29 +88,15 @@ void adjecentNewSquaresRemoveChartedSquares()
 	}
 }
 
-int16_t getMetaCostInit(int8_t candX, int8_t candY, int8_t metaX, int8_t metaY)
-{
-	int16_t lenBetwwen2 = norm2pow2(candX, candY, metaX, metaY);
-	int16_t lenBetweenExtra= norm2pow2(glob_averageXOpen, glob_averageYOpen, candX, candY)>>3;
-	return lenBetwwen2+lenBetweenExtra;
-}
-
-int16_t getMetaCostNew(int8_t candX, int8_t candY, int8_t metaX, int8_t metaY)
-{
-	int16_t lenBetwwen2 = norm2pow2(candX, candY, metaX, metaY);
-	int16_t lenBetweenExtra= norm2pow2(glob_averageXOpen, glob_averageYOpen, candX, candY)>>3;
-	return lenBetwwen2+lenBetweenExtra;
-}
-
 void initMetaRoute()
 {
 	//get square closest to robot
-	uint8_t closestSquareIndex = 0;
-	int16_t smallestLength = 5000;
+	uint8_t closestSquareIndex = 1;
+	uint16_t smallestLength = 500;
 	uint8_t i = 0;
 	while(i<glob_adjecentNewSquaresLenght)
 	{
-		uint16_t lenCand = getMetaCostInit(glob_adjecentNewSquares[i], glob_adjecentNewSquares[i+1], glob_mapX, glob_mapY);
+		uint16_t lenCand = norm2pow2(glob_adjecentNewSquares[i], glob_adjecentNewSquares[i+1], glob_mapX, glob_mapY);
 		if(lenCand < smallestLength)
 		{
 			smallestLength = lenCand;
@@ -132,7 +123,7 @@ void initMetaRoute()
 		i = 0;
 		while(i<glob_adjecentNewSquaresLenght)
 		{
-			uint16_t lenCand = getMetaCostInit(glob_adjecentNewSquares[i], glob_adjecentNewSquares[i+1], glob_metaRoute[METAROUTEMAXLEN-glob_metaRouteLenght], glob_metaRoute[METAROUTEMAXLEN-glob_metaRouteLenght+1]);
+			uint16_t lenCand = norm2pow2(glob_adjecentNewSquares[i], glob_adjecentNewSquares[i+1], glob_metaRoute[METAROUTEMAXLEN-glob_metaRouteLenght], glob_metaRoute[METAROUTEMAXLEN-glob_metaRouteLenght+1]);
 			if(lenCand < smallestLength)
 			{
 				smallestLength = lenCand;
@@ -170,7 +161,7 @@ void createNewMetaRoute()
 		//find the square which is closest to the last in meta route
 		while(i<glob_adjecentNewSquaresLenght)
 		{
-			uint16_t lenCand = getMetaCostNew(glob_adjecentNewSquares[i], glob_adjecentNewSquares[i+1], glob_metaRoute[glob_metaRouteLenght-2], glob_metaRoute[glob_metaRouteLenght-1]);
+			uint16_t lenCand = norm2pow2(glob_adjecentNewSquares[i], glob_adjecentNewSquares[i+1], glob_metaRoute[glob_metaRouteLenght-2], glob_metaRoute[glob_metaRouteLenght-1]);
 			if(lenCand < smallestLength)
 			{
 				smallestLength = lenCand;
@@ -235,7 +226,7 @@ void createRouteToNextMeta()
 	currentSquares[0] = glob_mapX;
 	currentSquares[1] = glob_mapY;
 	uint8_t currentSquaresLength = 1;
-	if(glob_logical_direction == LOGICAL_DIR_UP)
+	if(glob_logical_direction == LOGICAL_DIR_UP) //beror på hur riktning skall vara kodad senare
 	{
 		directionCurrentSquares[0] = LOGICAL_DIR_UP;
 		mapCostUp[glob_mapY][glob_mapX] = 0;

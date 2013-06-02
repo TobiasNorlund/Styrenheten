@@ -21,10 +21,6 @@
 #include <avr/io.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <string.h>
-#include "../../TSEA27-include/message.h"
-#include "global.h"
-#include "charting.h"
 
 /*
  * Uppdaterar metarutten samt skapar en rutt (dvs en serie kommandon) som tar roboten till nästa oupptäckta ruta
