@@ -7,10 +7,11 @@
 
 #define MAXSPEED 250
 #define TURNSPEED 180
-#define STOPTURN90 75
+
+#define STOPTURN90 85
 #define STOPTURN45 43
 #define LEFTWHEELDIFF 2
-#define LENGTH_OFFSET -60
+#define LENGTH_OFFSET -65
 #define ROTMIN 95
 
 #define FORWARD 1
@@ -226,7 +227,7 @@ void regulateStraight()
 	startSquareY = glob_mapY;
 	glob_omegaWheelSum=glob_theta<<4;//init wheel sum
 	int16_t t = getRelativeY();
-	glob_sum_y=t*int8to16(85);//(t<<10)/TIMECONSTANT;//85.3333
+	glob_sum_y=0;//(t<<10)/TIMECONSTANT;
 	while(!((startSquareX != glob_mapX || startSquareY != glob_mapY)&&(LENGTH_OFFSET < getRelativeY())))
 	{
 		int16_t ur,ul;
@@ -235,10 +236,6 @@ void regulateStraight()
 		int16_t thetaDeg = degToRad(glob_theta);
 		int16_t thetaFactor = (glob_L2_straightTheta*thetaDeg)>>(DIVISIONFACTOR-4);
 		int16_t omegaFactor = glob_L3_straightOmega*glob_omega;
-		if((getSensorShortLeftForward() > 150 && getSensorShortRightForward() > 150) || (getSensorShortLeftRear() > 150 && getSensorShortRightRear() > 150) || (getSensorShortRightRear() > 150 && getSensorShortLeftForward() > 150) || (getSensorShortLeftRear() > 150 && getSensorShortRightForward() > 150))
-		{
-			thetaFactor = 0;
-		}
 		glob_max = xFactor-thetaFactor;
 		/*
 		cbWrite(&glob_debugMesssageBuffer, 17);
